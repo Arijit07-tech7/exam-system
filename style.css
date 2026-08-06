@@ -4136,3 +4136,270 @@ img{
 
 /* End Of Premium Exam CSS */
 
+/* =====================================================
+   PREMIUM MOBILE RESPONSIVE DESIGN
+   EXAM SYSTEM
+===================================================== */
+
+
+@media screen and (max-width: 768px){
+
+
+    body{
+        overflow-x:hidden;
+    }
+
+
+    /* Main Container */
+
+    .container,
+    .exam-container,
+    .login-container,
+    .card{
+
+        width:92% !important;
+        margin:auto;
+
+        padding:20px !important;
+
+        border-radius:20px;
+
+    }
+
+
+
+    /* Logo */
+
+    .logo,
+    .brand-logo{
+
+        font-size:28px !important;
+
+    }
+
+
+
+    /* Heading */
+
+    h1{
+
+        font-size:26px !important;
+        text-align:center;
+
+    }
+
+
+    h2{
+
+        font-size:22px !important;
+
+    }
+
+
+
+    /* Login Section */
+
+    .login-box{
+
+        width:100% !important;
+
+    }
+
+
+    input{
+
+        width:100% !important;
+
+        height:48px;
+
+        font-size:16px;
+
+    }
+
+
+
+    /* Buttons */
+
+    button,
+    .btn{
+
+        width:100% !important;
+
+        height:50px;
+
+        margin-top:12px;
+
+        font-size:16px;
+
+        border-radius:14px;
+
+    }
+
+
+
+    /* Exam Header */
+
+    .exam-header{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        text-align:center;
+
+    }
+
+
+
+    /* Timer */
+
+    .timer{
+
+        width:100%;
+
+        padding:12px;
+
+        font-size:20px;
+
+    }
+
+
+
+    /* Question Box */
+
+    .question-box{
+
+        padding:18px !important;
+
+        margin-top:15px;
+
+    }
+
+
+    .question-text{
+
+        font-size:18px !important;
+
+        line-height:1.6;
+
+    }
+
+
+
+    /* Options */
+
+    .option{
+
+        width:100%;
+
+        padding:15px;
+
+        margin:10px 0;
+
+        font-size:16px;
+
+        border-radius:15px;
+
+    }
+
+
+    .option input{
+
+        width:auto !important;
+
+        height:auto;
+
+    }
+
+
+
+    /* Navigation Buttons */
+
+
+    .navigation{
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:12px;
+
+    }
+
+
+
+    /* Result Page */
+
+
+    .result-box{
+
+        width:95%;
+
+        padding:25px;
+
+    }
+
+
+    .score{
+
+        font-size:45px;
+
+    }
+
+
+
+
+}
+
+
+
+/* Smaller Mobile Devices */
+
+@media screen and (max-width:420px){
+
+
+    .container,
+    .exam-container{
+
+        width:95% !important;
+
+        padding:15px !important;
+
+    }
+
+
+
+    h1{
+
+        font-size:22px !important;
+
+    }
+
+
+
+    .question-text{
+
+        font-size:16px !important;
+
+    }
+
+
+
+    button{
+
+        height:45px;
+
+        font-size:14px;
+
+    }
+
+
+
+    .timer{
+
+        font-size:18px;
+
+    }
+
+
+}
