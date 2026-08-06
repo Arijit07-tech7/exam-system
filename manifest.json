@@ -1,18 +1,26 @@
 {
-  "name": "Premium Exam System",
-  "short_name": "Exam AI",
+  "name": "Premium Online Examination System",
+  "short_name": "Exam System",
+  "description": "Secure online examination platform with timer and anti-cheating features",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#00ffff",
+
   "icons": [
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
