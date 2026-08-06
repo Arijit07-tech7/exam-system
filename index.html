@@ -5,377 +5,363 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Premium Online Examination System</title>
 
-    <link rel="stylesheet"
-          href="style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ffff">
 
 </head>
 
 <body>
 
-<!-- ===========================
+    <!-- ===========================
         LOADING SCREEN
 =========================== -->
 
-<div id="loadingScreen">
+    <div id="loadingScreen">
 
-    <div class="loader"></div>
+        <div class="loader"></div>
 
-    <h1>Premium Examination Portal</h1>
+        <h1>Premium Examination Portal</h1>
 
-    <p>Preparing Secure Environment...</p>
+        <p>Preparing Secure Environment...</p>
 
-</div>
+    </div>
 
-<!-- ===========================
+    <!-- ===========================
         LOGIN PAGE
 =========================== -->
 
-<section id="loginPage"
-         class="page hidden">
+    <section id="loginPage" class="page hidden">
 
-    <div class="glass loginCard">
+        <div class="glass loginCard">
 
-        <h1>ONLINE EXAMINATION</h1>
+            <h1>ONLINE EXAMINATION</h1>
 
-        <p>
-            Student Login Portal
-        </p>
-
-        <input
-            type="text"
-            id="username"
-            placeholder="Enter Username">
-
-        <input
-            type="password"
-            id="password"
-            placeholder="Enter Password">
-
-        <button id="loginBtn">
-
-            LOGIN
-
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ===========================
-      INSTRUCTION PAGE
-=========================== -->
-
-<section id="instructionPage"
-         class="page hidden">
-
-    <div class="glass instructionCard">
-
-        <h1>Exam Instructions</h1>
-
-        <div class="studentBox">
-
-            <h2 id="studentName">
-
-                Student
-
-            </h2>
-
-            <p id="studentSet">
-
-                Question Set
-
+            <p>
+                Student Login Portal
             </p>
 
-        </div>
+            <input type="text" id="username" placeholder="Enter Username">
 
-        <ul>
+            <input type="password" id="password" placeholder="Enter Password">
 
-            <li>Total Questions : 30</li>
+            <button id="loginBtn">
 
-            <li>20 Seconds Per Question</li>
-
-            <li>Total Time : 10 Minutes</li>
-
-            <li>Fullscreen Mandatory</li>
-
-            <li>No Copy / Paste</li>
-
-            <li>No Tab Switching</li>
-
-            <li>3 Warnings = Auto Submit</li>
-
-        </ul>
-
-        <label class="agreeBox">
-
-            <input
-                type="checkbox"
-                id="agreeRules">
-
-            I have read all instructions.
-
-        </label>
-
-        <button id="startExam">
-
-            START EXAM
-
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ===========================
-        EXAM PAGE
-=========================== -->
-
-<section id="examPage"
-         class="page hidden">
-
-    <!-- Top Bar -->
-
-    <header class="topBar">
-
-        <div class="studentPanel">
-
-            <h3 id="examStudent">
-
-                Student
-
-            </h3>
-
-        </div>
-
-        <div class="masterTimer">
-
-            <span>
-
-                Total Time
-
-            </span>
-
-            <h2 id="masterTime">
-
-                10:00
-
-            </h2>
-
-        </div>
-
-    </header>
-
-    <!-- Progress -->
-
-    <div class="progressArea">
-
-        <div class="progressText">
-
-            Question
-
-            <span id="questionNo">
-
-                1
-
-            </span>
-
-            /
-
-            <span>
-
-                30
-
-            </span>
-
-        </div>
-
-        <div class="progressBar">
-
-            <div id="progressFill">
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Question Card -->
-
-    <div class="glass questionCard">
-
-        <div class="questionTop">
-
-            <div>
-
-                <h2 id="questionText">
-
-                    Question Here...
-
-                </h2>
-
-            </div>
-
-            <div class="questionTimer">
-
-                <div id="questionTimer">
-
-                    20
-
-                </div>
-
-                <small>
-
-                    Seconds
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div id="options">
-
-            <!-- Options JS -->
-
-        </div>
-
-        <div class="buttonArea">
-
-            <button id="nextBtn">
-
-                NEXT QUESTION
+                LOGIN
 
             </button>
 
         </div>
 
-    </div>
+    </section>
 
-</section>
+    <!-- ===========================
+      INSTRUCTION PAGE
+=========================== -->
 
-<!-- ===========================
+    <section id="instructionPage" class="page hidden">
+
+        <div class="glass instructionCard">
+
+            <h1>Exam Instructions</h1>
+
+            <div class="studentBox">
+
+                <h2 id="studentName">
+
+                    Student
+
+                </h2>
+
+                <p id="studentSet">
+
+                    Question Set
+
+                </p>
+
+            </div>
+
+            <ul>
+
+                <li>Total Questions : 30</li>
+
+                <li>20 Seconds Per Question</li>
+
+                <li>Total Time : 10 Minutes</li>
+
+                <li>Fullscreen Mandatory</li>
+
+                <li>No Copy / Paste</li>
+
+                <li>No Tab Switching</li>
+
+                <li>3 Warnings = Auto Submit</li>
+
+            </ul>
+
+            <label class="agreeBox">
+
+                <input type="checkbox" id="agreeRules">
+
+                I have read all instructions.
+
+            </label>
+
+            <button id="startExam">
+
+                START EXAM
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ===========================
+        EXAM PAGE
+=========================== -->
+
+    <section id="examPage" class="page hidden">
+
+        <!-- Top Bar -->
+
+        <header class="topBar">
+
+            <div class="studentPanel">
+
+                <h3 id="examStudent">
+
+                    Student
+
+                </h3>
+
+            </div>
+
+            <div class="masterTimer">
+
+                <span>
+
+                    Total Time
+
+                </span>
+
+                <h2 id="masterTime">
+
+                    10:00
+
+                </h2>
+
+            </div>
+
+        </header>
+
+        <!-- Progress -->
+
+        <div class="progressArea">
+
+            <div class="progressText">
+
+                Question
+
+                <span id="questionNo">
+
+                    1
+
+                </span>
+
+                /
+
+                <span>
+
+                    30
+
+                </span>
+
+            </div>
+
+            <div class="progressBar">
+
+                <div id="progressFill">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Question Card -->
+
+        <div class="glass questionCard">
+
+            <div class="questionTop">
+
+                <div>
+
+                    <h2 id="questionText">
+
+                        Question Here...
+
+                    </h2>
+
+                </div>
+
+                <div class="questionTimer">
+
+                    <div id="questionTimer">
+
+                        20
+
+                    </div>
+
+                    <small>
+
+                        Seconds
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div id="options">
+
+                <!-- Options JS -->
+
+            </div>
+
+            <div class="buttonArea">
+
+                <button id="nextBtn">
+
+                    NEXT QUESTION
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ===========================
         RESULT PAGE
 =========================== -->
 
-<section id="resultPage"
-         class="page hidden">
+    <section id="resultPage" class="page hidden">
 
-    <div class="glass resultCard">
+        <div class="glass resultCard">
 
-        <h1>
+            <h1>
 
-            Examination Completed
+                Examination Completed
 
-        </h1>
+            </h1>
 
-        <div class="resultBox">
+            <div class="resultBox">
 
-            <h2 id="resultStudent">
+                <h2 id="resultStudent">
 
-                Student
+                    Student
 
-            </h2>
+                </h2>
 
-            <h3 id="scoreText">
+                <h3 id="scoreText">
 
-                0 / 30
+                    0 / 30
 
-            </h3>
+                </h3>
 
-            <h3 id="percentage">
+                <h3 id="percentage">
 
-                0%
+                    0%
 
-            </h3>
+                </h3>
 
-            <h3 id="status">
+                <h3 id="status">
 
-                PASS
+                    PASS
 
-            </h3>
+                </h3>
+
+            </div>
+
+            <button id="reviewBtn">
+
+                REVIEW ANSWERS
+
+            </button>
+
+            <button id="finishBtn">
+
+                FINISH
+
+            </button>
 
         </div>
 
-        <button id="reviewBtn">
+    </section>
 
-            REVIEW ANSWERS
-
-        </button>
-
-        <button id="finishBtn">
-
-            FINISH
-
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ===========================
+    <!-- ===========================
       ANSWER REVIEW PAGE
 =========================== -->
 
-<section id="reviewPage"
-         class="page hidden">
+    <section id="reviewPage" class="page hidden">
 
-    <div class="glass reviewCard">
+        <div class="glass reviewCard">
 
-        <h1>
+            <h1>
 
-            Answer Review
+                Answer Review
 
-        </h1>
+            </h1>
 
-        <div id="reviewContainer">
+            <div id="reviewContainer">
+
+            </div>
+
+            <button id="closeReview">
+
+                CLOSE
+
+            </button>
 
         </div>
 
-        <button id="closeReview">
+    </section>
 
-            CLOSE
-
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ===========================
+    <!-- ===========================
           WARNING POPUP
 =========================== -->
 
-<div id="warningPopup"
-     class="hidden">
+    <div id="warningPopup" class="hidden">
 
-    <div class="warningCard">
+        <div class="warningCard">
 
-        <h2>
+            <h2>
 
-            Warning
+                Warning
 
-        </h2>
+            </h2>
 
-        <p id="warningText">
+            <p id="warningText">
 
-            Security Violation
+                Security Violation
 
-        </p>
+            </p>
+
+        </div>
 
     </div>
 
-</div>
-
-<!-- ===========================
+    <!-- ===========================
         JAVASCRIPT
 =========================== -->
 
-<script src="app.min.js"></script>
+    <script src="app.min.js"></script>
 
 </body>
 
