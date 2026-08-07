@@ -25,7 +25,7 @@ const users = [
     password:"arijit123",
     name:"Arijit Gupta",
     set:"A",
-    unlimited:true,
+    unlimited:false,
     active:true
 },
 
@@ -33,7 +33,7 @@ const users = [
 {
     id:"AL001",
     username:"alok",
-    password:"alok123",
+    password:"alok007",
     name:"Alok",
     set:"B",
     unlimited:false,
@@ -44,7 +44,7 @@ const users = [
 {
     id:"AN001",
     username:"ananya",
-    password:"ananya123",
+    password:"ananya018",
     name:"Ananya",
     set:"C",
     unlimited:false,
@@ -55,7 +55,7 @@ const users = [
 {
     id:"SU001",
     username:"souhadri",
-    password:"souhadri123",
+    password:"souhadri045",
     name:"Souhadri",
     set:"D",
     unlimited:false,
