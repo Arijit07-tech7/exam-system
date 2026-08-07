@@ -39,7 +39,7 @@ const users = [
     set:"B",
     unlimited:false,
     loginLimit:2,
-    loginCount:1,
+    loginCount:0,
     active:true
 },
 
