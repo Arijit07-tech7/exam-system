@@ -1,18 +1,15 @@
 /* =====================================================
 PREMIUM ONLINE EXAMINATION SYSTEM
+
 APP.JS
 PART 1 / 6
 
-LOGIN SYSTEM
+FIREBASE INITIALIZATION + LOGIN SYSTEM
 ===================================================== */
 
 
 /* ===============================
-FIREBASE INITIALIZATION
-================================ */
-
-/* ===============================
-FIREBASE INITIALIZATION
+FIREBASE SETUP
 ================================ */
 
 const db = window.db;
@@ -25,6 +22,7 @@ const {
 } = window.firebaseFunctions;
 
 
+
 /* ===============================
 GLOBAL VARIABLES
 ================================ */
@@ -32,7 +30,7 @@ GLOBAL VARIABLES
 let currentStudent = null;
 
 let currentSet = null;
-e
+
 let currentQuestion = 0;
 
 let score = 0;
@@ -47,89 +45,91 @@ let userAnswers = [];
 
 let examFinished = false;
 
-let questionTime = 20;
-
 let questionTimer = null;
-
-let totalSeconds = 600;
 
 let masterTimer = null;
 
+let totalSeconds = 600;
+
+let warningCount = 0;
+
+
 
 /* ===============================
-PAGE LOADING SYSTEM
+INITIAL PAGE LOAD
 ================================ */
 
-window.addEventListener("load", () => {
+window.addEventListener("load",()=>{
 
 
-    setTimeout(() => {
+    setTimeout(()=>{
 
 
         const loader =
-            document.getElementById("loadingScreen");
+        document.getElementById(
+            "loadingScreen"
+        );
 
 
-        if (loader) {
-
-            loader.style.display = "none";
-
+        if(loader){
+            loader.style.display="none";
         }
 
 
 
         const loginPage =
-            document.getElementById("loginPage");
+        document.getElementById(
+            "loginPage"
+        );
 
 
-        if (loginPage) {
+        if(loginPage){
 
-            loginPage.classList.add("active");
+            loginPage.classList.add(
+                "active"
+            );
 
         }
 
 
-    }, 1500);
+    },1200);
 
 
 });
 
 
 
-
 /* ===============================
-PAGE SWITCH SYSTEM
+PAGE SWITCH
 ================================ */
 
-function showPage(pageId) {
+
+function showPage(pageId){
 
 
-    const pages =
-        document.querySelectorAll(".page");
+    document
+    .querySelectorAll(".page")
+    .forEach(page=>{
 
-
-    pages.forEach(page => {
-
-        page.style.display = "none";
+        page.style.display="none";
 
     });
 
 
 
-    const target =
-        document.getElementById(pageId);
+    const page =
+    document.getElementById(pageId);
 
 
 
-    if (target) {
+    if(page){
 
-        target.style.display = "block";
+        page.style.display="block";
 
     }
 
 
 }
-
 
 
 
@@ -140,283 +140,336 @@ LOGIN SYSTEM
 
 
 const loginBtn =
-    document.getElementById("loginBtn");
+document.getElementById(
+    "loginBtn"
+);
 
 
 
-if (loginBtn) {
+if(loginBtn){
 
 
-    loginBtn.addEventListener(
-        "click",
-        async () => {
+loginBtn.addEventListener(
+"click",
 
+async()=>{
 
-            const username =
-                document
-                    .getElementById("username")
-                    .value
-                    .trim()
-                    .toLowerCase();
 
+    const usernameInput =
+    document
+    .getElementById("username")
+    .value
+    .trim();
 
-            const password =
-                document
-                    .getElementById("password")
-                    .value
-                    .trim();
 
 
+    const password =
+    document
+    .getElementById("password")
+    .value
+    .trim();
 
 
 
-            if (
-                username === "" ||
-                password === ""
-            ) {
+    const username =
+    usernameInput.toLowerCase();
 
-                alert(
-                    "Enter Username and Password"
-                );
 
-                return;
 
-            }
 
+    if(
+        username === "" ||
+        password === ""
+    ){
 
+        alert(
+        "Enter Username and Password"
+        );
 
+        return;
 
-            try {
+    }
 
 
-                if (!db) {
 
-                    alert(
-                        "Firebase database not connected"
-                    );
 
-                    return;
+    try{
 
-                }
 
+        if(!db){
 
+            alert(
+            "Firebase Not Connected"
+            );
 
+            return;
 
-                studentRef =
-                    doc(
-                        db,
-                        "students",
-                        username
-                    );
+        }
 
 
 
 
 
-                const studentSnap =
-                    await getDoc(studentRef);
+        console.log(
+            "Searching Student:",
+            username
+        );
 
 
 
 
 
-                if (!studentSnap.exists()) {
+        studentRef =
+        doc(
+            db,
+            "students",
+            username
+        );
 
 
-                    alert(
-                        "Student not found"
-                    );
 
-                    return;
 
-                }
 
+        const studentSnap =
+        await getDoc(
+            studentRef
+        );
 
 
 
 
-                const student =
-                    studentSnap.data();
 
+        console.log(
+            "Firebase Found:",
+            studentSnap.exists()
+        );
 
 
 
 
 
-                if (
-                    student.password !== password
-                ) {
+        if(!studentSnap.exists()){
 
 
-                    alert(
-                        "Wrong Password"
-                    );
+            alert(
+            "Student not found"
+            );
 
-                    return;
 
-                }
+            return;
 
 
+        }
 
 
 
-                /*
-                EXTRA ATTEMPT STUDENTS
-                */
 
-                const allowExtraAttempt =
-                    student.allowExtraAttempt === true;
 
 
+        const student =
+        studentSnap.data();
 
-                if (
-                    student.attempt === true
-                    &&
-                    !allowExtraAttempt
-                ) {
 
 
-                    alert(
-                        "You have already completed your exam!"
-                    );
 
 
-                    return;
 
+        console.log(
+            "Student Data:",
+            student
+        );
 
-                }
 
 
 
 
 
+        if(
+            student.password !== password
+        ){
 
-                /* ===============================
-                   SAVE LOGIN DATA
-                =============================== */
 
+            alert(
+            "Wrong Password"
+            );
 
-                currentStudent =
-                {
 
-                    ...student,
+            return;
 
-                    username: username
 
-                };
+        }
 
 
 
 
-                currentSet =
-                    student.set;
 
 
+        /*
+        ===============================
+        EXTRA ATTEMPT CONTROL
+        ONLY FIREBASE FIELD
+        ===============================
+        */
 
 
+        const allowExtraAttempt =
+        student.allowExtraAttempt === true;
 
 
 
-                /* ===============================
-                   DISPLAY STUDENT INFORMATION
-                =============================== */
 
 
 
-                const studentName =
-                    document.getElementById(
-                        "studentName"
-                    );
+        /*
+        Already attempted students blocked
+        Except allowed extra attempt users
+        */
 
 
+        if(
+            student.attempt === true &&
+            !allowExtraAttempt
+        ){
 
-                if (studentName) {
+            alert(
+            "You have already completed your exam!"
+            );
 
-                    studentName.innerText =
-                        student.name || username;
+            return;
 
-                }
+        }
 
 
 
 
 
+        currentStudent = {
 
-                const studentSet =
-                    document.getElementById(
-                        "studentSet"
-                    );
 
+            ...student,
 
+            username: username
 
-                if (studentSet) {
 
-                    studentSet.innerText =
-                        "Question Set : "
-                        +
-                        student.set;
+        };
 
-                }
 
 
 
 
 
+        currentSet =
+        student.set;
 
 
-                const examStudent =
-                    document.getElementById(
-                        "examStudent"
-                    );
 
 
 
-                if (examStudent) {
 
-                    examStudent.innerText =
-                        student.name || username;
+        const studentName =
+        document.getElementById(
+            "studentName"
+        );
 
-                }
 
+        if(studentName){
 
+            studentName.innerText =
+            student.name || username;
 
+        }
 
 
 
 
-                showPage(
-                    "instructionPage"
-                );
 
 
+        const studentSet =
+        document.getElementById(
+            "studentSet"
+        );
 
 
+        if(studentSet){
 
-            }
-            catch (error) {
+            studentSet.innerText =
+            "Question Set : "
+            +
+            student.set;
 
+        }
 
-                console.error(
-                    "LOGIN ERROR:",
-                    error
-                );
 
 
 
-                alert(
-                    "Firebase Login Error"
-                );
 
 
-            }
+        const examStudent =
+        document.getElementById(
+            "examStudent"
+        );
 
 
+        if(examStudent){
 
-        });
+            examStudent.innerText =
+            student.name || username;
+
+        }
+
+
+
+
+
+
+
+        console.log(
+            "LOGIN SUCCESS",
+            currentStudent
+        );
+
+
+
+
+
+
+        showPage(
+            "instructionPage"
+        );
+
+
+
+    }
+
+    catch(error){
+
+
+        console.error(
+            "LOGIN ERROR:",
+            error
+        );
+
+
+        alert(
+            "Firebase Login Error"
+        );
+
+
+    }
+
+
+
+});
 
 
 }
 
+
+
+
+console.log(
+"PART 1 LOGIN SYSTEM LOADED SUCCESSFULLY"
+);
 
 /* =====================================================
    PREMIUM ONLINE EXAMINATION SYSTEM
@@ -1522,6 +1575,7 @@ const questionSets = {
 
 /* =====================================================
 PREMIUM ONLINE EXAMINATION SYSTEM
+
 APP.JS
 PART 3 / 6
 
@@ -1533,23 +1587,41 @@ EXAM ENGINE
 START EXAM BUTTON
 ================================ */
 
-const startExamBtn = document.getElementById("startExam");
+const startExamBtn =
+document.getElementById(
+    "startExam"
+);
 
-if (startExamBtn) {
 
-    startExamBtn.addEventListener("click", async () => {
+if(startExamBtn){
+
+
+    startExamBtn.addEventListener(
+    "click",
+
+    async()=>{
 
 
         const agree =
-            document.getElementById("agreeRules");
+        document.getElementById(
+            "agreeRules"
+        );
 
 
-        if (!agree || !agree.checked) {
 
-            alert("Please accept instructions first");
+        if(
+            !agree ||
+            !agree.checked
+        ){
+
+            alert(
+            "Please accept instructions first"
+            );
+
             return;
 
         }
+
 
 
         await startExam();
@@ -1562,33 +1634,47 @@ if (startExamBtn) {
 
 
 
-
 /* ===============================
 LOAD QUESTION SET
 ================================ */
 
 
-function loadStudentQuestionSet() {
+function loadStudentQuestionSet(){
 
 
-    if (!currentStudent) {
 
-        alert("Student data missing");
+    if(!currentStudent){
+
+
+        alert(
+        "Student data missing"
+        );
+
+
         return;
+
 
     }
 
 
 
+
     questions =
-        questionSets[currentStudent.set] || [];
+    questionSets[currentStudent.set] || [];
+
+
 
 
 
     console.log(
-        "Set:",
-        currentStudent.set,
-        "Questions:",
+        "Question Set:",
+        currentStudent.set
+    );
+
+
+
+    console.log(
+        "Total Questions:",
         questions.length
     );
 
@@ -1598,17 +1684,19 @@ function loadStudentQuestionSet() {
 
 
 
-
 /* ===============================
 START EXAM
 ================================ */
 
 
-async function startExam() {
+async function startExam(){
 
 
 
-    showPage("examPage");
+    showPage(
+        "examPage"
+    );
+
 
 
 
@@ -1616,12 +1704,21 @@ async function startExam() {
 
 
 
-    if (questions.length === 0) {
 
-        alert("No questions found");
+    if(
+        questions.length === 0
+    ){
+
+        alert(
+        "No questions found"
+        );
+
+
         return;
 
     }
+
+
 
 
 
@@ -1641,11 +1738,14 @@ async function startExam() {
 
 
 
+
     startMasterTimer();
 
 
 
+
     await openFullscreen();
+
 
 
 
@@ -1665,26 +1765,35 @@ FULLSCREEN
 ================================ */
 
 
-async function openFullscreen() {
+async function openFullscreen(){
 
 
-    try {
+    try{
 
 
-        if (!document.fullscreenElement) {
+        if(
+            !document.fullscreenElement
+        ){
 
-            await document.documentElement.requestFullscreen();
+
+            await document
+            .documentElement
+            .requestFullscreen();
+
 
         }
 
 
     }
-    catch (error) {
+
+    catch(error){
+
 
         console.log(
-            "Fullscreen error",
-            error
+        "Fullscreen error",
+        error
         );
+
 
     }
 
@@ -1701,11 +1810,13 @@ LOAD QUESTION
 ================================ */
 
 
-function loadQuestion() {
+function loadQuestion(){
 
 
 
-    clearInterval(questionTimer);
+    clearInterval(
+        questionTimer
+    );
 
 
 
@@ -1713,29 +1824,45 @@ function loadQuestion() {
 
 
 
+
+
     const q =
-        questions[currentQuestion];
+    questions[currentQuestion];
 
 
 
-    if (!q) {
+
+
+    if(!q){
+
 
         finishExam();
+
+
         return;
+
 
     }
 
 
 
 
+
+
+
     const questionNo =
-        document.getElementById("questionNo");
+    document.getElementById(
+        "questionNo"
+    );
 
 
-    if (questionNo)
+
+    if(questionNo){
 
         questionNo.innerText =
-            currentQuestion + 1;
+        currentQuestion + 1;
+
+    }
 
 
 
@@ -1743,14 +1870,18 @@ function loadQuestion() {
 
 
     const questionText =
-        document.getElementById("questionText");
+    document.getElementById(
+        "questionText"
+    );
 
 
-    if (questionText)
+
+    if(questionText){
 
         questionText.innerText =
-            q.question;
+        q.question;
 
+    }
 
 
 
@@ -1758,7 +1889,16 @@ function loadQuestion() {
 
 
     const optionBox =
-        document.getElementById("options");
+    document.getElementById(
+        "options"
+    );
+
+
+
+    if(!optionBox)
+        return;
+
+
 
 
 
@@ -1768,23 +1908,30 @@ function loadQuestion() {
 
 
 
-    q.options.forEach((option, index) => {
+
+    q.options.forEach(
+    (option,index)=>{
 
 
 
         const div =
-            document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
 
-        div.className = "option";
+        div.className =
+        "option";
+
+
 
 
 
         div.innerHTML = `
 
         <span>
-        ${String.fromCharCode(65 + index)}
+        ${String.fromCharCode(65+index)}
         </span>
 
         ${option}
@@ -1793,7 +1940,10 @@ function loadQuestion() {
 
 
 
-        div.onclick = () => {
+
+
+
+        div.onclick = ()=>{
 
 
             selectAnswer(
@@ -1806,11 +1956,16 @@ function loadQuestion() {
 
 
 
-        optionBox.appendChild(div);
+
+        optionBox.appendChild(
+            div
+        );
 
 
 
     });
+
+
 
 
 
@@ -1830,34 +1985,47 @@ function loadQuestion() {
 
 
 
-
-
 /* ===============================
 SELECT ANSWER
 ================================ */
 
 
-function selectAnswer(index, element) {
+function selectAnswer(
+    index,
+    element
+){
 
 
 
-    selectedAnswer = index;
+    selectedAnswer =
+    index;
+
 
 
 
 
     document
-        .querySelectorAll(".option")
-        .forEach(opt => {
-
-            opt.classList.remove("selected");
-
-        });
-
+    .querySelectorAll(
+        ".option"
+    )
+    .forEach(
+    opt=>{
 
 
+        opt.classList.remove(
+            "selected"
+        );
 
-    element.classList.add("selected");
+
+    });
+
+
+
+
+
+    element.classList.add(
+        "selected"
+    );
 
 
 
@@ -1874,11 +2042,13 @@ QUESTION TIMER
 ================================ */
 
 
-function startQuestionTimer() {
+function startQuestionTimer(){
 
 
 
-    clearInterval(questionTimer);
+    clearInterval(
+        questionTimer
+    );
 
 
 
@@ -1886,36 +2056,57 @@ function startQuestionTimer() {
 
 
 
+
+
     const timer =
-        document.getElementById("questionTimer");
+    document.getElementById(
+        "questionTimer"
+    );
 
 
-    if (timer)
+
+
+    if(timer){
 
         timer.innerText =
-            questionTime;
+        questionTime;
+
+    }
 
 
 
 
-    questionTimer = setInterval(() => {
+
+
+    questionTimer =
+    setInterval(()=>{
 
 
         questionTime--;
 
 
 
-        if (timer)
+
+
+        if(timer){
 
             timer.innerText =
-                questionTime;
+            questionTime;
+
+        }
 
 
 
-        if (questionTime <= 0) {
 
 
-            clearInterval(questionTimer);
+        if(
+            questionTime <= 0
+        ){
+
+
+            clearInterval(
+                questionTimer
+            );
 
 
             nextQuestion();
@@ -1925,7 +2116,9 @@ function startQuestionTimer() {
 
 
 
-    }, 1000);
+
+
+    },1000);
 
 
 
@@ -1941,36 +2134,55 @@ MASTER TIMER
 ================================ */
 
 
-function startMasterTimer() {
-
-
-    clearInterval(masterTimer);
+function startMasterTimer(){
 
 
 
-    masterTimer = setInterval(() => {
+    clearInterval(
+        masterTimer
+    );
+
+
+
+
+
+    masterTimer =
+    setInterval(()=>{
 
 
 
         let min =
-            Math.floor(totalSeconds / 60);
+        Math.floor(
+            totalSeconds / 60
+        );
+
 
 
         let sec =
-            totalSeconds % 60;
+        totalSeconds % 60;
+
+
 
 
 
 
         const box =
-            document.getElementById("masterTime");
+        document.getElementById(
+            "masterTime"
+        );
 
 
 
-        if (box)
+
+        if(box){
+
 
             box.innerText =
-                `${min}:${sec < 10 ? "0" : ""}${sec}`;
+            `${min}:${sec < 10 ? "0" : ""}${sec}`;
+
+
+        }
+
 
 
 
@@ -1978,30 +2190,35 @@ function startMasterTimer() {
 
         totalSeconds--;
 
-        if (totalSeconds <= 0) {
-            clearInterval(masterTimer);
+
+
+
+
+        if(
+            totalSeconds <= 0
+        ){
+
+
+            clearInterval(
+                masterTimer
+            );
+
+
             autoSubmit();
+
+
         }
 
 
 
-        if (totalSeconds < 0) {
 
 
-            clearInterval(masterTimer);
-
-            autoSubmit();
-
-
-        }
-
-
-
-    }, 1000);
+    },1000);
 
 
 
 }
+
 
 
 
@@ -2009,36 +2226,59 @@ function startMasterTimer() {
 
 
 /* ===============================
-PROGRESS
+PROGRESS BAR
 ================================ */
 
 
-function updateProgress() {
+function updateProgress(){
 
 
 
     const progress =
-        ((currentQuestion + 1) / questions.length) * 100;
+    (
+        (currentQuestion + 1)
+        /
+        questions.length
+    )
+    *
+    100;
+
+
 
 
 
     const bar =
-        document.getElementById("progressFill");
+    document.getElementById(
+        "progressFill"
+    );
 
 
 
-    if (bar)
+
+    if(bar){
+
 
         bar.style.width =
-            progress + "%";
+        progress + "%";
+
+
+    }
 
 
 
 }
 
 
+
+
+
+console.log(
+"PART 3 EXAM ENGINE LOADED SUCCESSFULLY"
+);
+
 /* =====================================================
 PREMIUM ONLINE EXAMINATION SYSTEM
+
 APP.JS
 PART 4 / 6
 
@@ -2046,22 +2286,36 @@ ANSWER SYSTEM + SECURITY
 ===================================================== */
 
 
+
 /* =====================================================
 NEXT BUTTON
 ===================================================== */
 
-const nextBtn = document.getElementById("nextBtn");
+
+const nextBtn =
+document.getElementById(
+    "nextBtn"
+);
 
 
-if (nextBtn) {
 
-    nextBtn.addEventListener("click", () => {
+if(nextBtn){
+
+
+    nextBtn.addEventListener(
+    "click",
+
+    ()=>{
+
 
         nextQuestion();
 
+
     });
 
+
 }
+
 
 
 
@@ -2071,29 +2325,46 @@ if (nextBtn) {
 NEXT QUESTION
 ===================================================== */
 
-function nextQuestion() {
 
-
-    if (examFinished) return;
-
-
-
-    clearInterval(questionTimer);
+function nextQuestion(){
 
 
 
-    if (!questions[currentQuestion]) {
+    if(examFinished)
+        return;
+
+
+
+
+    clearInterval(
+        questionTimer
+    );
+
+
+
+
+
+
+    if(
+        !questions[currentQuestion]
+    ){
 
         finishExam();
+
         return;
 
     }
 
 
 
+
+
+
     // SAVE ANSWER
 
-    userAnswers[currentQuestion] = selectedAnswer;
+    userAnswers[currentQuestion] =
+    selectedAnswer;
+
 
 
 
@@ -2101,18 +2372,29 @@ function nextQuestion() {
 
     // CHECK ANSWER
 
-    if (
+
+    if(
+
         selectedAnswer !== null &&
-        questions[currentQuestion] &&
-        selectedAnswer === questions[currentQuestion].answer
-    ) {
+
+        selectedAnswer ===
+        questions[currentQuestion].answer
+
+    ){
+
         score++;
+
     }
 
 
 
 
+
+
     selectedAnswer = null;
+
+
+
 
 
 
@@ -2122,19 +2404,26 @@ function nextQuestion() {
 
 
 
-    if (
 
-        currentQuestion >= questions.length
 
-    ) {
+    if(
+
+        currentQuestion >=
+        questions.length
+
+    ){
+
 
         finishExam();
 
+
     }
 
-    else {
+    else{
+
 
         loadQuestion();
+
 
     }
 
@@ -2148,20 +2437,22 @@ function nextQuestion() {
 
 
 
+
 /* =====================================================
-SECURITY SYSTEM
+SECURITY WARNING
 ===================================================== */
 
 
-let warningCount = 0;
+function showSecurityWarning(
+message
+){
 
 
 
-function showSecurityWarning(message) {
-
-
-    if (examFinished)
+    if(examFinished)
         return;
+
+
 
 
 
@@ -2171,20 +2462,28 @@ function showSecurityWarning(message) {
 
 
 
+
     const warningText =
-        document.getElementById("warningText");
+    document.getElementById(
+        "warningText"
+    );
 
 
 
-    if (warningText) {
+
+
+    if(warningText){
+
 
         warningText.innerText =
-            message +
-            "\nWarning : "
-            +
-            warningCount
-            +
-            "/3";
+        message
+        +
+        "\nWarning : "
+        +
+        warningCount
+        +
+        "/3";
+
 
     }
 
@@ -2194,25 +2493,36 @@ function showSecurityWarning(message) {
 
 
     const popup =
-        document.getElementById("warningPopup");
+    document.getElementById(
+        "warningPopup"
+    );
 
 
 
-    if (popup) {
+
+
+    if(popup){
+
+
 
         popup.classList.remove(
             "hidden"
         );
 
 
-        setTimeout(() => {
+
+
+        setTimeout(()=>{
+
 
             popup.classList.add(
                 "hidden"
             );
 
 
-        }, 2500);
+        },2500);
+
+
 
     }
 
@@ -2220,11 +2530,19 @@ function showSecurityWarning(message) {
 
 
 
-    if (warningCount >= 3) {
+
+
+
+    if(
+        warningCount >= 3
+    ){
+
 
         finishExam();
 
+
     }
+
 
 
 }
@@ -2242,31 +2560,34 @@ TAB SWITCH DETECTION
 
 
 document.addEventListener(
-    "visibilitychange",
-    () => {
+"visibilitychange",
+
+()=>{
 
 
-        if (
 
-            document.hidden &&
+    if(
 
-            !examFinished &&
+        document.hidden &&
 
-            questions.length > 0
+        !examFinished &&
 
-        ) {
+        questions.length > 0
 
-
-            showSecurityWarning(
-                "Tab switching detected!"
-            );
+    ){
 
 
-        }
+
+        showSecurityWarning(
+        "Tab switching detected!"
+        );
 
 
-    });
+    }
 
+
+
+});
 
 
 
@@ -2281,31 +2602,34 @@ FULLSCREEN EXIT DETECTION
 
 
 document.addEventListener(
-    "fullscreenchange",
-    () => {
+"fullscreenchange",
+
+()=>{
 
 
-        if (
 
-            !document.fullscreenElement &&
+    if(
 
-            !examFinished &&
+        !document.fullscreenElement &&
 
-            questions.length > 0
+        !examFinished &&
 
-        ) {
+        questions.length > 0
 
-
-            showSecurityWarning(
-                "Fullscreen exited!"
-            );
+    ){
 
 
-        }
+
+        showSecurityWarning(
+        "Fullscreen exited!"
+        );
 
 
-    });
+    }
 
+
+
+});
 
 
 
@@ -2320,25 +2644,36 @@ COPY BLOCK
 
 
 document.addEventListener(
-    "copy",
-    (e) => {
+"copy",
+
+(e)=>{
 
 
-        if (!examFinished && questions.length > 0) {
+
+    if(
+
+        !examFinished &&
+
+        questions.length > 0
+
+    ){
 
 
-            e.preventDefault();
+
+        e.preventDefault();
 
 
-            showSecurityWarning(
-                "Copy is disabled!"
-            );
+
+        showSecurityWarning(
+        "Copy is disabled!"
+        );
 
 
-        }
+    }
 
 
-    });
+
+});
 
 
 
@@ -2353,26 +2688,36 @@ PASTE BLOCK
 
 
 document.addEventListener(
-    "paste",
-    (e) => {
+"paste",
+
+(e)=>{
 
 
-        if (!examFinished && questions.length > 0) {
+
+    if(
+
+        !examFinished &&
+
+        questions.length > 0
+
+    ){
 
 
-            e.preventDefault();
+
+        e.preventDefault();
 
 
-            showSecurityWarning(
-                "Paste is disabled!"
-            );
+
+        showSecurityWarning(
+        "Paste is disabled!"
+        );
 
 
-        }
+    }
 
 
-    });
 
+});
 
 
 
@@ -2387,21 +2732,29 @@ RIGHT CLICK BLOCK
 
 
 document.addEventListener(
-    "contextmenu",
-    (e) => {
+"contextmenu",
+
+(e)=>{
 
 
-        if (!examFinished && questions.length > 0) {
+
+    if(
+
+        !examFinished &&
+
+        questions.length > 0
+
+    ){
 
 
-            e.preventDefault();
+        e.preventDefault();
 
 
-        }
+    }
 
 
-    });
 
+});
 
 
 
@@ -2416,74 +2769,84 @@ KEYBOARD SECURITY
 
 
 document.addEventListener(
-    "keydown",
-    (e) => {
+"keydown",
 
-
-        if (examFinished)
-            return;
+(e)=>{
 
 
 
-        if (
+    if(examFinished)
+        return;
 
 
-            e.key === "F12"
 
-            ||
+
+
+
+    if(
+
+
+        e.key === "F12"
+
+        ||
+
+        (
+
+            e.ctrlKey &&
 
             (
 
-                e.ctrlKey &&
+                e.key.toLowerCase()==="c"
 
-                (
+                ||
 
-                    e.key.toLowerCase() === "c"
+                e.key.toLowerCase()==="v"
 
-                    ||
+                ||
 
-                    e.key.toLowerCase() === "v"
+                e.key.toLowerCase()==="u"
 
-                    ||
+                ||
 
-                    e.key.toLowerCase() === "u"
-
-                    ||
-
-                    e.key.toLowerCase() === "s"
-
-                )
+                e.key.toLowerCase()==="s"
 
             )
 
-        ) {
+        )
 
 
-            e.preventDefault();
-
-
-
-            showSecurityWarning(
-                "Shortcut disabled!"
-            );
-
-
-        }
+    ){
 
 
 
-    });
+        e.preventDefault();
+
+
+
+
+        showSecurityWarning(
+        "Shortcut disabled!"
+        );
+
+
+    }
+
+
+
+});
+
 
 
 
 
 
 console.log(
-    "PART 4 Loaded Successfully"
+"PART 4 SECURITY SYSTEM LOADED SUCCESSFULLY"
 );
 
 /* =====================================================
 PREMIUM ONLINE EXAMINATION SYSTEM
+
 APP.JS
 PART 5 / 6
 
@@ -2496,11 +2859,14 @@ RESULT SYSTEM + FIREBASE SAVE
 FINISH EXAM
 ===================================================== */
 
-async function finishExam() {
+
+async function finishExam(){
 
 
-    if (examFinished)
+
+    if(examFinished)
         return;
+
 
 
 
@@ -2508,28 +2874,37 @@ async function finishExam() {
 
 
 
-    clearInterval(questionTimer);
-    clearInterval(masterTimer);
+
+    clearInterval(
+        questionTimer
+    );
+
+
+    clearInterval(
+        masterTimer
+    );
 
 
 
 
 
-    // Save last answer
 
-    if (
+
+    if(
 
         currentQuestion < questions.length &&
 
         selectedAnswer !== null
 
-    ) {
+    ){
+
 
         userAnswers[currentQuestion] =
-            selectedAnswer;
+        selectedAnswer;
 
 
     }
+
 
 
 
@@ -2541,7 +2916,11 @@ async function finishExam() {
 
 
 
-    showPage("resultPage");
+
+    showPage(
+        "resultPage"
+    );
+
 
 
 
@@ -2563,20 +2942,20 @@ CALCULATE RESULT
 ===================================================== */
 
 
-function calculateResult() {
+function calculateResult(){
 
 
 
     const total =
-        questions.length;
+    questions.length;
 
 
 
-    if (total === 0) {
 
+
+    if(total === 0)
         return;
 
-    }
 
 
 
@@ -2584,17 +2963,18 @@ function calculateResult() {
 
     const percentage =
 
-        (
+    (
 
-            score /
+        score /
 
-            total
+        total
 
-        )
+    )
 
-        *
+    *
 
-        100;
+    100;
+
 
 
 
@@ -2603,21 +2983,24 @@ function calculateResult() {
 
 
     const studentName =
-        document.getElementById(
-            "resultStudent"
-        );
+    document.getElementById(
+        "resultStudent"
+    );
 
 
 
-    if (studentName && currentStudent) {
+
+    if(
+        studentName &&
+        currentStudent
+    ){
 
 
         studentName.innerText =
-            currentStudent.name;
+        currentStudent.name;
 
 
     }
-
 
 
 
@@ -2627,22 +3010,24 @@ function calculateResult() {
 
 
     const scoreBox =
-        document.getElementById(
-            "scoreText"
-        );
+    document.getElementById(
+        "scoreText"
+    );
 
 
 
-    if (scoreBox) {
+
+
+    if(scoreBox){
 
 
         scoreBox.innerText =
 
-            score
-            +
-            " / "
-            +
-            total;
+        score
+        +
+        " / "
+        +
+        total;
 
 
     }
@@ -2656,20 +3041,22 @@ function calculateResult() {
 
 
     const percentageBox =
-        document.getElementById(
-            "percentage"
-        );
+    document.getElementById(
+        "percentage"
+    );
 
 
 
-    if (percentageBox) {
+
+
+    if(percentageBox){
 
 
         percentageBox.innerText =
 
-            percentage.toFixed(2)
-            +
-            "%";
+        percentage.toFixed(2)
+        +
+        "%";
 
 
     }
@@ -2681,41 +3068,43 @@ function calculateResult() {
 
 
 
-
-
     const status =
-        document.getElementById(
-            "status"
-        );
+    document.getElementById(
+        "status"
+    );
 
 
 
-    if (status) {
+
+
+    if(status){
 
 
 
-        if (percentage >= 40) {
+        if(
+            percentage >= 40
+        ){
 
 
             status.innerText =
-                "PASS";
+            "PASS";
 
 
             status.className =
-                "pass";
+            "pass";
 
 
         }
 
-        else {
+        else{
 
 
             status.innerText =
-                "FAIL";
+            "FAIL";
 
 
             status.className =
-                "fail";
+            "fail";
 
 
         }
@@ -2740,39 +3129,100 @@ SAVE RESULT TO FIREBASE
 ===================================================== */
 
 
-async function saveExamResult() {
-
-    try {
+async function saveExamResult(){
 
 
-        if (!currentStudent || !db)
+
+    try{
+
+
+
+        if(
+            !currentStudent ||
+            !db
+        ){
+
             return;
+
+        }
+
+
+
+
+
+
+
+        const percentage =
+
+        questions.length > 0
+
+        ?
+
+        (
+
+            score /
+
+            questions.length
+
+        )
+
+        *
+
+        100
+
+        :
+
+        0;
+
+
+
+
+
+
 
 
 
         const resultData = {
 
-            username: currentStudent.username,
 
-            name: currentStudent.name,
+            username:
+            currentStudent.username,
 
-            set: currentStudent.set,
 
-            score: score,
 
-            total: questions.length,
+            name:
+            currentStudent.name,
+
+
+
+            set:
+            currentStudent.set,
+
+
+
+            score:
+            score,
+
+
+
+            total:
+            questions.length,
+
+
 
             percentage:
-
-                (
-                    score / questions.length
-                ) * 100,
+            percentage,
 
 
-            answers: userAnswers,
+
+            answers:
+            userAnswers,
 
 
-            submittedAt: new Date()
+
+            submittedAt:
+            new Date()
+
 
         };
 
@@ -2780,34 +3230,86 @@ async function saveExamResult() {
 
 
 
-        const snap = await getDoc(studentRef);
 
-        if (snap.exists()) {
-            await updateDoc(studentRef, {
-                attempt: true,
-                lastScore: score,
-                lastPercentage: (score / questions.length) * 100,
-                lastExamDate: serverTimestamp()
-            });
+
+
+
+        const snap =
+        await getDoc(
+            studentRef
+        );
+
+
+
+
+
+
+
+
+        if(
+            snap.exists()
+        ){
+
+
+
+            await updateDoc(
+                studentRef,
+
+                {
+
+
+                    attempt:true,
+
+
+
+                    lastScore:
+                    score,
+
+
+
+                    lastPercentage:
+                    percentage,
+
+
+
+                    lastExamDate:
+                    serverTimestamp()
+
+
+                }
+
+            );
+
+
         }
 
 
+
+
+
+
+
+
         console.log(
-            "Result Saved Successfully",
+            "RESULT SAVED",
             resultData
         );
 
 
 
+
+
     }
 
-    catch (error) {
+    catch(error){
+
 
 
         console.error(
-            "Firebase Save Error:",
+            "RESULT SAVE ERROR:",
             error
         );
+
 
 
     }
@@ -2824,18 +3326,17 @@ async function saveExamResult() {
 
 
 
-
 /* =====================================================
-AUTO SUBMIT WHEN TIME OVER
+AUTO SUBMIT
 ===================================================== */
 
 
-function autoSubmit() {
+function autoSubmit(){
 
 
 
     alert(
-        "Time Finished! Exam Submitted"
+    "Time Finished! Exam Submitted"
     );
 
 
@@ -2860,34 +3361,41 @@ BACK BUTTON PROTECTION
 
 
 history.pushState(
-    null,
-    null,
-    location.href
+null,
+null,
+location.href
 );
 
 
 
-window.onpopstate = function () {
+
+
+window.onpopstate = function(){
 
 
 
-    if (!examFinished) {
+    if(
+        !examFinished
+    ){
+
 
 
         showSecurityWarning(
-            "Back button disabled!"
+        "Back button disabled!"
         );
+
+
 
 
         history.pushState(
-            null,
-            null,
-            location.href
+        null,
+        null,
+        location.href
         );
 
 
-    }
 
+    }
 
 
 };
@@ -2899,22 +3407,18 @@ window.onpopstate = function () {
 
 
 
-
 console.log(
-    "PART 5 Loaded Successfully"
+"PART 5 RESULT SYSTEM LOADED SUCCESSFULLY"
 );
-
-
 
 /* =====================================================
 PREMIUM ONLINE EXAMINATION SYSTEM
+
 APP.JS
-PART 6 / 6 FINAL
+PART 6 / 6
 
 REVIEW + RESET + CLEANUP
 ===================================================== */
-
-
 
 
 
@@ -2924,31 +3428,33 @@ REVIEW BUTTON
 
 
 const reviewBtn =
-    document.getElementById("reviewBtn");
+document.getElementById(
+    "reviewBtn"
+);
 
 
 
-if (reviewBtn) {
+if(reviewBtn){
 
 
     reviewBtn.addEventListener(
-        "click",
-        () => {
+    "click",
+
+    ()=>{
 
 
-            showPage("reviewPage");
+        showPage(
+            "reviewPage"
+        );
 
 
-            loadReview();
+        loadReview();
 
 
-        });
+    });
 
 
 }
-
-
-
 
 
 
@@ -2961,19 +3467,22 @@ LOAD REVIEW
 ===================================================== */
 
 
-function loadReview() {
+function loadReview(){
 
 
 
     const container =
-        document.getElementById(
-            "reviewContainer"
-        );
+    document.getElementById(
+        "reviewContainer"
+    );
 
 
 
-    if (!container)
+
+    if(!container)
         return;
+
+
 
 
 
@@ -2984,155 +3493,160 @@ function loadReview() {
 
 
 
+
     questions.forEach(
-        (q, index) => {
+    (q,index)=>{
 
 
 
-            const userAnswer =
-                userAnswers[index];
+        const userAnswer =
+        userAnswers[index];
 
 
 
-            const correctAnswer =
-                q.answer;
+        const correctAnswer =
+        q.answer;
 
 
 
 
 
-            const div =
-                document.createElement(
-                    "div"
-                );
 
+        const div =
+        document.createElement(
+            "div"
+        );
 
 
-            div.className =
-                "reviewItem";
 
 
 
+        div.className =
+        "reviewItem";
 
 
 
-            let answerText =
-                "Not Answered";
 
 
 
 
 
-            if (
+        let answerText =
+        "Not Answered";
 
-                userAnswer !== null &&
 
-                userAnswer !== undefined
 
-            ) {
 
-                answerText =
-                    q.options[userAnswer];
 
+        if(
 
-            }
+            userAnswer !== null &&
 
+            userAnswer !== undefined
 
+        ){
 
 
+            answerText =
+            q.options[userAnswer];
 
 
-            let answerClass =
-                "";
+        }
 
 
 
-            if (
 
-                userAnswer !== null &&
 
-                userAnswer !== undefined
 
-            ) {
 
+        let answerClass =
+        "";
 
-                answerClass =
 
-                    userAnswer === correctAnswer
 
-                        ?
 
-                        "correctAnswer"
 
-                        :
 
-                        "wrongAnswer";
+        if(
 
+            userAnswer !== null &&
 
-            }
+            userAnswer !== undefined
 
+        ){
 
 
+            answerClass =
 
+            userAnswer === correctAnswer
 
+            ?
 
+            "correctAnswer"
 
+            :
 
-            div.innerHTML = `
+            "wrongAnswer";
 
 
-    <h3>
+        }
 
-    Q${index + 1}. ${q.question}
 
-    </h3>
 
 
 
-    <p>
 
-    Your Answer:
 
-    <span class="${answerClass}">
 
-    ${answerText}
 
-    </span>
+        div.innerHTML = `
 
 
-    </p>
+<h3>
+Q${index + 1}. ${q.question}
+</h3>
 
 
+<p>
+Your Answer:
 
+<span class="${answerClass}">
+${answerText}
+</span>
 
-    <p>
+</p>
 
-    Correct Answer:
 
-    <span class="correctAnswer">
 
-    ${q.options[correctAnswer]}
+<p>
+Correct Answer:
 
-    </span>
+<span class="correctAnswer">
 
+${q.options[correctAnswer]}
 
-    </p>
+</span>
 
+</p>
 
 
-    `;
+`;
 
 
 
 
 
 
-            container.appendChild(div);
 
 
+        container.appendChild(
+            div
+        );
 
-        });
 
+
+
+    });
 
 
 }
@@ -3151,24 +3665,29 @@ CLOSE REVIEW
 
 
 const closeReview =
-    document.getElementById(
-        "closeReview"
-    );
+document.getElementById(
+    "closeReview"
+);
 
 
 
-if (closeReview) {
+
+
+if(closeReview){
 
 
     closeReview.addEventListener(
-        "click",
-        () => {
+    "click",
+
+    ()=>{
 
 
-            showPage("resultPage");
+        showPage(
+            "resultPage"
+        );
 
 
-        });
+    });
 
 
 }
@@ -3187,24 +3706,28 @@ FINISH BUTTON
 
 
 const finishBtn =
-    document.getElementById(
-        "finishBtn"
-    );
+document.getElementById(
+    "finishBtn"
+);
 
 
 
-if (finishBtn) {
+
+
+if(finishBtn){
+
 
 
     finishBtn.addEventListener(
-        "click",
-        () => {
+    "click",
+
+    ()=>{
 
 
-            resetExam();
+        resetExam();
 
 
-        });
+    });
 
 
 }
@@ -3222,13 +3745,18 @@ RESET EXAM SYSTEM
 ===================================================== */
 
 
-function resetExam() {
+function resetExam(){
 
 
 
-    clearInterval(questionTimer);
+    clearInterval(
+        questionTimer
+    );
 
-    clearInterval(masterTimer);
+
+    clearInterval(
+        masterTimer
+    );
 
 
 
@@ -3267,45 +3795,38 @@ function resetExam() {
 
 
 
+
     const username =
-        document.getElementById(
-            "username"
-        );
+    document.getElementById(
+        "username"
+    );
+
 
 
 
     const password =
-        document.getElementById(
-            "password"
-        );
+    document.getElementById(
+        "password"
+    );
 
 
 
 
-    if (username)
+
+    if(username){
 
         username.value = "";
 
+    }
 
 
-    if (password)
+
+
+
+
+    if(password){
 
         password.value = "";
-
-
-
-
-
-
-
-
-
-    if (document.fullscreenElement) {
-
-
-        document.exitFullscreen()
-            .catch(() => { });
-
 
     }
 
@@ -3316,9 +3837,28 @@ function resetExam() {
 
 
 
+    if(
+        document.fullscreenElement
+    ){
+
+
+        document
+        .exitFullscreen()
+        .catch(()=>{});
+
+
+    }
+
+
+
+
+
+
+
     showPage(
         "loginPage"
     );
+
 
 
 
@@ -3333,38 +3873,37 @@ function resetExam() {
 
 
 /* =====================================================
-BEFORE CLOSE WARNING
+PAGE CLOSE WARNING
 ===================================================== */
 
 
 window.addEventListener(
-    "beforeunload",
-    (e) => {
+"beforeunload",
+
+(e)=>{
 
 
 
-        if (
+    if(
 
-            !examFinished &&
+        !examFinished &&
 
-            questions.length > 0
+        questions.length > 0
 
-        ) {
-
-
-
-            e.preventDefault();
+    ){
 
 
-            e.returnValue = "";
+        e.preventDefault();
 
 
+        e.returnValue = "";
 
-        }
+
+    }
 
 
 
-    });
+});
 
 
 
@@ -3375,25 +3914,26 @@ window.addEventListener(
 
 
 /* =====================================================
-FINAL SYSTEM READY
+SYSTEM READY
 ===================================================== */
 
 
 console.log(
-    "================================="
+"================================="
 );
 
 
 console.log(
-    "PREMIUM EXAM SYSTEM READY"
+"PREMIUM EXAM SYSTEM READY"
 );
 
 
 console.log(
-    "ALL 6 PARTS LOADED SUCCESSFULLY"
+"ALL 6 PARTS LOADED SUCCESSFULLY"
 );
 
 
 console.log(
-    "================================="
+"================================="
 );
+
