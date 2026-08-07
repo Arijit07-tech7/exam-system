@@ -1,540 +1,205 @@
-/* =====================================================
- PREMIUM FUTURE EXAM LOGIN SYSTEM
- LOGIN.CSS
- NO HTML CHANGE REQUIRED
-===================================================== */
+#loginPage{
 
+min-height:100vh;
 
-/* LOGIN PAGE BACKGROUND */
+display:flex;
 
-#loginPage {
+justify-content:center;
 
-    min-height:100vh;
+align-items:center;
 
-    display:flex;
+position:relative;
 
-    justify-content:center;
+overflow:hidden;
 
-    align-items:center;
+background:
 
-    position:relative;
-
-    overflow:hidden;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #eff6ff,
-        #ffffff,
-        #e0f2fe
-    );
+linear-gradient(
+135deg,
+#eff6ff,
+#ffffff,
+#dbeafe
+);
 
 }
 
 
-/* Animated Glow Orbs */
 
 #loginPage::before,
-#loginPage::after {
+#loginPage::after{
 
-    content:"";
+content:"";
 
-    position:absolute;
+position:absolute;
 
-    border-radius:50%;
+border-radius:50%;
 
-    filter:blur(80px);
-
-    z-index:0;
-
-}
-
-
-#loginPage::before {
-
-    width:350px;
-
-    height:350px;
-
-    background:#38bdf8;
-
-    top:-120px;
-
-    left:-120px;
-
-    animation:
-    glowMove 8s infinite alternate;
-
-}
-
-
-#loginPage::after {
-
-    width:400px;
-
-    height:400px;
-
-    background:#2563eb;
-
-    bottom:-150px;
-
-    right:-150px;
-
-    animation:
-    glowMove2 10s infinite alternate;
+filter:blur(90px);
 
 }
 
 
 
-@keyframes glowMove {
+#loginPage::before{
 
-    from{
-        transform:translate(0,0);
-    }
+width:350px;
 
-    to{
-        transform:translate(150px,100px);
-    }
+height:350px;
 
-}
+background:#38bdf8;
 
+top:-120px;
 
-
-@keyframes glowMove2 {
-
-    from{
-        transform:translate(0,0);
-    }
-
-    to{
-        transform:translate(-120px,-80px);
-    }
+left:-100px;
 
 }
 
 
 
-/* Floating Particle Network */
+#loginPage::after{
 
-#loginPage .loginCard::before {
+width:400px;
 
+height:400px;
 
-    content:"";
+background:#2563eb;
 
-    position:absolute;
+bottom:-150px;
 
-    inset:-200px;
-
-    background-image:
-
-    radial-gradient(
-    #2563eb 1px,
-    transparent 1px
-    );
-
-
-    background-size:35px 35px;
-
-    opacity:.12;
-
-
-    animation:
-
-    particleMove 25s linear infinite;
-
-
-    z-index:-1;
-
-}
-
-
-
-@keyframes particleMove {
-
-    from{
-        background-position:0 0;
-    }
-
-    to{
-        background-position:500px 500px;
-    }
+right:-120px;
 
 }
 
 
 
 
-/* LOGIN CARD */
 
-#loginPage .loginCard {
+.loginCard{
 
+width:430px;
 
-    position:relative;
+padding:45px;
 
-    z-index:2;
+border-radius:35px;
 
-
-    width:430px;
-
-
-    padding:45px 40px;
-
-
-    border-radius:32px;
-
-
-    background:
-
-    rgba(255,255,255,.72);
-
-
-    backdrop-filter:
-
-    blur(25px);
-
-
-    border:
-
-    1px solid rgba(255,255,255,.8);
-
-
-    box-shadow:
-
-
-    0 35px 90px
-
-    rgba(37,99,235,.25);
-
-
-
-    animation:
-
-    cardFloat 5s infinite ease-in-out;
-
+z-index:2;
 
 }
 
 
 
-@keyframes cardFloat {
+.loginCard h1{
+
+text-align:center;
+
+font-size:32px;
+
+font-weight:900;
+
+background:
+
+linear-gradient(
+90deg,
+#2563eb,
+#06b6d4
+);
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+}
 
 
-    0%,100%{
 
-        transform:translateY(0);
+.loginCard p{
 
-    }
+text-align:center;
 
+margin:20px;
 
-    50%{
-
-        transform:translateY(-12px);
-
-    }
+color:#64748b;
 
 }
 
 
 
 
-/* TITLE */
+.loginCard input{
 
+width:100%;
 
-.loginCard h1 {
+height:58px;
 
+margin:12px 0;
 
-    text-align:center;
+padding:0 20px;
 
+border-radius:18px;
 
-    font-size:32px;
+border:1px solid #cbd5e1;
 
-
-    font-weight:900;
-
-
-    letter-spacing:1px;
-
-
-    background:
-
-    linear-gradient(
-    90deg,
-    #2563eb,
-    #06b6d4
-    );
-
-
-    -webkit-background-clip:text;
-
-
-    color:transparent;
-
+font-size:16px;
 
 }
 
 
 
-.loginCard p {
+.loginCard input:focus{
 
+outline:none;
 
-    text-align:center;
+border-color:#2563eb;
 
-
-    color:#64748b;
-
-
-    font-weight:600;
-
-
-    margin-bottom:35px;
-
+box-shadow:
+0 0 20px rgba(37,99,235,.3);
 
 }
 
 
 
-/* INPUT BOX */
 
+#loginBtn{
 
-.loginCard input {
+width:100%;
 
+height:60px;
 
-    width:100%;
+margin-top:20px;
 
+border-radius:20px;
 
-    height:58px;
+background:
 
+linear-gradient(
+135deg,
+#2563eb,
+#06b6d4
+);
 
-    margin-bottom:18px;
+color:white;
 
-
-    padding:0 20px;
-
-
-    border-radius:18px;
-
-
-    border:
-
-    1px solid #cbd5e1;
-
-
-    background:
-
-    rgba(255,255,255,.9);
-
-
-    font-size:16px;
-
-
-    transition:.35s;
-
+font-size:18px;
 
 }
 
-
-
-.loginCard input:focus {
-
-
-    outline:none;
-
-
-    border-color:#2563eb;
-
-
-    transform:translateY(-3px);
-
-
-    box-shadow:
-
-
-    0 0 25px
-
-    rgba(37,99,235,.3);
-
-
-}
-
-
-
-/* LOGIN BUTTON */
-
-
-#loginBtn {
-
-
-    width:100%;
-
-
-    height:60px;
-
-
-    border:none;
-
-
-    border-radius:20px;
-
-
-    margin-top:15px;
-
-
-    color:white;
-
-
-    font-size:18px;
-
-
-    font-weight:800;
-
-
-    cursor:pointer;
-
-
-    background:
-
-
-    linear-gradient(
-
-    135deg,
-
-    #2563eb,
-
-    #06b6d4
-
-    );
-
-
-    box-shadow:
-
-
-    0 20px 40px
-
-    rgba(37,99,235,.35);
-
-
-    transition:.4s;
-
-
-}
-
-
-
-#loginBtn:hover {
-
-
-    transform:
-
-    translateY(-6px)
-    scale(1.02);
-
-
-    box-shadow:
-
-
-    0 30px 60px
-
-    rgba(6,182,212,.45);
-
-
-}
-
-
-
-#loginBtn:active {
-
-    transform:scale(.97);
-
-}
-
-
-
-/* SECURITY TEXT */
-
-.loginCard::after {
-
-
-    content:
-
-    "🔐 Secure AI Proctored Examination";
-
-
-    display:block;
-
-
-    text-align:center;
-
-
-    margin-top:25px;
-
-
-    font-size:13px;
-
-
-    color:#64748b;
-
-
-}
-
-
-
-/* =====================================================
- MOBILE RESPONSIVE
-===================================================== */
 
 
 @media(max-width:600px){
 
+.loginCard{
 
-#loginPage .loginCard {
+width:90%;
 
-
-    width:
-
-    calc(100% - 35px);
-
-
-    padding:
-
-    35px 25px;
-
-
-    border-radius:25px;
-
+padding:30px;
 
 }
 
+.loginCard h1{
 
-
-.loginCard h1 {
-
-
-    font-size:25px;
-
+font-size:25px;
 
 }
 
-
-
-.loginCard input {
-
-
-    height:52px;
-
-
 }
 
-
-
-#loginBtn {
-
-
-    height:55px;
-
-
-}
-
-
-}

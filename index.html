@@ -4,51 +4,65 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Premium Online Examination System</title>
 
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="login.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00ffff">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
 
 </head>
 
 <body>
 
-    <!-- ===========================
-        LOADING SCREEN
-=========================== -->
+    <!-- ==========================================
+                    LOADING SCREEN
+    =========================================== -->
 
     <div id="loadingScreen">
 
         <div class="loader"></div>
 
-        <h1>Premium Examination Portal</h1>
+        <h1>Premium Exam System</h1>
 
-        <p>Preparing Secure Environment...</p>
+        <p>Loading Secure Environment...</p>
 
     </div>
 
-    <!-- ===========================
-        LOGIN PAGE
-=========================== -->
 
-    <section id="loginPage" class="page hidden">
 
-        <div class="glass loginCard">
+    <!-- ==========================================
+                    LOGIN PAGE
+    =========================================== -->
 
-            <h1>ONLINE EXAMINATION</h1>
+    <section id="loginPage" class="page active">
+
+        <div class="loginCard">
+
+            <h1>ONLINE EXAM</h1>
 
             <p>
-                Student Login Portal
+                Secure Future Examination Portal
             </p>
 
-            <input type="text" id="username" placeholder="Enter Username">
+
+            <!-- Username -->
+
+            <input type="text" id="username" placeholder="Enter Username" autocomplete="off">
+
+
+            <!-- Password -->
 
             <input type="password" id="password" placeholder="Enter Password">
+
+
+            <!-- Login Button -->
 
             <button id="loginBtn">
 
@@ -60,15 +74,24 @@
 
     </section>
 
-    <!-- ===========================
-      INSTRUCTION PAGE
-=========================== -->
+
+
+    <!-- ==========================================
+                INSTRUCTION PAGE
+    =========================================== -->
 
     <section id="instructionPage" class="page hidden">
 
-        <div class="glass instructionCard">
+        <div class="instructionCard">
 
-            <h1>Exam Instructions</h1>
+            <h1>
+
+                Examination Instructions
+
+            </h1>
+
+
+            <!-- Student Information -->
 
             <div class="studentBox">
 
@@ -86,31 +109,53 @@
 
             </div>
 
+
+
+            <!-- Rules -->
+
             <ul>
 
-                <li>Total Questions : 30</li>
+                <li>
+                    Read every question carefully before answering.
+                </li>
 
-                <li>20 Seconds Per Question</li>
+                <li>
+                    Every question has limited answering time.
+                </li>
 
-                <li>Total Time : 10 Minutes</li>
+                <li>
+                    Full Screen Mode is compulsory.
+                </li>
 
-                <li>Fullscreen Mandatory</li>
+                <li>
+                    Tab Switching will terminate the examination.
+                </li>
 
-                <li>No Copy / Paste</li>
+                <li>
+                    Copy, Paste and Right Click are disabled.
+                </li>
 
-                <li>No Tab Switching</li>
-
-                <li>3 Warnings = Auto Submit</li>
+                <li>
+                    Press Finish after completing the exam.
+                </li>
 
             </ul>
 
-            <label class="agreeBox">
+
+
+            <!-- Agreement -->
+
+            <label>
 
                 <input type="checkbox" id="agreeRules">
 
                 I have read all instructions.
 
             </label>
+
+
+
+            <!-- Start Button -->
 
             <button id="startExam">
 
@@ -122,15 +167,15 @@
 
     </section>
 
-    <!-- ===========================
-        EXAM PAGE
-=========================== -->
+    <!-- ==========================================
+                    EXAM PAGE
+    =========================================== -->
 
     <section id="examPage" class="page hidden">
 
-        <!-- Top Bar -->
+        <!-- Top Header -->
 
-        <header class="topBar">
+        <div class="topBar">
 
             <div class="studentPanel">
 
@@ -145,9 +190,7 @@
             <div class="masterTimer">
 
                 <span>
-
-                    Total Time
-
+                    Remaining Time
                 </span>
 
                 <h2 id="masterTime">
@@ -158,7 +201,8 @@
 
             </div>
 
-        </header>
+        </div>
+
 
         <!-- Progress -->
 
@@ -168,17 +212,9 @@
 
                 Question
 
-                <span id="questionNo">
+                <span id="progressText">
 
-                    1
-
-                </span>
-
-                /
-
-                <span>
-
-                    30
+                    1/5
 
                 </span>
 
@@ -186,133 +222,183 @@
 
             <div class="progressBar">
 
-                <div id="progressFill">
-
-                </div>
+                <div id="progressFill"></div>
 
             </div>
 
         </div>
 
+
         <!-- Question Card -->
 
-        <div class="glass questionCard">
+        <div class="questionCard">
 
-            <div class="questionTop">
+            <div class="questionHeader">
 
-                <div>
+                <div class="questionNumber">
 
-                    <h2 id="questionText">
+                    Question
 
-                        Question Here...
+                    <span id="questionNo">
 
-                    </h2>
+                        1
+
+                    </span>
+
+                    /
+
+                    <span id="totalQuestion">
+
+                        5
+
+                    </span>
 
                 </div>
 
                 <div class="questionTimer">
 
-                    <div id="questionTimer">
+                    <span id="questionTime">
 
-                        20
+                        20s
 
-                    </div>
-
-                    <small>
-
-                        Seconds
-
-                    </small>
+                    </span>
 
                 </div>
 
             </div>
 
-            <div id="options">
 
-                <!-- Options JS -->
+            <div id="questionText" class="questionText">
+
+                Question Here
 
             </div>
 
-            <div class="buttonArea">
 
-                <button id="nextBtn">
+            <!-- Options -->
 
-                    NEXT QUESTION
+            <div id="options">
 
+            </div>
+
+
+            <!-- Question Navigation -->
+            <div class="exam-navigation">
+
+                <button id="previousBtn" class="nav-btn secondary">
+                    ← Previous
+                </button>
+
+                <button id="nextBtn" class="nav-btn primary">
+                    Next Question →
                 </button>
 
             </div>
 
-        </div>
 
-    </section>
+            <!-- Security -->
 
-    <!-- ===========================
-        RESULT PAGE
-=========================== -->
+            <div class="securityStatus">
 
-    <section id="resultPage" class="page hidden">
-
-        <div class="glass resultCard">
-
-            <h1>
-
-                Examination Completed
-
-            </h1>
-
-            <div class="resultBox">
-
-                <h2 id="resultStudent">
-
-                    Student
-
-                </h2>
-
-                <h3 id="scoreText">
-
-                    0 / 30
-
-                </h3>
-
-                <h3 id="percentage">
-
-                    0%
-
-                </h3>
-
-                <h3 id="status">
-
-                    PASS
-
-                </h3>
+                Secure Exam Mode Active
 
             </div>
 
-            <button id="reviewBtn">
+    </section>
 
-                REVIEW ANSWERS
+    <!-- ==========================================
+                    RESULT PAGE
+    =========================================== -->
 
-            </button>
+    <section id="resultPage" class="page hidden">
 
-            <button id="finishBtn">
+        <div class="resultCard">
 
-                FINISH
+            <h1>
 
-            </button>
+                EXAM RESULT
 
-        </div>
+            </h1>
+
+            <p>
+
+                Congratulations
+
+            </p>
+
+            <div class="resultBox">
+
+                <div class="resultItem">
+
+                    <span>Student</span>
+
+                    <h2 id="resultStudent">
+
+                        Student
+
+                    </h2>
+
+                </div>
+
+                <div class="resultItem">
+
+                    <span>Score</span>
+
+                    <h2 id="scoreText">
+
+                        0 / 5
+
+                    </h2>
+
+                </div>
+
+                <div class="resultItem">
+
+                    <span>Percentage</span>
+
+                    <h2 id="percentage">
+
+                        0%
+
+                    </h2>
+
+                </div>
+
+                <div class="resultItem">
+
+                    <span>Status</span>
+
+                    <h2 id="status">
+
+                        -
+
+                    </h2>
+
+                </div>
+
+                <div class="result-buttons">
+
+                    <button id="reviewBtn" class="review-btn">
+                        📄 Review Answers
+                    </button>
+
+                    <button id="finishBtn" class="finish-btn">
+                        ✓ Finish
+                    </button>
+
+                </div>
+
+            </div>
 
     </section>
 
-    <!-- ===========================
-      ANSWER REVIEW PAGE
-=========================== -->
+    <!-- ==========================================
+                    REVIEW PAGE
+    =========================================== -->
 
     <section id="reviewPage" class="page hidden">
 
-        <div class="glass reviewCard">
+        <div class="reviewCard">
 
             <h1>
 
@@ -320,51 +406,31 @@
 
             </h1>
 
+            <!-- Review Items -->
+
             <div id="reviewContainer">
+
+                <!-- app.js automatically loads review here -->
 
             </div>
 
-            <button id="closeReview">
+            <div class="review-footer">
 
-                CLOSE
+                <button id="closeReview" class="close-btn">
+                    Close Review
+                </button>
 
-            </button>
-
+            </div>
         </div>
 
     </section>
 
-    <!-- ===========================
-          WARNING POPUP
-=========================== -->
 
-    <div id="warningPopup" class="hidden">
+    <!-- ==========================================
+                    JAVASCRIPT
+    =========================================== -->
 
-        <div class="warningCard">
-
-            <h2>
-
-                Warning
-
-            </h2>
-
-            <p id="warningText">
-
-                Security Violation
-
-            </p>
-
-        </div>
-
-    </div>
-    <script type="module">
-
-
-    </script>
-
-
-    <script type="module" src="firebase.js"></script>
-    <script type="module" src="app.min.js"></script>
+    <script src="app.js"></script>
 
 </body>
 

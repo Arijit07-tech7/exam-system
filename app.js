@@ -1,10 +1,14 @@
 /* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
+PREMIUM FUTURE EXAM SYSTEM
 
 APP.JS
 PART 1 / 6
 
-FIREBASE FREE LOGIN SYSTEM
+DATABASE + SETTINGS + GLOBAL SYSTEM
+
+NO FIREBASE
+PURE JAVASCRIPT
+
 ===================================================== */
 
 
@@ -19,9 +23,10 @@ const users = [
     id:"AR001",
     username:"arijit",
     password:"arijit123",
-    name:"Arijit",
+    name:"Arijit Gupta",
     set:"A",
-    unlimited:true
+    unlimited:true,
+    active:true
 },
 
 
@@ -31,7 +36,8 @@ const users = [
     password:"alok123",
     name:"Alok",
     set:"B",
-    unlimited:false
+    unlimited:false,
+    active:true
 },
 
 
@@ -41,7 +47,8 @@ const users = [
     password:"ananya123",
     name:"Ananya",
     set:"C",
-    unlimited:false
+    unlimited:false,
+    active:true
 },
 
 
@@ -51,9 +58,9 @@ const users = [
     password:"souhadri123",
     name:"Souhadri",
     set:"D",
-    unlimited:false
+    unlimited:false,
+    active:true
 }
-
 
 ];
 
@@ -62,1016 +69,31 @@ const users = [
 
 
 /* ===============================
-GLOBAL VARIABLES
+EXAM SETTINGS
 ================================ */
 
 
-let currentStudent = null;
+const EXAM_SETTINGS = {
 
-let currentSet = null;
 
-let currentQuestion = 0;
+    TOTAL_TIME:600,       // 10 Minutes
 
-let score = 0;
+    QUESTION_TIME:20,     // 20 Seconds
 
-let questions = [];
+    PASS_MARK:40,
 
-let selectedAnswer = null;
 
-let userAnswers = [];
+    ENABLE_FULLSCREEN:true,
 
-let examFinished = false;
+    BLOCK_COPY:true,
 
-let questionTimer = null;
+    BLOCK_KEYBOARD:true,
 
-let masterTimer = null;
+    BLOCK_RIGHT_CLICK:true,
 
-let totalSeconds = 600;
+    CANCEL_ON_TAB:true,
 
-let warningCount = 0;
-
-
-
-
-
-
-
-/* ===============================
-PAGE LOAD
-================================ */
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-setTimeout(()=>{
-
-
-const loader =
-document.getElementById(
-"loadingScreen"
-);
-
-
-
-if(loader){
-
-loader.style.display="none";
-
-}
-
-
-
-
-const loginPage =
-document.getElementById(
-"loginPage"
-);
-
-
-
-if(loginPage){
-
-loginPage.classList.add(
-"active"
-);
-
-}
-
-
-
-},1200);
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ===============================
-PAGE SWITCH
-================================ */
-
-
-function showPage(pageId){
-
-
-document
-.querySelectorAll(".page")
-.forEach(page=>{
-
-
-page.style.display="none";
-
-
-});
-
-
-
-
-const page =
-document.getElementById(pageId);
-
-
-
-if(page){
-
-page.style.display="block";
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
-LOGIN SYSTEM
-================================ */
-
-
-
-const loginBtn =
-document.getElementById(
-"loginBtn"
-);
-
-
-
-if(loginBtn){
-
-
-loginBtn.addEventListener(
-"click",
-()=>{
-
-
-
-const usernameInput =
-document
-.getElementById("username")
-.value
-.trim()
-.toLowerCase();
-
-
-
-const password =
-document
-.getElementById("password")
-.value
-.trim();
-
-
-
-
-
-if(
-usernameInput==="" ||
-password===""
-){
-
-
-alert(
-"Enter Username and Password"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-/* ===============================
-FIND USER
-================================ */
-
-
-
-const student =
-users.find(
-user=>
-
-user.username===usernameInput
-&&
-user.password===password
-
-);
-
-
-
-
-
-
-if(!student){
-
-
-alert(
-"Invalid Username or Password"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-/* ===============================
-ATTEMPT CHECK
-================================ */
-
-
-
-let attempts =
-
-JSON.parse(
-localStorage.getItem(
-"examAttempts"
-)
-)
-
-|| {};
-
-
-
-
-
-
-
-if(
-
-attempts[student.username]
-
-&&
-
-student.unlimited !== true
-
-){
-
-
-alert(
-"You have already completed your exam!"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-
-/* ===============================
-SAVE LOGIN
-================================ */
-
-
-currentStudent = student;
-
-
-currentSet =
-student.set;
-
-
-
-localStorage.setItem(
-"currentUser",
-JSON.stringify(student)
-);
-
-
-
-
-
-
-
-/* ===============================
-DISPLAY STUDENT DATA
-================================ */
-
-
-
-const studentName =
-document.getElementById(
-"studentName"
-);
-
-
-
-if(studentName){
-
-studentName.innerText =
-student.name;
-
-
-}
-
-
-
-
-
-
-
-const studentSet =
-document.getElementById(
-"studentSet"
-);
-
-
-
-if(studentSet){
-
-
-studentSet.innerText =
-
-"Question Set : "
-+
-student.set;
-
-
-}
-
-
-
-
-
-
-
-
-const examStudent =
-document.getElementById(
-"examStudent"
-);
-
-
-
-if(examStudent){
-
-
-examStudent.innerText =
-student.name;
-
-
-}
-
-
-
-
-
-
-
-console.log(
-"LOGIN SUCCESS",
-currentStudent
-);
-
-
-
-
-
-
-
-showPage(
-"instructionPage"
-);
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-/* ===============================
-AUTO RESTORE SESSION
-================================ */
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-const savedUser =
-
-JSON.parse(
-localStorage.getItem(
-"currentUser"
-)
-);
-
-
-
-if(savedUser){
-
-
-currentStudent =
-savedUser;
-
-
-currentSet =
-savedUser.set;
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-console.log(
-"================================="
-);
-
-
-console.log(
-"PART 1 LOGIN SYSTEM READY"
-);
-
-
-console.log(
-"FIREBASE REMOVED SUCCESSFULLY"
-);
-
-
-console.log(
-"================================="
-);
-
-/* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
-
-APP.JS
-PART 2 / 6
-
-QUESTION DATABASE
-FIREBASE FREE VERSION
-
-SET A - ARIJIT
-SET B - ALOK
-SET C - ANANYA
-SET D - SOUHADRI
-
-===================================================== */
-
-
-/* ===============================
-QUESTION SET DATABASE
-================================ */
-
-
-const questionSets = {
-
-
-/* ===============================
-SET A
-ARIJIT
-================================ */
-
-
-A:[
-
-
-{
-question:
-"What does HTML stand for?",
-
-options:[
-
-"Hyper Text Markup Language",
-
-"High Text Machine Language",
-
-"Hyperlink Text Management Language",
-
-"Home Tool Markup Language"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"Which CSS property is used to change text color?",
-
-options:[
-
-"font-color",
-
-"color",
-
-"text-color",
-
-"background"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"Which keyword creates a constant variable in JavaScript?",
-
-options:[
-
-"var",
-
-"let",
-
-"const",
-
-"static"
-
-],
-
-answer:2
-
-},
-
-
-
-{
-question:
-"Which method adds an element at the end of an array?",
-
-options:[
-
-"pop()",
-
-"push()",
-
-"shift()",
-
-"add()"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"What does DOM stand for?",
-
-options:[
-
-"Document Object Model",
-
-"Data Object Management",
-
-"Digital Object Method",
-
-"Document Oriented Model"
-
-],
-
-answer:0
-
-}
-
-
-
-],
-
-
-
-
-
-
-
-/* ===============================
-SET B
-ALOK
-================================ */
-
-
-B:[
-
-
-{
-question:
-"Which framework follows Product Owner and Scrum Master roles?",
-
-options:[
-
-"Waterfall",
-
-"Scrum",
-
-"Kanban",
-
-"PRINCE2"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"What is MVP in software development?",
-
-options:[
-
-"Most Valuable Programmer",
-
-"Minimum Viable Product",
-
-"Maximum Visual Project",
-
-"Main Version Program"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"Which tool is used for version control?",
-
-options:[
-
-"Git",
-
-"Figma",
-
-"Photoshop",
-
-"Excel"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What is debugging?",
-
-options:[
-
-"Finding and fixing code errors",
-
-"Designing UI",
-
-"Creating database",
-
-"Hosting website"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What does API stand for?",
-
-options:[
-
-"Application Programming Interface",
-
-"Advanced Program Internet",
-
-"Application Private Input",
-
-"Applied Program Instruction"
-
-],
-
-answer:0
-
-}
-
-
-
-],
-
-
-
-
-
-
-
-
-/* ===============================
-SET C
-ANANYA
-================================ */
-
-
-C:[
-
-
-{
-question:
-"Which tag creates a hyperlink in HTML?",
-
-options:[
-
-"<link>",
-
-"<a>",
-
-"<href>",
-
-"<url>"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"Which CSS system is used for two dimensional layout?",
-
-options:[
-
-"Flexbox",
-
-"Grid",
-
-"Float",
-
-"Position"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"What does JSON stand for?",
-
-options:[
-
-"JavaScript Object Notation",
-
-"Java Source Object Network",
-
-"Java Online System",
-
-"Joint Object Syntax"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"Which HTTP method retrieves data?",
-
-options:[
-
-"POST",
-
-"GET",
-
-"DELETE",
-
-"PATCH"
-
-],
-
-answer:1
-
-},
-
-
-
-{
-question:
-"Which operator checks value and type both?",
-
-options:[
-
-"=",
-
-"==",
-
-"===",
-
-"+="
-
-],
-
-answer:2
-
-}
-
-
-
-],
-
-
-
-
-
-
-
-
-/* ===============================
-SET D
-SOUHADRI
-================================ */
-
-
-D:[
-
-
-{
-question:
-"What is a software bug?",
-
-options:[
-
-"A code error",
-
-"A feature",
-
-"A design",
-
-"A database"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What is UI?",
-
-options:[
-
-"User Interface",
-
-"User Internet",
-
-"Universal Input",
-
-"User Information"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What is UX?",
-
-options:[
-
-"User Experience",
-
-"User Extension",
-
-"Universal XML",
-
-"User Example"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What is frontend?",
-
-options:[
-
-"User visible part of website",
-
-"Database",
-
-"Server",
-
-"API"
-
-],
-
-answer:0
-
-},
-
-
-
-{
-question:
-"What is backend?",
-
-options:[
-
-"Server and database logic",
-
-"Website color",
-
-"Logo",
-
-"Image"
-
-],
-
-answer:0
-
-}
-
-
-
-]
-
+    CANCEL_ON_FOCUS_LOST:true
 
 
 };
@@ -1083,23 +105,144 @@ answer:0
 
 
 /* ===============================
-QUESTION LOADER
+GLOBAL VARIABLES
 ================================ */
 
 
-function loadStudentQuestionSet(){
+/* USER */
+
+let currentStudent = null;
 
 
 
-if(!currentStudent){
+/* QUESTIONS */
+
+let questions = [];
+
+let currentQuestion = 0;
+
+let selectedAnswer = null;
+
+let userAnswers = [];
+
+let score = 0;
 
 
-alert(
-"Student data missing"
-);
+
+/* EXAM STATUS */
 
 
-return;
+let examStarted = false;
+
+let examFinished = false;
+
+
+
+/* TIMER */
+
+
+let masterTimer = null;
+
+let questionTimer = null;
+
+
+let totalSeconds =
+EXAM_SETTINGS.TOTAL_TIME;
+
+
+let questionSeconds =
+EXAM_SETTINGS.QUESTION_TIME;
+
+
+
+
+/* RESULT */
+
+
+let resultSaved = false;
+
+
+
+/* SECURITY */
+
+
+let securityActive = false;
+
+
+
+
+/* ===============================
+LOCAL STORAGE KEYS
+================================ */
+
+
+const STORAGE = {
+
+
+USER:"current_exam_user",
+
+
+RESULT:"exam_results",
+
+
+ATTEMPT:"exam_attempt_"
+
+
+};
+
+
+
+
+
+
+
+
+/* ===============================
+PAGE SYSTEM
+================================ */
+
+
+function showPage(pageId){
+
+
+    document
+    .querySelectorAll(".page")
+    .forEach(page=>{
+
+
+        page.classList.remove(
+            "active"
+        );
+
+
+        page.classList.add(
+            "hidden"
+        );
+
+
+    });
+
+
+
+    const page =
+    document.getElementById(pageId);
+
+
+
+    if(page){
+
+
+        page.classList.remove(
+            "hidden"
+        );
+
+
+        page.classList.add(
+            "active"
+        );
+
+
+    }
 
 
 }
@@ -1108,34 +251,225 @@ return;
 
 
 
-questions =
-
-questionSets[
-currentStudent.set
-]
-
-|| [];
 
 
 
 
+/* ===============================
+LOCAL STORAGE
+================================ */
 
 
-console.log(
-"Loaded Set:",
-currentStudent.set
-);
+function saveData(key,value){
 
 
+    localStorage.setItem(
 
-console.log(
-"Total Questions:",
-questions.length
-);
+        key,
 
+        JSON.stringify(value)
+
+    );
 
 
 }
+
+
+
+
+function getData(key){
+
+
+    const data =
+    localStorage.getItem(key);
+
+
+
+    if(!data)
+        return null;
+
+
+
+    try{
+
+
+        return JSON.parse(data);
+
+
+    }
+
+    catch{
+
+
+        return null;
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+ATTEMPT SYSTEM
+================================ */
+
+
+function getAttempt(username){
+
+
+    return Number(
+
+        localStorage.getItem(
+
+            STORAGE.ATTEMPT + username
+
+        )
+
+        ||
+
+        0
+
+    );
+
+
+}
+
+
+
+
+function increaseAttempt(username){
+
+
+    let count =
+    getAttempt(username);
+
+
+
+    count++;
+
+
+
+    localStorage.setItem(
+
+        STORAGE.ATTEMPT + username,
+
+        count
+
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+RESET EXAM DATA
+================================ */
+
+
+function resetExamData(){
+
+
+    questions = [];
+
+    currentQuestion = 0;
+
+    selectedAnswer = null;
+
+    userAnswers = [];
+
+    score = 0;
+
+
+
+    examStarted = false;
+
+    examFinished = false;
+
+
+
+    totalSeconds =
+    EXAM_SETTINGS.TOTAL_TIME;
+
+
+    questionSeconds =
+    EXAM_SETTINGS.QUESTION_TIME;
+
+
+    resultSaved=false;
+
+
+}
+
+
+
+
+
+
+
+
+/* ===============================
+WINDOW LOAD
+================================ */
+
+
+window.addEventListener(
+"load",
+()=>{
+
+
+    const loader =
+    document.getElementById(
+        "loadingScreen"
+    );
+
+
+
+    if(loader){
+
+
+        setTimeout(()=>{
+
+
+            loader.style.display =
+            "none";
+
+
+        },1200);
+
+
+    }
+
+
+
+    showPage(
+        "loginPage"
+    );
+
+
+
+    console.log(
+        "SYSTEM LOADED"
+    );
+
+
+});
+
+
+
 
 
 
@@ -1148,12 +482,22 @@ console.log(
 
 
 console.log(
-"PART 2 QUESTION SYSTEM READY"
+"PART 1 / 6 READY"
 );
 
 
 console.log(
-"FIREBASE QUESTION DATABASE REMOVED"
+"NO FIREBASE"
+);
+
+
+console.log(
+"DATABASE READY"
+);
+
+
+console.log(
+"GLOBAL SYSTEM READY"
 );
 
 
@@ -1162,13 +506,1978 @@ console.log(
 );
 
 /* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
+PREMIUM FUTURE EXAM SYSTEM
+
+APP.JS
+PART 2 / 6
+
+LOGIN SYSTEM + SESSION MANAGEMENT
+
+NO FIREBASE
+PURE JAVASCRIPT
+
+===================================================== */
+
+
+
+/* ===============================
+LOGIN BUTTON
+================================ */
+
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+
+
+if(loginBtn){
+
+
+    loginBtn.addEventListener(
+        "click",
+        loginStudent
+    );
+
+
+}
+
+
+
+
+
+
+
+
+/* ===============================
+LOGIN FUNCTION
+================================ */
+
+
+function loginStudent(){
+
+
+
+    const usernameInput =
+    document.getElementById(
+        "username"
+    );
+
+
+    const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+
+    if(!usernameInput || !passwordInput){
+
+        console.error(
+            "Login input missing"
+        );
+
+        return;
+
+    }
+
+
+
+
+
+    const username =
+    usernameInput.value
+    .trim()
+    .toLowerCase();
+
+
+
+    const password =
+    passwordInput.value
+    .trim();
+
+
+
+
+
+    if(
+        username === "" ||
+        password === ""
+    ){
+
+
+        alert(
+            "Enter Username and Password"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+    const student =
+    users.find(user=>
+
+
+        user.username === username &&
+
+        user.password === password &&
+
+        user.active === true
+
+
+    );
+
+
+
+
+
+
+    if(!student){
+
+
+        alert(
+            "Invalid Username or Password"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+
+    /* ===============================
+    ATTEMPT CHECK
+    ================================= */
+
+
+    const attempt =
+    getAttempt(
+        student.username
+    );
+
+
+
+
+    if(
+        !student.unlimited &&
+        attempt >= 1
+    ){
+
+
+        alert(
+            "You have already attempted this examination."
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+    /* ===============================
+    SAVE CURRENT USER
+    ================================= */
+
+
+    currentStudent = student;
+
+
+
+    saveData(
+
+        STORAGE.USER,
+
+        student
+
+    );
+
+
+
+
+
+
+
+    /* ===============================
+    UPDATE STUDENT INFO
+    ================================= */
+
+
+
+    const studentName =
+    document.getElementById(
+        "studentName"
+    );
+
+
+
+    if(studentName){
+
+
+        studentName.innerText =
+        student.name;
+
+
+    }
+
+
+
+
+
+
+
+    const studentSet =
+    document.getElementById(
+        "studentSet"
+    );
+
+
+
+    if(studentSet){
+
+
+        studentSet.innerText =
+        "Question Set : "
+        +
+        student.set;
+
+
+    }
+
+
+
+
+
+
+
+
+    const examStudent =
+    document.getElementById(
+        "examStudent"
+    );
+
+
+
+    if(examStudent){
+
+
+        examStudent.innerText =
+        student.name;
+
+
+    }
+
+
+
+
+
+
+
+    console.log(
+        "LOGIN SUCCESS",
+        student
+    );
+
+
+
+
+    showPage(
+        "instructionPage"
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+SESSION RESTORE
+================================ */
+
+
+window.addEventListener(
+"load",
+()=>{
+
+
+    const savedUser =
+    getData(
+        STORAGE.USER
+    );
+
+
+
+    if(savedUser){
+
+
+        currentStudent =
+        savedUser;
+
+
+
+        console.log(
+            "SESSION RESTORED",
+            savedUser
+        );
+
+
+    }
+
+
+
+});
+
+
+
+
+
+
+
+
+
+/* ===============================
+CLEAR SESSION
+================================ */
+
+
+function clearSession(){
+
+
+    currentStudent = null;
+
+
+
+    localStorage.removeItem(
+
+        STORAGE.USER
+
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+LOGOUT FUNCTION
+
+(REAL LOGOUT PART IN PART 6)
+
+================================ */
+
+
+function basicLogout(){
+
+
+    clearSession();
+
+
+    resetExamData();
+
+
+
+    showPage(
+        "loginPage"
+    );
+
+
+}
+
+
+
+
+
+
+
+
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 2 / 6 READY"
+);
+
+
+console.log(
+"LOGIN SYSTEM READY"
+);
+
+
+console.log(
+"SESSION SYSTEM READY"
+);
+
+
+console.log(
+"ATTEMPT CONTROL READY"
+);
+
+
+console.log(
+"================================="
+);
+
+/* =====================================================
+PREMIUM FUTURE EXAM SYSTEM
 
 APP.JS
 PART 3 / 6
 
+QUESTION DATABASE + SET LOADER
+
+NO FIREBASE
+PURE JAVASCRIPT
+
+===================================================== */
+
+
+/* ===============================
+QUESTION DATABASE
+
+প্রতিটি SET এ পরে 30টা করে question বসানো যাবে।
+এখন sample 5টা করে রাখা হলো।
+
+================================ */
+
+
+const questionSets = {
+
+
+
+A:[
+
+{
+question:"A navigation bar stays fixed at the top, but anchor links hide section headings behind it. Which CSS property fixes this without JavaScript?",
+
+options:[
+"scroll-behavior:smooth;",
+"scroll-margin-top:80px;",
+"margin-top:-80px;",
+"position:sticky;"
+],
+
+answer:1
+
+},
+
+
+{
+question:"A search input filters 50,000 items on every keystroke causing lag. What optimization should be applied?",
+
+options:[
+"Use debounce so filtering runs after user stops typing.",
+"Replace JavaScript with CSS selectors.",
+"Convert array into JSON string.",
+"Reload the page after every keypress."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the fundamental difference between null and undefined in JavaScript?",
+
+options:[
+"undefined means missing/unassigned value, while null is intentional absence of value.",
+"null is undefined type and undefined is object type.",
+"undefined causes fatal error while null skips execution.",
+"null is only for numbers."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What will be the output of this JavaScript code?\n\nfor(var i=0;i<3;i++){ setTimeout(()=>console.log(i),1000); }",
+
+options:[
+"0,1,2",
+"3,3,3",
+"undefined,undefined,undefined",
+"0,0,0"
+],
+
+answer:1
+
+},
+
+
+{
+question:"How does the Event Loop prioritize Microtasks and Macrotasks?",
+
+options:[
+"Both execute in parallel.",
+"Microtask queue is completed before the next Macrotask runs.",
+"Macrotasks always execute first.",
+"Microtasks run only on user interaction."
+],
+
+answer:1
+
+},
+
+
+{
+question:"A user submits <script>stealCookies()</script> in a comment box and it executes for other users. What vulnerability is this?",
+
+options:[
+"CSRF",
+"Stored XSS",
+"SQL Injection",
+"SSRH"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the main purpose of Web Components (Shadow DOM, Custom Elements, HTML Templates)?",
+
+options:[
+"Create reusable encapsulated HTML components with isolated styles.",
+"Replace JavaScript libraries with C++.",
+"Run only on backend servers.",
+"Compile HTML using WebAssembly."
+],
+
+answer:0
+
+},
+
+
+{
+question:"Which technology works as a programmable browser proxy for offline PWA caching?",
+
+options:[
+"Service Worker",
+"Web Socket Engine",
+"LocalStorage Pipeline",
+"Web Worker Threads"
+],
+
+answer:0
+
+},
+
+
+{
+question:"When does the browser start downloading an image created using new Image() and assigned src?",
+
+options:[
+"As soon as img.src is assigned.",
+"Only after adding image to DOM.",
+"When user scrolls to image.",
+"After window load event."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the difference between innerHTML and textContent?",
+
+options:[
+"innerHTML parses HTML markup while textContent treats content as plain text.",
+"textContent creates CSS reflow while innerHTML runs silently.",
+"innerHTML works only on p tags.",
+"Both are identical."
+],
+
+answer:0
+
+}
+
+],
+
+
+
+B:[
+
+{
+question:"Consider a scenario where a web page needs a header with a logo, a navigation menu, a main article, and a footer. Which combination of semantic HTML5 tags should be used?",
+
+options:[
+"<div>, <select>, <main>, <footer>",
+"<header>, <nav>, <article>, <footer>",
+"<head>, <menu>, <content>, <bottom>",
+"<section>, <links>, <body>, <footer>"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Why is the <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> tag essential in modern web pages?",
+
+options:[
+"It connects the HTML file to an external CSS stylesheet.",
+"It enables server-side rendering for faster page loads.",
+"It instructs the browser to scale the webpage width to match the screen size of the device.",
+"It prevents search engine crawlers from indexing responsive layout elements."
+],
+
+answer:2
+
+},
+
+
+{
+question:"A developer wants to create an accessible image component. Which implementation correctly handles screen readers and image failure?",
+
+options:[
+"<img src=\"profile.jpg\" name=\"User Profile Picture\">",
+"<img src=\"profile.jpg\" alt=\"Profile picture of John Doe\">",
+"<img src=\"profile.jpg\" title=\"John Doe Profile\">",
+"<img src=\"profile.jpg\" tooltip=\"User Image\">"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the primary difference between a block-level element like <div> and an inline element like <span>?",
+
+options:[
+"Block elements start on a new line and take full available width, whereas inline elements take only required width.",
+"Inline elements can contain block elements, but block elements cannot contain inline elements.",
+"Block elements are only allowed inside head while inline elements are placed in body.",
+"Inline elements automatically add padding and margin."
+],
+
+answer:0
+
+},
+
+
+{
+question:"Which attribute combination should be added to an <a> tag so that an external link opens securely in a new browser tab?",
+
+options:[
+"target=\"_blank\" rel=\"noopener noreferrer\"",
+"target=\"_self\" rel=\"external\"",
+"target=\"_new\" open=\"tab\"",
+"href=\"_blank\" security=\"high\""
+],
+
+answer:0
+
+},
+
+
+{
+question:"What happens if a web developer omits the <!DOCTYPE html> declaration at the top of an HTML file?",
+
+options:[
+"Browser refuses to display the page.",
+"Page renders in Quirks Mode causing inconsistent layouts.",
+"JavaScript execution is disabled.",
+"Page speed drops automatically."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which form element and attribute combination allows users to select multiple choices from a dropdown list?",
+
+options:[
+"<input type=\"dropdown\" allow-multiple>",
+"<select multiple>",
+"<option selection=\"multiple\">",
+"<checkbox group=\"dropdown\">"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the composition of the standard CSS Box Model from innermost to outermost?",
+
+options:[
+"Margin → Border → Padding → Content",
+"Content → Padding → Border → Margin",
+"Padding → Content → Margin → Border",
+"Content → Border → Padding → Margin"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Why do developers commonly use box-sizing:border-box in CSS resets?",
+
+options:[
+"It converts block elements into inline elements.",
+"It includes width and height with content, padding and border.",
+"It adds default borders.",
+"It prevents margin collapsing."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Relative to which parent does position:absolute work?",
+
+options:[
+"Always body element",
+"Nearest ancestor with position other than static",
+"Browser viewport",
+"Immediate parent always"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which CSS properties center a flex child horizontally and vertically?",
+
+options:[
+"display:flex; justify-content:center; align-items:center;",
+"display:block; margin:auto;",
+"display:grid; flex-direction:center;",
+"display:flex; float:center;"
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the difference between display:none and visibility:hidden?",
+
+options:[
+"display:none keeps space but visibility:hidden removes it.",
+"display:none removes element space while visibility:hidden keeps space.",
+"Both work identically.",
+"visibility:hidden works only on images."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the CSS specificity order from highest to lowest?",
+
+options:[
+"Inline style > ID > Class > Element",
+"ID > Inline style > Class > Element",
+"Element > Class > ID > Inline",
+"Class > ID > Element > Inline"
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the difference between rem and em units?",
+
+options:[
+"rem depends on root font-size, em depends on parent font-size.",
+"em depends on root, rem depends on screen pixels.",
+"rem works only padding.",
+"rem is physical measurement."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What does flex-grow:1 do?",
+
+options:[
+"Scales font size",
+"Allows item to take remaining available space",
+"Prevents shrinking",
+"Moves item right"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which media query targets screens with maximum width 768px?",
+
+options:[
+"@media screen and (min-width:768px)",
+"@media (max-width:768px)",
+"@media-device(width <=768px)",
+"@import mobile"
+],
+
+answer:1
+
+}
+
+],
+
+
+
+
+
+
+
+C:[
+
+{
+question:"What is the main structural difference between <section> and <article> tags in HTML5?",
+
+options:[
+"<section> can be rendered independently, whereas <article> groups content.",
+"<article> represents self-contained distributable content, while <section> represents thematic grouping of content.",
+"<section> is inline-level while <article> is block-level.",
+"<article> requires src attribute while <section> requires href."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the role of ARIA attributes like aria-label and role=\"button\" in web accessibility?",
+
+options:[
+"They speed up web rendering.",
+"They provide additional accessibility semantics for screen readers.",
+"They style custom UI components.",
+"They validate form data."
+],
+
+answer:1
+
+},
+
+
+{
+question:"How does <script defer> differ from <script async>?",
+
+options:[
+"defer downloads parallel and executes after HTML parsing; async downloads parallel and executes immediately when ready.",
+"async preserves order while defer executes randomly.",
+"defer blocks DOM generation completely.",
+"Both work identically."
+],
+
+answer:0
+
+},
+
+
+{
+question:"Which HTML attribute provides image options for different screen resolutions?",
+
+options:[
+"media",
+"srcset",
+"src-adaptive",
+"resolution-map"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the purpose of HTML5 <picture> element?",
+
+options:[
+"Play SVG animations.",
+"Provide multiple image sources for responsive loading.",
+"Generate thumbnails.",
+"Force WebP images."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does autocomplete=\"one-time-code\" do?",
+
+options:[
+"Prevents typing numbers.",
+"Allows browsers to suggest OTP autofill from SMS.",
+"Hashes input data.",
+"Clears field automatically."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which tag pair is used for figure and caption?",
+
+options:[
+"<image> and <title>",
+"<figure> and <figcaption>",
+"<media> and <description>",
+"<box> and <captiontext>"
+],
+
+answer:1
+
+},
+
+
+{
+question:"CSS has no property called margin:collapse. How does margin collapsing work?",
+
+options:[
+"It removes padding.",
+"It happens automatically between vertical block margins.",
+"It merges horizontal margins in flex.",
+"It aligns grid tracks."
+],
+
+answer:1
+
+},
+
+
+{
+question:"How does CSS Grid differ from Flexbox?",
+
+options:[
+"Flexbox is 2D and Grid is 1D.",
+"Flexbox is 1D layout while Grid is 2D layout.",
+"Flexbox cannot align vertically.",
+"Grid replaced Flexbox."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does grid-template-columns: repeat(auto-fit,minmax(200px,1fr)) achieve?",
+
+options:[
+"Fixed 200px columns.",
+"Responsive grid columns without media queries.",
+"Maximum viewport height.",
+"Only 2 columns."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which position value anchors an element relative to browser viewport during scrolling?",
+
+options:[
+"relative",
+"sticky",
+"fixed",
+"static"
+],
+
+answer:2
+
+},
+
+
+{
+question:"What happens with opacity:0 compared to display:none?",
+
+options:[
+"opacity:0 keeps space and can still interact.",
+"opacity:0 removes element completely.",
+"opacity blocks screen readers.",
+"Both disable keyboard navigation."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the default flex-direction value in CSS Flexbox?",
+
+options:[
+"column",
+"row",
+"row-reverse",
+"column-reverse"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does z-index control?",
+
+options:[
+"Transparency.",
+"Stacking order on Z-axis for positioned/flex/grid items.",
+"Element width.",
+"Inline to block conversion."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does :nth-child(even) select?",
+
+options:[
+"Every even numbered child element.",
+"Elements with even IDs.",
+"Even nested nodes.",
+"Every second character."
+],
+
+answer:0
+
+},
+
+
+{
+question:"Which CSS function mixes px and relative units like % or vw?",
+
+options:[
+"calc()",
+"mix()",
+"fit()",
+"math()"
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is typeof NaN in JavaScript?",
+
+options:[
+"undefined",
+"NaN",
+"number",
+"object"
+],
+
+answer:2
+
+},
+
+
+{
+question:"What is Event Bubbling in JavaScript?",
+
+options:[
+"Event goes document to target.",
+"Event moves from target element upward through ancestors.",
+"Events execute on siblings.",
+"Too many listeners error."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the output of console.log(a); var a=10;", 
+
+options:[
+"ReferenceError",
+"10",
+"undefined",
+"null"
+],
+
+answer:2
+
+},
+
+
+{
+question:"What is the result of 0.1 + 0.2 === 0.3 in JavaScript?",
+
+options:[
+"true",
+"false",
+"TypeError",
+"undefined"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which array method checks if at least one element passes a condition?",
+
+options:[
+"every()",
+"some()",
+"filter()",
+"find()"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What happens when JSON.stringify() receives an object containing a function?",
+
+options:[
+"Function becomes string.",
+"Function property is omitted.",
+"SyntaxError occurs.",
+"Function becomes null."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Difference between localStorage and sessionStorage?",
+
+options:[
+"localStorage persists until cleared; sessionStorage ends when tab closes.",
+"sessionStorage has more storage.",
+"localStorage sends data automatically.",
+"sessionStorage works server-side."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What does spread operator (...) do with arrays?",
+
+options:[
+"Creates matrix.",
+"Expands array elements into individual elements.",
+"Deletes original array.",
+"Calculates sum."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Purpose of async/await in JavaScript?",
+
+options:[
+"Makes JavaScript multi-threaded.",
+"Writes asynchronous Promise code in cleaner syntax.",
+"Removes network limits.",
+"Returns only primitive values."
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does CORS prevent by default?",
+
+options:[
+"Local image loading.",
+"Unauthorized cross-origin requests without permission headers.",
+"Inspect element usage.",
+"Long database queries."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Security advantage of HttpOnly cookie flag?",
+
+options:[
+"Encrypts cookie.",
+"Blocks JavaScript access to cookies reducing XSS risk.",
+"Expires quickly.",
+"Allows cross-domain access."
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which HTTP status code range represents successful requests?",
+
+options:[
+"100-199",
+"200-299",
+"300-399",
+"400-499"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is Cross-Site Scripting (XSS)?",
+
+options:[
+"Injection of malicious JavaScript into trusted websites.",
+"Server overload attack.",
+"SQL password bypass.",
+"CSS framework error."
+],
+
+answer:0
+
+},
+
+
+{
+question:"What role does DNS play on the Web?",
+
+options:[
+"Encrypt passwords.",
+"Translate domain names into IP addresses.",
+"Compile HTML.",
+"Compress images."
+],
+
+answer:1
+
+}
+
+],
+
+
+D:[
+
+{
+question:"Which tag is used to create the largest heading in an HTML document?",
+
+options:[
+"<heading>",
+"<h6>",
+"<h1>",
+"<head>"
+],
+
+answer:2
+
+},
+
+
+{
+question:"Which tag is used to insert a line break in HTML?",
+
+options:[
+"<lb>",
+"<break>",
+"<br>",
+"<p>"
+],
+
+answer:2
+
+},
+
+
+{
+question:"Which attribute is used in <a> tag to specify hyperlink URL?",
+
+options:[
+"src",
+"href",
+"link",
+"target"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which HTML tag creates an ordered numbered list?",
+
+options:[
+"<ul>",
+"<ol>",
+"<list>",
+"<dl>"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which HTML tag is used to insert an image?",
+
+options:[
+"<picture>",
+"<img>",
+"<src>",
+"<image>"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the correct syntax for HTML comments?",
+
+options:[
+"// Comment",
+"/* Comment */",
+"<!-- Comment -->",
+"' Comment"
+],
+
+answer:2
+
+},
+
+
+{
+question:"Which HTML tag collects user input in a form?",
+
+options:[
+"<input>",
+"<enter>",
+"<field>",
+"<user>"
+],
+
+answer:0
+
+},
+
+
+{
+question:"What is the main purpose of HTML head section?",
+
+options:[
+"Display visible content",
+"Contain metadata, title and external resources",
+"Create footer links",
+"Show copyright"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does CSS stand for?",
+
+options:[
+"Creative Style Sheets",
+"Cascading Style Sheets",
+"Computer Style Syntax",
+"Colorful Style System"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which CSS property changes background color?",
+
+options:[
+"color",
+"background-color",
+"bgcolor",
+"surface-color"
+],
+
+answer:1
+
+},
+
+
+{
+question:"How do you select id=\"header\" in CSS?",
+
+options:[
+".header",
+"#header",
+"*header",
+"header"
+],
+
+answer:1
+
+},
+
+
+{
+question:"How do you select class=\"card\" in CSS?",
+
+options:[
+"#card",
+".card",
+"card",
+"@card"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which CSS property changes text color?",
+
+options:[
+"font-color",
+"color",
+"text-style",
+"content-color"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which CSS property controls text size?",
+
+options:[
+"text-size",
+"font-style",
+"font-size",
+"text-height"
+],
+
+answer:2
+
+},
+
+
+{
+question:"Which CSS property adds space inside the border?",
+
+options:[
+"margin",
+"padding",
+"border-spacing",
+"gap"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which CSS property creates space outside the border?",
+
+options:[
+"padding",
+"margin",
+"outline-offset",
+"spacing"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Inside which HTML element do we put JavaScript code?",
+
+options:[
+"<js>",
+"<javascript>",
+"<script>",
+"<code>"
+],
+
+answer:2
+
+},
+
+
+{
+question:"How do you display Hello World in JavaScript alert?",
+
+options:[
+"msgBox(\"Hello World\");",
+"alert(\"Hello World\");",
+"msg(\"Hello World\");",
+"console.print(\"Hello World\");"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which keyword creates a constant variable in JavaScript?",
+
+options:[
+"var",
+"let",
+"const",
+"fixed"
+],
+
+answer:2
+
+},
+
+
+{
+question:"How do you create a function in JavaScript?",
+
+options:[
+"function myFunction()",
+"def myFunction()",
+"create myFunction()",
+"func myFunction()"
+],
+
+answer:0
+
+},
+
+
+{
+question:"How do you execute a function named myFunction?",
+
+options:[
+"call myFunction()",
+"myFunction()",
+"call function myFunction()",
+"execute myFunction()"
+],
+
+answer:1
+
+},
+
+
+{
+question:"Which operator assigns a value to a variable in JavaScript?",
+
+options:[
+"=",
+"==",
+"===",
+":="
+],
+
+answer:0
+
+},
+
+
+{
+question:"How do you print data in browser console?",
+
+options:[
+"print.log()",
+"console.log()",
+"browser.log()",
+"write.console()"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the first index position in a JavaScript array?",
+
+options:[
+"1",
+"0",
+"-1",
+"index"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the correct JavaScript IF statement syntax?",
+
+options:[
+"if i == 5 then",
+"if (i == 5)",
+"if i = 5",
+"if i = 5 then"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What does HTML stand for?",
+
+options:[
+"Hyper Text Markup Language",
+"High Tech Machine Language",
+"Hyper Transfer Markup Line",
+"Home Tool Markup Language"
+],
+
+answer:0
+
+},
+
+
+{
+question:"Which software is used to view webpages?",
+
+options:[
+"Code Editor",
+"Web Browser",
+"Database Server",
+"Terminal"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the file extension for JavaScript files?",
+
+options:[
+".html",
+".css",
+".js",
+".script"
+],
+
+answer:2
+
+},
+
+
+{
+question:"Which text editor is commonly used for web development?",
+
+options:[
+"MS Word",
+"VS Code",
+"Photoshop",
+"Excel"
+],
+
+answer:1
+
+},
+
+
+{
+question:"What is the default HTTP port for standard web browsing?",
+
+options:[
+"80",
+"21",
+"443",
+"3000"
+],
+
+answer:0
+
+}
+
+]
+
+};
+
+
+
+
+
+
+
+/* ===============================
+LOAD STUDENT QUESTION SET
+================================ */
+
+
+function loadStudentQuestionSet(){
+
+
+
+    if(!currentStudent){
+
+
+        alert(
+            "Student not logged in"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+
+    questions =
+    questionSets[
+        currentStudent.set
+    ];
+
+
+
+
+
+
+
+    if(
+        !questions ||
+        questions.length===0
+    ){
+
+
+        alert(
+            "Question Set Not Found"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+
+
+    console.log(
+        "QUESTION SET LOADED"
+    );
+
+
+    console.log(
+        "Student:",
+        currentStudent.name
+    );
+
+
+    console.log(
+        "Set:",
+        currentStudent.set
+    );
+
+
+    console.log(
+        "Total:",
+        questions.length
+    );
+
+
+
+    return true;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+GET CURRENT QUESTION
+================================ */
+
+
+function getCurrentQuestion(){
+
+
+    return questions[
+        currentQuestion
+    ];
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+TOTAL QUESTION
+================================ */
+
+
+function getTotalQuestions(){
+
+
+    return questions.length;
+
+
+}
+
+
+
+
+
+
+
+
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 3 / 6 READY"
+);
+
+
+console.log(
+"QUESTION DATABASE READY"
+);
+
+
+console.log(
+"SET A B C D READY"
+);
+
+
+console.log(
+"================================="
+);
+
+/* =====================================================
+PREMIUM FUTURE EXAM SYSTEM
+
+APP.JS
+PART 4 / 6
+
 EXAM ENGINE
-FIREBASE FREE VERSION
+
+START EXAM
+QUESTION LOAD
+OPTION SYSTEM
+TIMER
+NEXT / PREVIOUS
+PROGRESS
+
+NO FIREBASE
+PURE JAVASCRIPT
 
 ===================================================== */
 
@@ -1181,7 +2490,7 @@ START EXAM BUTTON
 
 const startExamBtn =
 document.getElementById(
-"startExam"
+    "startExam"
 );
 
 
@@ -1189,45 +2498,38 @@ document.getElementById(
 if(startExamBtn){
 
 
-startExamBtn.addEventListener(
-"click",
-async()=>{
+    startExamBtn.onclick = ()=>{
+
+
+        const agree =
+        document.getElementById(
+            "agreeRules"
+        );
 
 
 
-const agree =
-document.getElementById(
-"agreeRules"
-);
+        if(
+            agree &&
+            !agree.checked
+        ){
+
+
+            alert(
+                "Please accept instructions first"
+            );
+
+
+            return;
+
+
+        }
 
 
 
-
-if(
-!agree ||
-!agree.checked
-){
+        startExam();
 
 
-alert(
-"Please accept instructions first"
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-startExam();
-
-
-
-});
+    };
 
 
 }
@@ -1248,61 +2550,121 @@ function startExam(){
 
 
 
-showPage(
-"examPage"
-);
+    if(!currentStudent){
 
 
+        alert(
+            "Please login first"
+        );
 
 
-loadStudentQuestionSet();
+        return;
 
 
-
-
-
-if(
-questions.length===0
-){
-
-
-alert(
-"No Question Found"
-);
-
-
-return;
-
-
-}
+    }
 
 
 
 
 
-currentQuestion = 0;
 
-score = 0;
-
-userAnswers = [];
-
-selectedAnswer = null;
-
-examFinished = false;
+    const loaded =
+    loadStudentQuestionSet();
 
 
 
-totalSeconds = 600;
+    if(!loaded)
+        return;
 
 
 
-startMasterTimer();
 
 
 
-loadQuestion();
+
+    showPage(
+        "examPage"
+    );
 
 
+
+
+
+
+    currentQuestion = 0;
+
+    selectedAnswer = null;
+
+    userAnswers = [];
+
+    score = 0;
+
+
+    examStarted = true;
+
+    examFinished = false;
+
+
+
+    totalSeconds =
+    EXAM_SETTINGS.TOTAL_TIME;
+
+
+
+    questionSeconds =
+    EXAM_SETTINGS.QUESTION_TIME;
+
+
+
+
+
+
+
+    if(
+        EXAM_SETTINGS.ENABLE_FULLSCREEN
+    ){
+
+
+        if(
+            document.documentElement.requestFullscreen
+        ){
+
+
+            document
+            .documentElement
+            .requestFullscreen()
+            .catch(()=>{});
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    enableSecurity();
+
+
+
+
+    startMasterTimer();
+
+
+
+    loadQuestion();
+
+
+
+
+
+    console.log(
+        "EXAM STARTED"
+    );
 
 
 
@@ -1325,74 +2687,71 @@ function loadQuestion(){
 
 
 
-if(
-examFinished
-)
-return;
+    if(examFinished)
+        return;
 
 
 
 
 
-const q =
-questions[currentQuestion];
+    const q =
+    getCurrentQuestion();
 
 
 
 
-if(!q){
 
+    if(!q){
 
-finishExam();
 
-return;
+        finishExam();
 
 
-}
+        return;
 
 
+    }
 
 
 
 
-const questionNo =
-document.getElementById(
-"questionNo"
-);
 
 
 
-if(questionNo){
+    selectedAnswer = null;
 
 
-questionNo.innerText =
-currentQuestion + 1;
 
 
-}
 
 
+    const qNo =
+    document.getElementById(
+        "questionNo"
+    );
 
 
 
+    if(qNo)
+        qNo.innerText =
+        currentQuestion + 1;
 
 
 
-const questionText =
-document.getElementById(
-"questionText"
-);
 
 
 
-if(questionText){
 
+    const total =
+    document.getElementById(
+        "totalQuestion"
+    );
 
-questionText.innerText =
-q.question;
 
 
-}
+    if(total)
+        total.innerText =
+        questions.length;
 
 
 
@@ -1401,144 +2760,135 @@ q.question;
 
 
 
-const optionBox =
-document.getElementById(
-"options"
-);
+    const qText =
+    document.getElementById(
+        "questionText"
+    );
 
 
 
-if(!optionBox)
-return;
+    if(qText)
+        qText.innerText =
+        q.question;
 
 
 
 
 
 
-optionBox.innerHTML="";
 
 
+    const optionBox =
+    document.getElementById(
+        "options"
+    );
 
 
 
+    if(!optionBox)
+        return;
 
 
-q.options.forEach(
-(option,index)=>{
 
 
-const div =
-document.createElement(
-"div"
-);
 
+    optionBox.innerHTML="";
 
 
-div.className =
-"option";
 
 
 
-div.innerHTML = `
 
-<span>
-${String.fromCharCode(65+index)}
-</span>
+    q.options.forEach(
+    (option,index)=>{
 
-${option}
 
-`;
 
+        const div =
+        document.createElement(
+            "div"
+        );
 
 
 
-div.onclick = ()=>{
+        div.className =
+        "option";
 
 
-selectAnswer(
-index,
-div
-);
 
 
-};
+        div.innerHTML = `
 
+        <span class="optionLetter">
+        ${String.fromCharCode(65+index)}
+        </span>
 
+        <span>
+        ${option}
+        </span>
 
+        `;
 
-optionBox.appendChild(
-div
-);
 
 
 
-});
 
 
 
+        div.onclick = ()=>{
 
 
+            document
+            .querySelectorAll(
+                ".option"
+            )
+            .forEach(item=>{
 
 
-restoreAnswer();
+                item.classList.remove(
+                    "selected"
+                );
 
 
+            });
 
-updateProgress();
 
 
 
-}
+            div.classList.add(
+                "selected"
+            );
 
 
 
+            selectedAnswer=index;
 
 
 
+        };
 
 
 
-/* ===============================
-SELECT ANSWER
-================================ */
 
 
-function selectAnswer(
-index,
-element
-){
+        optionBox.appendChild(div);
 
 
 
-selectedAnswer=index;
+    });
 
 
 
 
 
-document
-.querySelectorAll(
-".option"
-)
-.forEach(
-option=>{
 
 
-option.classList.remove(
-"selected"
-);
 
+    updateProgress();
 
-});
 
 
-
-
-
-element.classList.add(
-"selected"
-);
+    startQuestionTimer();
 
 
 
@@ -1557,71 +2907,13 @@ SAVE ANSWER
 ================================ */
 
 
-function saveCurrentAnswer(){
+function saveAnswer(){
 
 
 
-userAnswers[
-currentQuestion
-]=selectedAnswer;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
-RESTORE ANSWER
-================================ */
-
-
-function restoreAnswer(){
-
-
-
-selectedAnswer =
-userAnswers[
-currentQuestion
-];
-
-
-
-
-
-if(
-selectedAnswer===null ||
-selectedAnswer===undefined
-)
-return;
-
-
-
-
-
-const options =
-document.querySelectorAll(
-".option"
-);
-
-
-
-if(options[selectedAnswer]){
-
-
-options[selectedAnswer]
-.classList.add(
-"selected"
-);
-
-
-}
+    userAnswers[
+        currentQuestion
+    ] = selectedAnswer;
 
 
 
@@ -1642,7 +2934,7 @@ NEXT BUTTON
 
 const nextBtn =
 document.getElementById(
-"nextBtn"
+    "nextBtn"
 );
 
 
@@ -1650,40 +2942,40 @@ document.getElementById(
 if(nextBtn){
 
 
-nextBtn.addEventListener(
-"click",
-()=>{
+
+    nextBtn.onclick = ()=>{
 
 
-saveCurrentAnswer();
-
+        saveAnswer();
 
 
 
 
-if(
-currentQuestion <
-questions.length-1
-){
+        if(
+            currentQuestion <
+            questions.length-1
+        ){
 
 
-currentQuestion++;
-
-loadQuestion();
+            currentQuestion++;
 
 
-}
-else{
+            loadQuestion();
 
 
-finishExam();
+        }
+
+        else{
 
 
-}
+            finishExam();
+
+
+        }
 
 
 
-});
+    };
 
 
 }
@@ -1703,7 +2995,7 @@ PREVIOUS BUTTON
 
 const previousBtn =
 document.getElementById(
-"previousBtn"
+    "previousBtn"
 );
 
 
@@ -1711,33 +3003,134 @@ document.getElementById(
 if(previousBtn){
 
 
-previousBtn.addEventListener(
-"click",
-()=>{
+    previousBtn.onclick = ()=>{
 
 
 
-saveCurrentAnswer();
+        if(
+            currentQuestion<=0
+        )
+        return;
 
 
 
 
 
-if(
-currentQuestion>0
-){
+        saveAnswer();
 
 
-currentQuestion--;
 
-loadQuestion();
+
+        currentQuestion--;
+
+
+
+        loadQuestion();
+
+
+
+
+    };
 
 
 }
 
 
 
-});
+
+
+
+
+
+
+/* ===============================
+QUESTION TIMER
+================================ */
+
+
+function startQuestionTimer(){
+
+
+
+    clearInterval(
+        questionTimer
+    );
+
+
+
+    questionSeconds =
+    EXAM_SETTINGS.QUESTION_TIME;
+
+
+
+
+
+    const box =
+    document.getElementById(
+        "questionTime"
+    );
+
+
+
+    questionTimer =
+    setInterval(()=>{
+
+
+        questionSeconds--;
+
+
+
+        if(box)
+            box.innerText =
+            questionSeconds+"s";
+
+
+
+
+
+        if(
+            questionSeconds<=0
+        ){
+
+
+            clearInterval(
+                questionTimer
+            );
+
+
+            saveAnswer();
+
+
+            if(
+                currentQuestion <
+                questions.length-1
+            ){
+
+
+                currentQuestion++;
+
+
+                loadQuestion();
+
+
+            }
+
+            else{
+
+
+                finishExam();
+
+
+            }
+
+
+
+        }
+
+
+
+    },1000);
+
 
 
 }
@@ -1759,94 +3152,74 @@ function startMasterTimer(){
 
 
 
-clearInterval(
-masterTimer
-);
+    clearInterval(
+        masterTimer
+    );
+
+
+
+    masterTimer =
+    setInterval(()=>{
+
+
+        totalSeconds--;
+
+
+
+        const min =
+        Math.floor(
+            totalSeconds/60
+        );
+
+
+        const sec =
+        totalSeconds%60;
 
 
 
 
 
-masterTimer =
-setInterval(
-()=>{
+        const timer =
+        document.getElementById(
+            "masterTime"
+        );
 
 
 
-let min =
-Math.floor(
-totalSeconds/60
-);
+        if(timer){
 
 
-
-let sec =
-totalSeconds%60;
-
-
-
+            timer.innerText =
+            `${min}:${sec
+            .toString()
+            .padStart(2,"0")}`;
 
 
-
-const timer =
-document.getElementById(
-"masterTime"
-);
-
-
-
-
-
-if(timer){
-
-
-timer.innerText =
-`${min}:${sec<10?"0":""}${sec}`;
-
-
-}
+        }
 
 
 
 
 
 
-totalSeconds--;
+        if(
+            totalSeconds<=0
+        ){
+
+
+            clearInterval(
+                masterTimer
+            );
+
+
+            finishExam();
+
+
+        }
 
 
 
-
-
-if(
-totalSeconds<=0
-){
-
-
-
-clearInterval(
-masterTimer
-);
-
-
-
-alert(
-"Time Finished"
-);
-
-
-
-finishExam();
-
-
-
-}
-
-
-
-
-},
-1000
-);
+    },1000);
 
 
 
@@ -1861,7 +3234,7 @@ finishExam();
 
 
 /* ===============================
-PROGRESS BAR
+PROGRESS
 ================================ */
 
 
@@ -1869,62 +3242,52 @@ function updateProgress(){
 
 
 
-const progress =
-
-(
-(currentQuestion+1)
-/
-questions.length
-)
-*
-100;
+    const bar =
+    document.getElementById(
+        "progressFill"
+    );
 
 
 
-
-
-const bar =
-document.getElementById(
-"progressFill"
-);
+    const text =
+    document.getElementById(
+        "progressText"
+    );
 
 
 
 
-
-if(bar){
-
-
-bar.style.width =
-progress+"%";
-
-
-}
-
-
-
-}
+    const percent =
+    (
+        (currentQuestion+1)
+        /
+        questions.length
+    )
+    *
+    100;
 
 
 
 
 
-
-
-/* ===============================
-AUTO SUBMIT
-================================ */
-
-
-function autoSubmit(){
+    if(bar)
+        bar.style.width =
+        percent+"%";
 
 
 
-finishExam();
+
+
+    if(text)
+        text.innerText =
+        `${currentQuestion+1}/${questions.length}`;
 
 
 
 }
+
+
+
 
 
 
@@ -1937,12 +3300,22 @@ console.log(
 
 
 console.log(
-"PART 3 EXAM ENGINE READY"
+"PART 4 / 6 READY"
 );
 
 
 console.log(
-"FIREBASE FREE MODE"
+"EXAM ENGINE READY"
+);
+
+
+console.log(
+"TIMER READY"
+);
+
+
+console.log(
+"QUESTION SYSTEM READY"
 );
 
 
@@ -1951,66 +3324,133 @@ console.log(
 );
 
 /* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
+PREMIUM FUTURE EXAM SYSTEM
 
 APP.JS
-PART 4 / 6
+PART 5 / 6
 
-EXAM SECURITY SYSTEM
-FIREBASE FREE VERSION
+SECURITY SYSTEM
+
+COPY BLOCK
+PASTE BLOCK
+RIGHT CLICK BLOCK
+KEYBOARD LOCK
+TAB SWITCH DETECTION
+FULLSCREEN EXIT DETECTION
+SCREEN FOCUS PROTECTION
+
+NO FIREBASE
+PURE JAVASCRIPT
 
 ===================================================== */
 
 
 
+
+
 /* ===============================
-SECURITY WARNING
+SECURITY STATUS
 ================================ */
 
 
-function showSecurityWarning(message){
-
-
-
-if(examFinished)
-return;
-
-
-
-
-
-warningCount++;
+let securityEnabled = false;
 
 
 
 
 
 
-const warningText =
-document.getElementById(
-"warningText"
-);
 
 
 
-if(warningText){
+/* ===============================
+ENABLE SECURITY
+================================ */
 
 
-warningText.innerText =
+function enableSecurity(){
 
-message
 
-+
 
-"\nWarning : "
+    if(securityEnabled)
+        return;
 
-+
 
-warningCount
 
-+
 
-"/3";
+    securityEnabled = true;
+
+
+
+
+
+
+    /* RIGHT CLICK */
+
+    document.addEventListener(
+        "contextmenu",
+        blockRightClick
+    );
+
+
+
+
+
+
+
+    /* COPY PASTE */
+
+    document.addEventListener(
+        "copy",
+        blockCopy
+    );
+
+
+    document.addEventListener(
+        "paste",
+        blockCopy
+    );
+
+
+    document.addEventListener(
+        "cut",
+        blockCopy
+    );
+
+
+
+
+
+
+
+    /* TEXT SELECT */
+
+    document.addEventListener(
+        "selectstart",
+        blockCopy
+    );
+
+
+
+
+
+
+
+    /* KEYBOARD */
+
+    document.addEventListener(
+        "keydown",
+        blockKeyboard
+    );
+
+
+
+
+
+
+    console.log(
+        "SECURITY ENABLED"
+    );
 
 
 }
@@ -2021,35 +3461,27 @@ warningCount
 
 
 
-const popup =
-document.getElementById(
-"warningPopup"
-);
+
+
+/* ===============================
+RIGHT CLICK BLOCK
+================================ */
+
+
+function blockRightClick(e){
 
 
 
+    if(
+        examStarted &&
+        !examFinished
+    ){
 
 
-if(popup){
+        e.preventDefault();
 
 
-popup.classList.remove(
-"hidden"
-);
-
-
-
-
-setTimeout(()=>{
-
-
-popup.classList.add(
-"hidden"
-);
-
-
-},2500);
-
+    }
 
 
 }
@@ -2061,20 +3493,112 @@ popup.classList.add(
 
 
 
-if(
-warningCount>=3
-){
+
+/* ===============================
+COPY BLOCK
+================================ */
 
 
-alert(
-"Too many violations. Exam submitted."
-);
+function blockCopy(e){
 
 
-finishExam();
+
+    if(
+        examStarted &&
+        !examFinished
+    ){
+
+
+        e.preventDefault();
+
+
+    }
 
 
 }
+
+
+
+
+
+
+
+
+
+/* ===============================
+KEYBOARD LOCK
+================================ */
+
+
+function blockKeyboard(e){
+
+
+
+    if(
+        !examStarted ||
+        examFinished
+    )
+    return;
+
+
+
+
+
+
+    const key =
+    e.key.toLowerCase();
+
+
+
+
+
+
+
+    const blocked = [
+
+
+        "f12",
+
+        "f5",
+
+        "f11",
+
+        "tab",
+
+        "escape"
+
+
+    ];
+
+
+
+
+
+
+    if(
+        blocked.includes(key)
+        ||
+        e.ctrlKey
+        ||
+        e.altKey
+        ||
+        e.metaKey
+    ){
+
+
+
+        e.preventDefault();
+
+
+
+        console.log(
+            "Blocked:",
+            e.key
+        );
+
+
+
+    }
 
 
 
@@ -2094,38 +3618,95 @@ TAB SWITCH DETECTION
 
 
 document.addEventListener(
+
 "visibilitychange",
+
 ()=>{
 
 
 
-if(
 
-document.hidden
 
-&&
+    if(
 
-!examFinished
+        document.hidden &&
 
-&&
+        examStarted &&
 
-questions.length>0
+        !examFinished
 
-){
+    ){
 
 
 
-showSecurityWarning(
-"Tab switching detected!"
-);
+        alert(
+            "Tab switching detected. Exam cancelled."
+        );
+
+
+
+        finishExam();
+
+
+
+    }
+
+
 
 
 
 }
 
+);
 
 
-});
+
+
+
+
+
+
+
+/* ===============================
+WINDOW FOCUS LOST
+================================ */
+
+
+window.addEventListener(
+
+"blur",
+
+()=>{
+
+
+
+    if(
+
+        examStarted &&
+
+        !examFinished
+
+    ){
+
+
+
+        alert(
+            "Focus lost. Exam cancelled."
+        );
+
+
+
+        finishExam();
+
+
+
+    }
+
+
+
+}
+
+);
 
 
 
@@ -2141,41 +3722,49 @@ FULLSCREEN EXIT
 
 
 document.addEventListener(
+
 "fullscreenchange",
+
 ()=>{
 
 
 
-if(
 
-!document.fullscreenElement
 
-&&
+    if(
 
-!examFinished
+        examStarted &&
 
-&&
+        !examFinished &&
 
-questions.length>0
+        !document.fullscreenElement
 
-){
+    ){
 
 
 
-showSecurityWarning(
-"Fullscreen exited!"
+        alert(
+            "Fullscreen exited. Exam cancelled."
+        );
+
+
+
+        finishExam();
+
+
+
+    }
+
+
+
+
+
+}
+
 );
 
 
 
-}
-
-
-
-});
-
-
-
 
 
 
@@ -2183,229 +3772,7 @@ showSecurityWarning(
 
 
 /* ===============================
-COPY BLOCK
-================================ */
-
-
-document.addEventListener(
-"copy",
-(e)=>{
-
-
-
-if(
-
-!examFinished
-
-&&
-
-questions.length>0
-
-){
-
-
-
-e.preventDefault();
-
-
-
-showSecurityWarning(
-"Copy disabled!"
-);
-
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ===============================
-PASTE BLOCK
-================================ */
-
-
-document.addEventListener(
-"paste",
-(e)=>{
-
-
-
-if(
-
-!examFinished
-
-&&
-
-questions.length>0
-
-){
-
-
-
-e.preventDefault();
-
-
-
-showSecurityWarning(
-"Paste disabled!"
-);
-
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ===============================
-RIGHT CLICK BLOCK
-================================ */
-
-
-document.addEventListener(
-"contextmenu",
-(e)=>{
-
-
-
-if(
-
-!examFinished
-
-&&
-
-questions.length>0
-
-){
-
-
-
-e.preventDefault();
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ===============================
-KEYBOARD SECURITY
-================================ */
-
-
-document.addEventListener(
-"keydown",
-(e)=>{
-
-
-
-if(examFinished)
-return;
-
-
-
-
-
-
-if(
-
-
-
-e.key==="F12"
-
-
-
-||
-
-
-
-(
-
-e.ctrlKey
-
-&&
-
-(
-
-e.key.toLowerCase()==="c"
-
-||
-
-e.key.toLowerCase()==="v"
-
-||
-
-e.key.toLowerCase()==="u"
-
-||
-
-e.key.toLowerCase()==="s"
-
-)
-
-)
-
-
-
-){
-
-
-
-e.preventDefault();
-
-
-
-
-showSecurityWarning(
-"Keyboard shortcut blocked!"
-);
-
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ===============================
-BACK BUTTON BLOCK
+MOBILE BACK BUTTON BLOCK
 ================================ */
 
 
@@ -2415,91 +3782,76 @@ null,
 location.href
 );
 
-
-
-
-
-window.onpopstate =
-()=>{
-
-
-
-if(
-
-!examFinished
-
-&&
-
-questions.length>0
-
-){
-
-
-
-showSecurityWarning(
-"Back button disabled!"
-);
-
-
-
-
-history.pushState(
-null,
-null,
-location.href
-);
-
-
-
-}
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* ===============================
-PAGE CLOSE WARNING
-================================ */
 
 
 window.addEventListener(
-"beforeunload",
-(e)=>{
+
+"popstate",
+
+()=>{
 
 
 
-if(
-
-!examFinished
-
-&&
-
-questions.length>0
-
-){
 
 
+    if(
 
-e.preventDefault();
+        examStarted &&
+
+        !examFinished
+
+    ){
 
 
 
-e.returnValue="";
+        alert(
+            "Back button detected. Exam cancelled."
+        );
+
+
+
+        finishExam();
+
+
+
+    }
+
+
 
 
 }
 
+);
 
 
-});
+
+
+
+
+
+
+
+/* ===============================
+DISABLE SECURITY
+================================ */
+
+
+function disableSecurity(){
+
+
+
+    securityEnabled = false;
+
+
+
+    console.log(
+        "SECURITY DISABLED"
+    );
+
+
+
+}
+
 
 
 
@@ -2514,12 +3866,27 @@ console.log(
 
 
 console.log(
-"PART 4 SECURITY SYSTEM READY"
+"PART 5 / 6 READY"
 );
 
 
 console.log(
-"FIREBASE FREE MODE"
+"SECURITY SYSTEM READY"
+);
+
+
+console.log(
+"COPY BLOCK READY"
+);
+
+
+console.log(
+"KEYBOARD LOCK READY"
+);
+
+
+console.log(
+"TAB PROTECTION READY"
 );
 
 
@@ -2528,14 +3895,18 @@ console.log(
 );
 
 /* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
+PREMIUM FUTURE EXAM SYSTEM
 
 APP.JS
-PART 5 / 6
+PART 6 / 6
 
-RESULT SYSTEM + LOCAL STORAGE SAVE
+RESULT SYSTEM
+REVIEW ANSWER
+LOGOUT
+FINAL CLEANUP
 
-FIREBASE FREE VERSION
+NO FIREBASE
+PURE JAVASCRIPT
 
 ===================================================== */
 
@@ -2552,60 +3923,60 @@ function finishExam(){
 
 
 
-if(examFinished)
-return;
+    if(examFinished)
+        return;
+
+
+
+
+    examFinished = true;
+
+    examStarted = false;
 
 
 
 
 
-examFinished=true;
+    clearInterval(
+        masterTimer
+    );
 
 
-
-
-
-clearInterval(
-questionTimer
-);
-
-
-clearInterval(
-masterTimer
-);
+    clearInterval(
+        questionTimer
+    );
 
 
 
 
 
 
-saveCurrentAnswer();
+    saveAnswer();
+
+
+
+    calculateScore();
+
+
+
+    saveResult();
+
+
+
+    disableSecurity();
 
 
 
 
 
-calculateScore();
+    showPage(
+        "resultPage"
+    );
 
 
 
+    displayResult();
 
-
-saveExamResult();
-
-
-
-
-
-showPage(
-"resultPage"
-);
-
-
-
-
-
-displayResult();
 
 
 
@@ -2629,42 +4000,43 @@ function calculateScore(){
 
 
 
-score=0;
+    score = 0;
 
 
 
 
 
-questions.forEach(
-(q,index)=>{
+    questions.forEach(
+
+    (q,index)=>{
 
 
 
-if(
-
-userAnswers[index] !== undefined
-
-&&
-
-userAnswers[index] !== null
-
-&&
-
-userAnswers[index] === q.answer
-
-){
 
 
-score++;
+        if(
 
+            userAnswers[index]
+            ===
+            q.answer
 
-}
+        ){
 
 
 
-});
+            score++;
 
 
+
+        }
+
+
+
+
+
+    }
+
+    );
 
 
 
@@ -2683,228 +4055,146 @@ SAVE RESULT
 ================================ */
 
 
-function saveExamResult(){
+function saveResult(){
 
 
 
-if(!currentStudent)
-return;
+    if(resultSaved)
+        return;
 
 
 
 
+    if(!currentStudent)
+        return;
 
 
 
-const percentage =
 
 
-questions.length > 0
 
-?
 
-(
+    let results =
 
-score
+    JSON.parse(
 
-/
+        localStorage.getItem(
+            STORAGE.RESULT
+        )
 
-questions.length
+    )
+    ||
+    [];
 
-)
 
-*
 
-100
 
-:
 
-0;
 
 
 
+    const percentage =
 
+    (
 
+        score /
 
+        questions.length
 
+    )
+    *
+    100;
 
-let results =
 
-JSON.parse(
 
-localStorage.getItem(
-"examResults"
-)
 
-)
 
-|| [];
 
 
 
+    const result = {
 
 
 
+        id:
+        currentStudent.id,
 
 
 
-const resultData={
+        name:
+        currentStudent.name,
 
 
 
-id:
+        username:
+        currentStudent.username,
 
-currentStudent.id,
 
 
+        set:
+        currentStudent.set,
 
-name:
 
-currentStudent.name,
 
+        score:
+        score,
 
 
-username:
 
-currentStudent.username,
+        total:
+        questions.length,
 
 
 
-set:
+        percentage:
+        percentage.toFixed(2),
 
-currentStudent.set,
 
 
+        date:
+        new Date()
+        .toLocaleString()
 
-score:
 
-score,
 
+    };
 
 
-total:
 
-questions.length,
 
 
 
-percentage:
 
-percentage.toFixed(2),
 
+    results.push(
+        result
+    );
 
 
-date:
 
-new Date().toLocaleString()
 
 
+    localStorage.setItem(
 
-};
+        STORAGE.RESULT,
 
+        JSON.stringify(results)
 
+    );
 
 
 
 
 
 
-results.push(
-resultData
-);
+    increaseAttempt(
+        currentStudent.username
+    );
 
 
 
 
-
-
-
-localStorage.setItem(
-
-"examResults",
-
-JSON.stringify(results)
-
-);
-
-
-
-
-
-
-
-
-
-/*
-================================
-ATTEMPT SAVE
-
-ONLY NORMAL USERS
-================================
-*/
-
-
-
-
-
-if(
-
-currentStudent.unlimited !== true
-
-){
-
-
-
-let attempts =
-
-
-JSON.parse(
-
-localStorage.getItem(
-"examAttempts"
-)
-
-)
-
-|| {};
-
-
-
-
-
-attempts[
-currentStudent.username
-]
-=true;
-
-
-
-
-
-localStorage.setItem(
-
-"examAttempts",
-
-JSON.stringify(attempts)
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-console.log(
-"RESULT SAVED",
-resultData
-);
-
-
+    resultSaved=true;
 
 
 
@@ -2927,57 +4217,58 @@ function displayResult(){
 
 
 
-const percentage =
 
 
-questions.length > 0
+    const percentage =
 
-?
+    (
 
-(
+        score /
 
-score
+        questions.length
 
-/
+    )
+    *
+    100;
 
-questions.length
 
-)
 
-*
 
-100
 
-:
 
-0;
 
 
+    const student =
+    document.getElementById(
+        "resultStudent"
+    );
 
 
 
+    if(student)
+        student.innerText =
+        currentStudent.name;
 
 
 
-const resultStudent =
 
-document.getElementById(
-"resultStudent"
-);
 
 
 
-if(resultStudent){
 
 
-resultStudent.innerText =
+    const scoreBox =
+    document.getElementById(
+        "scoreText"
+    );
 
-currentStudent.name;
 
 
-}
+    if(scoreBox)
 
+        scoreBox.innerText =
 
+        `${score} / ${questions.length}`;
 
 
 
@@ -2985,162 +4276,67 @@ currentStudent.name;
 
 
 
-const scoreText =
 
-document.getElementById(
-"scoreText"
-);
 
 
+    const percentBox =
+    document.getElementById(
+        "percentage"
+    );
 
-if(scoreText){
 
 
-scoreText.innerText =
+    if(percentBox)
 
-score
+        percentBox.innerText =
 
-+
+        percentage.toFixed(2)
+        +
+        "%";
 
-" / "
 
-+
 
-questions.length;
 
 
-}
 
 
 
 
+    const status =
+    document.getElementById(
+        "status"
+    );
 
 
 
+    if(status){
 
 
-const percentageBox =
 
-document.getElementById(
-"percentage"
-);
+        if(
+            percentage >=
+            EXAM_SETTINGS.PASS_MARK
+        ){
 
 
+            status.innerText =
+            "PASS";
 
-if(percentageBox){
 
+        }
 
-percentageBox.innerText =
+        else{
 
-percentage.toFixed(2)
 
-+
+            status.innerText =
+            "FAIL";
 
-"%";
 
+        }
 
-}
 
+    }
 
-
-
-
-
-
-
-
-const status =
-
-document.getElementById(
-"status"
-);
-
-
-
-
-
-
-if(status){
-
-
-
-if(
-percentage>=40
-){
-
-
-
-status.innerText="PASS";
-
-status.className="pass";
-
-
-
-}
-
-else{
-
-
-status.innerText="FAIL";
-
-status.className="fail";
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-const grade =
-
-document.getElementById(
-"grade"
-);
-
-
-
-
-
-if(grade){
-
-
-let g="F";
-
-
-
-if(percentage>=90)
-g="A+";
-
-else if(percentage>=80)
-g="A";
-
-else if(percentage>=70)
-g="B";
-
-else if(percentage>=60)
-g="C";
-
-else if(percentage>=40)
-g="D";
-
-
-
-
-
-grade.innerText=g;
-
-
-
-}
 
 
 
@@ -3148,72 +4344,6 @@ grade.innerText=g;
 }
 
 
-
-
-
-
-
-
-
-/* ===============================
-AUTO SUBMIT
-================================ */
-
-
-function autoSubmit(){
-
-
-
-alert(
-"Time Finished! Exam Submitted"
-);
-
-
-
-finishExam();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-console.log(
-"================================="
-);
-
-
-console.log(
-"PART 5 RESULT SYSTEM READY"
-);
-
-
-console.log(
-"LOCAL STORAGE MODE ENABLED"
-);
-
-
-console.log(
-"================================="
-);
-
-/* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
-
-APP.JS
-PART 6 / 6
-
-REVIEW + LOGOUT + CLEANUP
-
-FIREBASE FREE VERSION
-
-===================================================== */
 
 
 
@@ -3227,31 +4357,35 @@ REVIEW BUTTON
 
 
 const reviewBtn =
+
 document.getElementById(
-"reviewBtn"
+    "reviewBtn"
 );
+
+
 
 
 
 if(reviewBtn){
 
 
-reviewBtn.addEventListener(
-"click",
-()=>{
 
-
-showPage(
-"reviewPage"
-);
+    reviewBtn.onclick = ()=>{
 
 
 
-loadReview();
+        showPage(
+            "reviewPage"
+        );
 
 
 
-});
+        loadReview();
+
+
+
+    };
+
 
 
 }
@@ -3273,192 +4407,132 @@ function loadReview(){
 
 
 
-const container =
+    const box =
 
-document.getElementById(
-"reviewContainer"
-);
+    document.getElementById(
+        "reviewContainer"
+    );
 
 
 
 
+    if(!box)
+        return;
 
-if(!container)
-return;
 
 
 
 
+    box.innerHTML = "";
 
-container.innerHTML="";
 
 
 
 
 
 
+    questions.forEach(
 
+    (q,index)=>{
 
-questions.forEach(
-(q,index)=>{
 
 
 
 
+        const userAnswer =
 
-const userAnswer =
+        userAnswers[index];
 
-userAnswers[index];
 
 
 
 
 
 
-const div =
+        const card =
 
-document.createElement(
-"div"
-);
+        document.createElement(
+            "div"
+        );
 
 
 
 
 
+        card.className =
+        "reviewItem";
 
-div.className =
-"reviewItem";
 
 
 
 
 
 
+        card.innerHTML = `
 
 
 
-let userText =
-"Not Answered";
+        <h3>
 
+        Q${index+1}. ${q.question}
 
+        </h3>
 
 
 
-if(
-userAnswer!==undefined
-&&
-userAnswer!==null
-){
+        <p>
 
+        Your Answer:
 
-userText =
-q.options[userAnswer];
+        ${
+            userAnswer !== undefined &&
+            userAnswer !== null
 
+            ?
 
-}
+            q.options[userAnswer]
 
+            :
 
+            "Not Answered"
 
+        }
 
+        </p>
 
 
 
-let correctText =
 
-q.options[q.answer];
 
+        <p>
 
+        Correct Answer:
 
+        ${q.options[q.answer]}
 
+        </p>
 
 
 
+        `;
 
 
-let resultClass="";
 
 
 
 
-if(
-userAnswer===q.answer
-){
 
+        box.appendChild(
+            card
+        );
 
-resultClass =
-"correctAnswer";
 
 
-}
 
-else{
 
+    }
 
-resultClass =
-"wrongAnswer";
-
-
-}
-
-
-
-
-
-
-
-
-
-div.innerHTML = `
-
-
-<h3>
-Question ${index+1}
-</h3>
-
-
-<p>
-${q.question}
-</p>
-
-
-<p class="${resultClass}">
-
-Your Answer:
-${userText}
-
-</p>
-
-
-<p>
-
-Correct Answer:
-${correctText}
-
-</p>
-
-
-
-`;
-
-
-
-
-
-
-
-container.appendChild(
-div
-);
-
-
-
-
-
-
-});
-
-
-
+    );
 
 
 
@@ -3480,9 +4554,8 @@ CLOSE REVIEW
 const closeReview =
 
 document.getElementById(
-"closeReview"
+    "closeReview"
 );
-
 
 
 
@@ -3491,18 +4564,15 @@ if(closeReview){
 
 
 
-closeReview.addEventListener(
-"click",
-()=>{
+    closeReview.onclick = ()=>{
 
 
-showPage(
-"resultPage"
-);
+        showPage(
+            "resultPage"
+        );
 
 
-
-});
+    };
 
 
 }
@@ -3516,281 +4586,15 @@ showPage(
 
 
 /* ===============================
-LOGOUT BUTTON
-================================ */
-
-
-const logoutBtn =
-
-document.getElementById(
-"logoutBtn"
-);
-
-
-
-
-
-if(logoutBtn){
-
-
-logoutBtn.addEventListener(
-"click",
-()=>{
-
-
-logoutUser();
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
-LOGOUT FUNCTION
-================================ */
-
-
-function logoutUser(){
-
-
-
-
-
-clearInterval(
-questionTimer
-);
-
-
-clearInterval(
-masterTimer
-);
-
-
-
-
-
-
-
-currentStudent=null;
-
-
-currentSet=null;
-
-
-questions=[];
-
-
-userAnswers=[];
-
-
-score=0;
-
-
-currentQuestion=0;
-
-
-examFinished=false;
-
-
-warningCount=0;
-
-
-
-
-
-
-
-
-
-localStorage.removeItem(
-"currentUser"
-);
-
-
-
-
-
-
-showPage(
-"loginPage"
-);
-
-
-
-
-
-
-
-console.log(
-"USER LOGGED OUT"
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
-FULL RESET SYSTEM
-================================ */
-
-
-function resetExam(){
-
-
-
-
-
-clearInterval(
-questionTimer
-);
-
-
-clearInterval(
-masterTimer
-);
-
-
-
-
-
-
-
-currentStudent=null;
-
-
-currentSet=null;
-
-
-questions=[];
-
-
-userAnswers=[];
-
-
-score=0;
-
-
-currentQuestion=0;
-
-
-selectedAnswer=null;
-
-
-examFinished=false;
-
-
-warningCount=0;
-
-
-
-
-
-
-
-
-const username =
-
-document.getElementById(
-"username"
-);
-
-
-
-
-
-const password =
-
-document.getElementById(
-"password"
-);
-
-
-
-
-
-
-
-if(username)
-username.value="";
-
-
-
-
-
-if(password)
-password.value="";
-
-
-
-
-
-
-
-if(
-document.fullscreenElement
-){
-
-
-document
-.exitFullscreen()
-.catch(()=>{});
-
-
-}
-
-
-
-
-
-
-
-showPage(
-"loginPage"
-);
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
-FINISH BUTTON
+LOGOUT
 ================================ */
 
 
 const finishBtn =
 
 document.getElementById(
-"finishBtn"
+    "finishBtn"
 );
-
-
 
 
 
@@ -3798,17 +4602,130 @@ document.getElementById(
 if(finishBtn){
 
 
-
-finishBtn.addEventListener(
-"click",
-()=>{
+    finishBtn.onclick =
+    logout;
 
 
-resetExam();
+}
 
 
 
-});
+
+
+
+
+
+
+function logout(){
+
+
+
+
+
+    clearInterval(
+        masterTimer
+    );
+
+
+    clearInterval(
+        questionTimer
+    );
+
+
+
+
+
+    disableSecurity();
+
+
+
+
+
+
+    currentStudent = null;
+
+
+    questions = [];
+
+
+    userAnswers = [];
+
+
+    selectedAnswer = null;
+
+
+    currentQuestion = 0;
+
+
+    score = 0;
+
+
+
+
+    examStarted=false;
+
+
+    examFinished=false;
+
+
+    resultSaved=false;
+
+
+
+
+
+
+
+
+    localStorage.removeItem(
+
+        STORAGE.USER
+
+    );
+
+
+
+
+
+
+
+
+    const username =
+
+    document.getElementById(
+        "username"
+    );
+
+
+
+    const password =
+
+    document.getElementById(
+        "password"
+    );
+
+
+
+
+    if(username)
+        username.value="";
+
+
+
+    if(password)
+        password.value="";
+
+
+
+
+
+
+
+
+    showPage(
+        "loginPage"
+    );
+
 
 
 }
@@ -3822,7 +4739,42 @@ resetExam();
 
 
 /* ===============================
-SYSTEM READY
+EXIT FULLSCREEN
+================================ */
+
+
+function exitFullscreen(){
+
+
+
+    if(
+        document.fullscreenElement
+    ){
+
+
+
+        document
+        .exitFullscreen()
+        .catch(()=>{});
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+FINAL MESSAGE
 ================================ */
 
 
@@ -3832,21 +4784,30 @@ console.log(
 
 
 console.log(
-"PREMIUM EXAM SYSTEM READY"
+"PART 6 / 6 COMPLETE"
 );
 
 
 console.log(
-"PART 1-6 COMPLETED"
+"RESULT SYSTEM READY"
 );
 
 
 console.log(
-"FIREBASE COMPLETELY REMOVED"
+"REVIEW SYSTEM READY"
+);
+
+
+console.log(
+"LOGOUT READY"
+);
+
+
+console.log(
+"PREMIUM EXAM SYSTEM COMPLETE"
 );
 
 
 console.log(
 "================================="
 );
-
