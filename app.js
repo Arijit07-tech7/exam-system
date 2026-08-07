@@ -38,7 +38,7 @@ const users = [
     name:"Alok",
     set:"B",
     unlimited:false,
-    loginLimit:2,
+    loginLimit:3,
     loginCount:0,
     active:true
 },
@@ -1167,977 +1167,486 @@ const questionSets = {
 
     B: [
 
-        {
-            questionNumber: 1,
+    {
+        questionNumber: 1,
 
-            question: "What happens when a user types a URL using HTTPS into a web browser?",
+        question: "In JavaScript, what is the output of [1, 2, 3] + [4, 5, 6]?",
 
-            options: [
-                "TCP Handshake → DNS Lookup → TLS Handshake → HTTP Request",
-                "DNS Lookup → TCP Handshake → TLS Handshake → HTTP Request",
-                "TLS Handshake → DNS Lookup → TCP Handshake → HTTP Request",
-                "DNS Lookup → TLS Handshake → TCP Handshake → HTTP Request"
-            ],
+        options: [
+            "[1, 2, 3, 4, 5, 6]",
+            "\"1,2,34,5,6\"",
+            "NaN",
+            "TypeError"
+        ],
 
-            answer: 1
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 2,
+    {
+        questionNumber: 2,
 
-            question: "Which HTTP version introduced multiplexing over a single TCP connection?",
+        question: "How does the browser layout engine handle will-change: transform in CSS?",
 
-            options: [
-                "HTTP/1.0",
-                "HTTP/1.1",
-                "HTTP/2",
-                "HTTP/3"
-            ],
+        options: [
+            "Forces immediate synchronous repaint on all child nodes",
+            "Creates a new stacking context and hints to promote the element to a composite layer",
+            "Disables GPU acceleration to prevent memory leaks",
+            "Forces the element to use absolute positioning relative to the viewport"
+        ],
 
-            answer: 2
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 3,
+    {
+        questionNumber: 3,
 
-            question: "Who enforces Cross-Origin Resource Sharing (CORS) rules?",
+        question: "What is the fundamental difference between Promise.all() and Promise.allSettled()?",
 
-            options: [
-                "The DNS server",
-                "The User's Web Browser",
-                "The Origin Server",
-                "The Database Engine"
-            ],
+        options: [
+            "Promise.all() runs sequentially; Promise.allSettled() runs concurrently",
+            "Promise.all() short-circuits on the first rejection; Promise.allSettled() waits for all promises to settle regardless of outcome",
+            "Promise.allSettled() returns only resolved values; Promise.all() returns rejection reasons",
+            "Promise.all() accepts non-iterable objects; Promise.allSettled() requires a map"
+        ],
 
-            answer: 1
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 4,
+    {
+        questionNumber: 4,
 
-            question: "Which storage mechanism automatically sends its content with every HTTP request to its matching domain?",
+        question: "Which security header prevents a site from being embedded inside an <iframe> to mitigate Clickjacking attacks?",
 
-            options: [
-                "LocalStorage",
-                "SessionStorage",
-                "Cookies",
-                "IndexedDB"
-            ],
+        options: [
+            "Access-Control-Allow-Origin",
+            "X-Content-Type-Options",
+            "Content-Security-Policy: frame-ancestors 'none'",
+            "Strict-Transport-Security"
+        ],
 
-            answer: 2
+        answer: 2
 
-        },
+    },
 
-        {
-            questionNumber: 5,
+    {
+        questionNumber: 5,
 
-            question: "In JavaScript's Event Loop, which queue takes precedence for execution when the Call Stack empties?",
+        question: "In the Event Loop execution model, in what order are Microtasks, Macrotasks, and Animation Frames executed during a single render cycle?",
 
-            options: [
-                "Macrotask Queue",
-                "Microtask Queue",
-                "Rendering Queue",
-                "Callback Queue"
-            ],
+        options: [
+            "Macrotask → Animation Frames → Microtasks",
+            "Microtasks → Macrotask → Animation Frames",
+            "Macrotask → All Microtasks → requestAnimationFrame callback → Render",
+            "requestAnimationFrame → Microtasks → Macrotask"
+        ],
 
-            answer: 1
+        answer: 2
 
-        },
+    },
 
-        {
-            questionNumber: 6,
+    {
+        questionNumber: 6,
 
-            question: "Which sequence accurately reflects the Critical Rendering Path order?",
+        question: "What is the memory footprint behavior of a JavaScript WeakMap?",
 
-            options: [
-                "Render Tree → DOM → CSSOM → Paint → Layout",
-                "DOM → CSSOM → Render Tree → Layout → Paint",
-                "CSSOM → DOM → Layout → Render Tree → Paint",
-                "DOM → Layout → CSSOM → Render Tree → Paint"
-            ],
+        options: [
+            "Keys must be primitive types and are garbage collected automatically",
+            "Keys must be objects, held weakly so they don't prevent garbage collection if no other references exist",
+            "Values are stored weakly while keys are strongly referenced",
+            "WeakMaps can be iterated using for...of loops without affecting GC"
+        ],
 
-            answer: 1
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 7,
+    {
+        questionNumber: 7,
 
-            question: "What is the primary operational difference between Debouncing and Throttling?",
+        question: "What happens when an HTTP cross-origin request triggers a CORS Preflight?",
 
-            options: [
-                "Debounce delays execution until a quiet pause; Throttle enforces a fixed maximum execution frequency.",
-                "Throttle delays execution until a quiet pause; Debounce enforces a fixed maximum execution frequency.",
-                "Debounce runs asynchronously; Throttle runs synchronously.",
-                "Debounce only works with mouse events; Throttle only works with keyboard events."
-            ],
+        options: [
+            "The browser issues a GET request with X-Preflight: true",
+            "The browser issues an OPTIONS request prior to the main request to verify permissions",
+            "The server responds with 307 Temporary Redirect",
+            "The browser converts POST to PUT automatically"
+        ],
 
-            answer: 0
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 8,
+    {
+        questionNumber: 8,
 
-            question: "Which HTTP Response Header directly prevents Cross-Site Scripting (XSS) by restricting where scripts can be loaded from?",
+        question: "What is the specificity calculation weight tuple (Inline, ID, Class/Attribute/Pseudo, Element) for '#nav .menu-item:hover a'?",
 
-            options: [
-                "Access-Control-Allow-Origin",
-                "Strict-Transport-Security",
-                "Content-Security-Policy",
-                "X-Frame-Options"
-            ],
+        options: [
+            "(0, 1, 2, 1)",
+            "(0, 1, 1, 2)",
+            "(0, 2, 1, 1)",
+            "(0, 1, 3, 0)"
+        ],
 
-            answer: 2
+        answer: 0
 
-        },
+    },
 
-        {
-            questionNumber: 9,
+    {
+        questionNumber: 9,
 
-            question: "What makes an HTTP method idempotent?",
+        question: "Which JavaScript statement regarding function declarations and hoisting inside a block scope ({ ... }) in strict mode is TRUE?",
 
-            options: [
-                "Calling it multiple times produces different results every time.",
-                "Calling it once or multiple times leaves the server in the exact same state.",
-                "It executes faster than non-idempotent methods.",
-                "It does not require headers or request payloads."
-            ],
+        options: [
+            "Block-level function declarations are hoisted to the global scope",
+            "Block-level function declarations are hoisted to the top of the containing block and scoped to that block",
+            "Function declarations inside blocks cause a SyntaxError",
+            "Function declarations are not hoisted at all in JavaScript"
+        ],
 
-            answer: 1
+        answer: 1
 
-        },
+    },
 
-        {
-            questionNumber: 10,
+    {
+        questionNumber: 10,
 
-            question: "What key architectural advantage does GraphQL have over standard REST endpoints?",
+        question: "What is the output of (function() { return typeof arguments; })();",
 
-            options: [
-                "Automatic database indexing",
-                "Elimination of client-side JavaScript",
-                "Precise client-driven data fetching (prevents over/under-fetching)",
-                "Built-in transport-layer encryption"
-            ],
+        options: [
+            "\"array\"",
+            "\"arguments\"",
+            "\"object\"",
+            "\"undefined\""
+        ],
 
-            answer: 2
+        answer: 2
 
-        },
+    },
+    {
+        questionNumber: 11,
 
-        {
-            questionNumber: 11,
+        question: "What is the primary purpose of an HTTP ETag response header?",
 
-            question: "According to the CAP Theorem, what happens when a network partition (P) occurs in a distributed database?",
+        options: [
+            "Encrypting sensitive payload data",
+            "Providing a unique identifier for a specific version of a resource for cache validation",
+            "Specifying token expiration times for JWT authorization",
+            "Enabling cross-site script request validation"
+        ],
 
-            options: [
-                "You achieve both full Consistency (C) and Availability (A).",
-                "The system must choose between Consistency (C) OR Availability (A).",
-                "Network partitions only affect vertical scaling.",
-                "Partition tolerance can be disabled to keep C and A."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 12,
 
-        {
-            questionNumber: 12,
+        question: "What does the CSS property 'contain: layout style paint;' achieve?",
 
-            question: "What distinguishes a Reverse Proxy from a Forward Proxy?",
+        options: [
+            "It disables user interactions on elements outside the viewport",
+            "It isolates the element's subtree from the rest of the DOM tree for rendering performance optimizations",
+            "It prevents flexbox containers from wrapping content",
+            "It enforces strictly relative units inside child components"
+        ],
 
-            options: [
-                "Forward proxies protect servers; Reverse proxies protect clients.",
-                "Forward proxies sit in front of clients; Reverse proxies sit in front of servers.",
-                "Forward proxies handle SSL termination; Reverse proxies handle DNS resolving.",
-                "Reverse proxies cannot perform load balancing."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 13,
 
-        {
-            questionNumber: 13,
+        question: "What is the result of '0.1 + 0.2 === 0.3' in JavaScript?",
 
-            question: "Which index data structure is most commonly used by Relational Databases (RDBMS) for O(logN) lookups?",
+        options: [
+            "true",
+            "false",
+            "TypeError",
+            "NaN"
+        ],
 
-            options: [
-                "Hash Map",
-                "B Tree / B+ Tree",
-                "Linked List",
-                "Binary Search Tree"
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 14,
 
-        {
-            questionNumber: 14,
+        question: "What occurs during a DOM Reflow (Layout)?",
 
-            question: "What is the main operational risk of using a Write-Back (Write-Behind) caching strategy?",
+        options: [
+            "Updating color and visibility properties without recalculating geometry",
+            "Recalculating the positions and dimensions of render tree elements",
+            "Splitting elements into GPU hardware layers",
+            "Downloading external fonts and stylesheet assets"
+        ],
 
-            options: [
-                "Extremely high write latency.",
-                "High database load during reads.",
-                "Potential data loss if the cache crashes before flushing to disk.",
-                "Automatic deletion of database indexes."
-            ],
+        answer: 1
 
-            answer: 2
+    },
 
-        },
+    {
+        questionNumber: 15,
 
-        {
-            questionNumber: 15,
+        question: "In modern Web APIs, what is a Service Worker NOT allowed to access?",
 
-            question: "In microservices, what is the main function of the Circuit Breaker pattern?",
+        options: [
+            "Cache Storage API",
+            "Fetch API requests",
+            "Direct DOM elements and the window object",
+            "IndexedDB databases"
+        ],
 
-            options: [
-                "To encrypt communication between services using TLS.",
-                "To temporarily stop sending traffic to a failing service to prevent cascading failures.",
-                "To compress network payloads automatically.",
-                "To balance CPU load evenly among healthy instances."
-            ],
+        answer: 2
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 16,
 
-        {
-            questionNumber: 16,
+        question: "What is the output of the following C code?\n\nint a[5]={10,20,30,40,50};\nint *p=(int*)(&a+1);\nprintf(\"%d\",*(p-1));",
 
-            question: "Database Denormalization is primarily used to:",
+        options: [
+            "10",
+            "20",
+            "50",
+            "Undefined Behavior / Segmentation Fault"
+        ],
 
-            options: [
-                "Eliminate all redundant data from tables.",
-                "Reduce JOIN operations and improve read performance.",
-                "Ensure 3rd Normal Form (3NF) compliance.",
-                "Prevent SQL injection attacks."
-            ],
+        answer: 2
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 17,
 
-        {
-            questionNumber: 17,
+        question: "What does the 'volatile' keyword inform the C compiler?",
 
-            question: "How does Horizontal Scaling differ from Vertical Scaling?",
+        options: [
+            "The variable's memory must be allocated on the heap",
+            "The variable value can be modified externally, disabling compiler optimizations like register caching",
+            "The variable cannot be modified by any function",
+            "The variable is automatically thread-safe"
+        ],
 
-            options: [
-                "Horizontal scaling adds more hardware (CPU/RAM) to a single machine.",
-                "Horizontal scaling adds more machine nodes to a system pool.",
-                "Vertical scaling eliminates single points of failure automatically.",
-                "Vertical scaling is infinitely scalable without physical limits."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 18,
 
-        {
-            questionNumber: 18,
+        question: "What is the result of evaluating sizeof('a') in standard C (not C++)?",
 
-            question: "What is the fundamental security challenge with using stateless JWTs for session management?",
+        options: [
+            "1",
+            "Size of int (typically 4 bytes)",
+            "2",
+            "Implementation-defined byte size"
+        ],
 
-            options: [
-                "They cannot be signed digitally.",
-                "They require a database lookup on every request.",
-                "They are difficult to instantly revoke before their expiration time without maintaining state.",
-                "They only work over HTTP/1.0 protocols."
-            ],
+        answer: 1
 
-            answer: 2
+    },
 
-        },
+    {
+        questionNumber: 19,
 
-        {
-            questionNumber: 19,
+        question: "What potential issue exists in the following C code?\n\nchar *str = \"Hello World\";\nstr[0] = 'h';",
 
-            question: "What is a primary benefit of using a Database Connection Pool?",
+        options: [
+            "Syntax error",
+            "Undefined behavior (typically Segmentation Fault due to writing to read-only string literal memory)",
+            "Memory leak",
+            "Dynamic reallocation error"
+        ],
 
-            options: [
-                "It automatically converts NoSQL data into SQL format.",
-                "It reuses established connections, saving time and overhead on TCP/TLS handshakes.",
-                "It encrypts stored disk data automatically.",
-                "It removes the need for database indexing."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 20,
 
-        {
-            questionNumber: 20,
+        question: "What is Sequence Point violation / Undefined Behavior in the expression 'i = i++ + ++i;'?",
 
-            question: "What is an advantage of Server-Side Rendering (SSR) over Client-Side Rendering (CSR)?",
+        options: [
+            "Modifying a scalar object more than once between successive sequence points",
+            "Using integer arithmetic instead of bitwise operations",
+            "Assigning an unsigned integer to a signed variable",
+            "Invoking an uninitialized function pointer"
+        ],
 
-            options: [
-                "Zero load on the application server.",
-                "Faster Initial Page Load / First Contentful Paint and better default SEO indexing.",
-                "Complete decoupling of client and server codebases.",
-                "Immunity to XSS vulnerabilities."
-            ],
+        answer: 0
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 21,
 
-        {
-            questionNumber: 21,
+        question: "Given 'struct Node { char a; int b; short c; };', on a standard 32/64-bit alignment architecture (4-byte alignment), what is sizeof(struct Node)?",
 
-            question: "In SOLID design principles, what does the Liskov Substitution Principle (LSP) dictate?",
+        options: [
+            "7 bytes",
+            "8 bytes",
+            "12 bytes",
+            "16 bytes"
+        ],
 
-            options: [
-                "Modules should be open for modification, closed for extension.",
-                "Subclasses should be replaceable for their base classes without altering program correctness.",
-                "Interfaces must contain as many methods as possible.",
-                "High-level modules must depend directly on concrete low-level implementations."
-            ],
+        answer: 2
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 22,
 
-        {
-            questionNumber: 22,
+        question: "What does the 'restrict' pointer qualifier guarantee to the compiler in C99?",
 
-            question: "Which memory area is shared among all threads running within the same parent OS process?",
+        options: [
+            "The pointer cannot be modified after initialization",
+            "The pointer is the only reference accessing the memory location it points to during its scope",
+            "The memory pointed to is thread-restricted",
+            "The pointer address cannot be passed to standard library calls"
+        ],
 
-            options: [
-                "Call Stack",
-                "Register Set",
-                "Program Counter",
-                "Process Heap"
-            ],
+        answer: 1
 
-            answer: 3
+    },
 
-        },
+    {
+        questionNumber: 23,
 
-        {
-            questionNumber: 23,
+        question: "What is the value of x after executing the following code?\n\nint x = -1;\nx = x >> 1;",
 
-            question: "Which of the following is NOT one of the four necessary Coffman conditions for a system Deadlock?",
+        options: [
+            "0",
+            "-1 (on systems using arithmetic right shift)",
+            "2147483647",
+            "-2"
+        ],
 
-            options: [
-                "Mutual Exclusion",
-                "Hold and Wait",
-                "Preemption Allowed",
-                "Circular Wait"
-            ],
+        answer: 1
 
-            answer: 2
+    },
 
-        },
+    {
+        questionNumber: 24,
 
-        {
-            questionNumber: 24,
+        question: "What is the type of 'fp' in the declaration: int (*fp)(char *, double);",
 
-            question: "How does git rebase differ from git merge?",
+        options: [
+            "A function returning a pointer to an int",
+            "A pointer to a function taking (char*, double) parameters and returning an int",
+            "An array of function pointers returning double",
+            "Invalid syntax"
+        ],
 
-            options: [
-                "git rebase creates a new merge commit preserving exact history branch lines.",
-                "git rebase rewrites commit history by moving branch commits onto a new base commit.",
-                "git merge deletes the feature branch automatically.",
-                "git rebase cannot resolve merge conflicts."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 25,
 
-        {
-            questionNumber: 25,
+        question: "What happens when realloc(ptr, 0) is executed with a non-null valid pointer ptr (up to C11 standards)?",
 
-            question: "What distinguishes Integration Testing from Unit Testing?",
+        options: [
+            "Frees the memory block and returns NULL (or implementation-defined behavior in newer standards)",
+            "Allocates a default block size of 16 bytes",
+            "Causes a compile-time assertion failure",
+            "Converts the pointer into static storage"
+        ],
 
-            options: [
-                "Integration tests mock all database and network interactions.",
-                "Unit tests verify system user workflows end-to-end in a real browser environment.",
-                "Integration tests verify interactions between combined modules or external dependencies.",
-                "Unit tests run slower than integration tests."
-            ],
+        answer: 0
 
-            answer: 2
+    },
 
-        },
+    {
+        questionNumber: 26,
 
-        {
-            questionNumber: 26,
+        question: "In C, what is the effect of the 'inline' keyword on a function?",
 
-            question: "In Object-Oriented Design, Dependency Inversion Principle (DIP) encourages:",
+        options: [
+            "Guarantees the function will always be replaced inline",
+            "Hints to the compiler to perform inline substitution, but the compiler makes the final decision",
+            "Forces function variables to be stored on GPU memory",
+            "Disables recursion"
+        ],
 
-            options: [
-                "Direct instantiations of concrete classes inside high-level business code.",
-                "High-level and low-level modules depending on shared abstractions (interfaces).",
-                "Avoiding interfaces altogether to keep code simple.",
-                "Coupling code tightly to specific hardware implementations."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 27,
 
-        {
-            questionNumber: 27,
+        question: "What is the output of the following C program?\n\n#define CUBE(x) (x * x * x)\n\nint a = 2;\nprintf(\"%d\", CUBE(a + 1));",
 
-            question: "What happens during a Process Context Switch in an Operating System?",
+        options: [
+            "27",
+            "7",
+            "9",
+            "12"
+        ],
 
-            options: [
-                "The OS compiles source code into machine binary.",
-                "The CPU state (registers, program counter, stack pointer) of a running process is saved and another process state is restored.",
-                "The process memory is cleared completely from disk.",
-                "All running threads are terminated permanently."
-            ],
+        answer: 1
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 28,
 
-        {
-            questionNumber: 28,
+        question: "What occurs when an integer overflow happens on a signed integer in C?",
 
-            question: "What is a Closure in JavaScript?",
+        options: [
+            "It wraps around predictably using two's complement",
+            "It triggers an automatic kernel panic",
+            "It results in Undefined Behavior according to the C standard",
+            "It automatically converts to long long"
+        ],
 
-            options: [
-                "A method that closes a database connection automatically.",
-                "A function bundled with references to its surrounding lexical scope.",
-                "A syntax feature used to block global variable creation.",
-                "An asynchronous event loop handler."
-            ],
+        answer: 2
 
-            answer: 1
+    },
 
-        },
+    {
+        questionNumber: 29,
 
-        {
-            questionNumber: 29,
+        question: "What do setjmp() and longjmp() provide in C?",
 
-            question: "Which testing strategy verifies user journeys end-to-end across the full deployed software stack?",
+        options: [
+            "Multithread synchronization mechanisms",
+            "Non-local jumps / low-level exception handling across functions",
+            "Dynamic memory reallocation tracking",
+            "Hardware interrupt masking"
+        ],
 
-            options: [
-                "Unit Testing",
-                "Static Code Analysis",
-                "End-to-End (E2E) Testing",
-                "Mutation Testing"
-            ],
+        answer: 1
 
-            answer: 2
+    },
 
-        },
+    {
+        questionNumber: 30,
 
-        {
-            questionNumber: 30,
+        question: "What is the value of 'i' after executing the following code?\n\nint i = 1;\ni = sizeof(i++);",
 
-            question: "What is the fundamental difference between Authentication and Authorization?",
+        options: [
+            "2",
+            "4 (or sizeof(int))",
+            "1",
+            "0"
+        ],
 
-            options: [
-                "Authentication checks permissions; Authorization verifies identity.",
-                "Authentication verifies user identity; Authorization verifies user access permissions.",
-                "Authentication applies only to databases; Authorization applies only to frontend UI.",
-                "They are identical terms for user login processes."
-            ],
+        answer: 1
 
-            answer: 1
+    }
 
-        }
-
-    ],
-
-
-
-
-
-
-    C: [
-
-        {
-            questionNumber: 1,
-
-            question: "What does HTML stand for?",
-
-            options: [
-                "Hyper Text Markup Language",
-                "High Text Markup Language",
-                "Hyperlinks and Text Markup Language",
-                "Home Tool Markup Language"
-            ],
-
-            answer: 0
-
-        },
-
-        {
-            questionNumber: 2,
-
-            question: "Which CSS property is used to change the text color of an element?",
-
-            options: [
-                "text-color",
-                "fgcolor",
-                "color",
-                "font-color"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 3,
-
-            question: "Which HTTP status code indicates a 'Not Found' error?",
-
-            options: [
-                "200",
-                "301",
-                "404",
-                "500"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 4,
-
-            question: "Which JavaScript method is used to select an HTML element by its ID?",
-
-            options: [
-                "document.querySelectorID()",
-                "document.getElementById()",
-                "document.getElementByName()",
-                "document.findId()"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 5,
-
-            question: "How do you apply flexbox to a container element in CSS?",
-
-            options: [
-                "display: grid;",
-                "display: flexbox;",
-                "display: flex;",
-                "flex-direction: row;"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 6,
-
-            question: "Which HTML tag is used to embed a JavaScript file in an HTML document?",
-
-            options: [
-                "<script>",
-                "<javascript>",
-                "<js>",
-                "<link>"
-            ],
-
-            answer: 0
-
-        },
-
-        {
-            questionNumber: 7,
-
-            question: "What is the output of typeof [] in JavaScript?",
-
-            options: [
-                "array",
-                "object",
-                "null",
-                "undefined"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 8,
-
-            question: "Which CSS unit is relative to the root (<html>) font size?",
-
-            options: [
-                "em",
-                "vh",
-                "rem",
-                "px"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 9,
-
-            question: "What is the main function of the HTML <meta name=\"viewport\"> tag?",
-
-            options: [
-                "To set the web page title",
-                "To ensure proper responsive scaling on mobile devices",
-                "To load external CSS styles",
-                "To optimize web pages for search engines"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 10,
-
-            question: "Which array method creates a new array populated with the results of calling a provided function on every element?",
-
-            options: [
-                "forEach()",
-                "filter()",
-                "map()",
-                "reduce()"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 11,
-
-            question: "What is the purpose of the z-index property in CSS?",
-
-            options: [
-                "To specify zoom level",
-                "To set horizontal position",
-                "To control stacking order of overlapping elements",
-                "To adjust element transparency"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 12,
-
-            question: "Which keyword is used to declare block-scoped, re-assignable variables in modern JavaScript?",
-
-            options: [
-                "var",
-                "let",
-                "const",
-                "static"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 13,
-
-            question: "In RESTful API design, which HTTP method is typically used to create a new resource?",
-
-            options: [
-                "GET",
-                "PUT",
-                "POST",
-                "DELETE"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 14,
-
-            question: "What does CORS stand for in web development?",
-
-            options: [
-                "Cross-Origin Resource Sharing",
-                "Client-Origin Routing System",
-                "Centralized Object Request Service",
-                "Cross-Object Security System"
-            ],
-
-            answer: 0
-
-        },
-
-        {
-            questionNumber: 15,
-
-            question: "Which CSS layout model is specifically designed for two-dimensional (rows and columns) layouts?",
-
-            options: [
-                "Flexbox",
-                "CSS Grid",
-                "Float",
-                "Positioning"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 16,
-
-            question: "Which header file is required for using printf() and scanf() in C?",
-
-            options: [
-                "<stdlib.h>",
-                "<string.h>",
-                "<stdio.h>",
-                "<conio.h>"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 17,
-
-            question: "What is the correct size of an int data type in standard modern C compilers?",
-
-            options: [
-                "1 byte",
-                "2 bytes",
-                "4 bytes",
-                "8 bytes"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 18,
-
-            question: "Which operator is used to get the address of a variable in C?",
-
-            options: [
-                "*",
-                "&",
-                "->",
-                "%"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 19,
-
-            question: "What will be the output of 5 / 2 using integer division in C?",
-
-            options: [
-                "2.5",
-                "2",
-                "2.0",
-                "3"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 20,
-
-            question: "Which loop is guaranteed to execute at least once?",
-
-            options: [
-                "for loop",
-                "while loop",
-                "do-while loop",
-                "None of the above"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 21,
-
-            question: "What does a pointer variable store?",
-
-            options: [
-                "Value of another variable",
-                "Address of another variable",
-                "Data type of a variable",
-                "Function body"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 22,
-
-            question: "Which function is used to dynamically allocate memory in C?",
-
-            options: [
-                "alloc()",
-                "malloc()",
-                "new",
-                "create()"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 23,
-
-            question: "What character marks the end of a string in C?",
-
-            options: [
-                "\\n",
-                "\\0",
-                "\\t",
-                "EOF"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 24,
-
-            question: "What keyword is used to prevent a variable's value from being modified after initialization?",
-
-            options: [
-                "static",
-                "volatile",
-                "const",
-                "extern"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 25,
-
-            question: "Which specifier is used with printf() to print a string?",
-
-            options: [
-                "%c",
-                "%d",
-                "%s",
-                "%f"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 26,
-
-            question: "What happens if you try to access an array element out of its bounds in C?",
-
-            options: [
-                "Dynamic array expansion occurs",
-                "Undefined behavior occurs",
-                "Compiler throws a syntax error",
-                "Program terminates with a default error message"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 27,
-
-            question: "What is the default return type of a C function if not explicitly specified (in traditional C compilers)?",
-
-            options: [
-                "void",
-                "int",
-                "float",
-                "char"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 28,
-
-            question: "Which function is used to release dynamically allocated memory?",
-
-            options: [
-                "delete()",
-                "remove()",
-                "free()",
-                "dealloc()"
-            ],
-
-            answer: 2
-
-        },
-
-        {
-            questionNumber: 29,
-
-            question: "What is the result of the expression 10 % 3 in C?",
-
-            options: [
-                "3",
-                "1",
-                "0.33",
-                "3.33"
-            ],
-
-            answer: 1
-
-        },
-
-        {
-            questionNumber: 30,
-
-            question: "Which keyword is used to access members of a structure through a structure pointer?",
-
-            options: [
-                ".",
-                "->",
-                "::",
-                "*"
-            ],
-
-            answer: 1
-
-        }
-
-    ],
-
+],
     D: [
 
         {
