@@ -1,0 +1,540 @@
+/* =====================================================
+ PREMIUM FUTURE EXAM LOGIN SYSTEM
+ LOGIN.CSS
+ NO HTML CHANGE REQUIRED
+===================================================== */
+
+
+/* LOGIN PAGE BACKGROUND */
+
+#loginPage {
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        #ffffff,
+        #e0f2fe
+    );
+
+}
+
+
+/* Animated Glow Orbs */
+
+#loginPage::before,
+#loginPage::after {
+
+    content:"";
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(80px);
+
+    z-index:0;
+
+}
+
+
+#loginPage::before {
+
+    width:350px;
+
+    height:350px;
+
+    background:#38bdf8;
+
+    top:-120px;
+
+    left:-120px;
+
+    animation:
+    glowMove 8s infinite alternate;
+
+}
+
+
+#loginPage::after {
+
+    width:400px;
+
+    height:400px;
+
+    background:#2563eb;
+
+    bottom:-150px;
+
+    right:-150px;
+
+    animation:
+    glowMove2 10s infinite alternate;
+
+}
+
+
+
+@keyframes glowMove {
+
+    from{
+        transform:translate(0,0);
+    }
+
+    to{
+        transform:translate(150px,100px);
+    }
+
+}
+
+
+
+@keyframes glowMove2 {
+
+    from{
+        transform:translate(0,0);
+    }
+
+    to{
+        transform:translate(-120px,-80px);
+    }
+
+}
+
+
+
+/* Floating Particle Network */
+
+#loginPage .loginCard::before {
+
+
+    content:"";
+
+    position:absolute;
+
+    inset:-200px;
+
+    background-image:
+
+    radial-gradient(
+    #2563eb 1px,
+    transparent 1px
+    );
+
+
+    background-size:35px 35px;
+
+    opacity:.12;
+
+
+    animation:
+
+    particleMove 25s linear infinite;
+
+
+    z-index:-1;
+
+}
+
+
+
+@keyframes particleMove {
+
+    from{
+        background-position:0 0;
+    }
+
+    to{
+        background-position:500px 500px;
+    }
+
+}
+
+
+
+
+/* LOGIN CARD */
+
+#loginPage .loginCard {
+
+
+    position:relative;
+
+    z-index:2;
+
+
+    width:430px;
+
+
+    padding:45px 40px;
+
+
+    border-radius:32px;
+
+
+    background:
+
+    rgba(255,255,255,.72);
+
+
+    backdrop-filter:
+
+    blur(25px);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.8);
+
+
+    box-shadow:
+
+
+    0 35px 90px
+
+    rgba(37,99,235,.25);
+
+
+
+    animation:
+
+    cardFloat 5s infinite ease-in-out;
+
+
+}
+
+
+
+@keyframes cardFloat {
+
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+
+    50%{
+
+        transform:translateY(-12px);
+
+    }
+
+}
+
+
+
+
+/* TITLE */
+
+
+.loginCard h1 {
+
+
+    text-align:center;
+
+
+    font-size:32px;
+
+
+    font-weight:900;
+
+
+    letter-spacing:1px;
+
+
+    background:
+
+    linear-gradient(
+    90deg,
+    #2563eb,
+    #06b6d4
+    );
+
+
+    -webkit-background-clip:text;
+
+
+    color:transparent;
+
+
+}
+
+
+
+.loginCard p {
+
+
+    text-align:center;
+
+
+    color:#64748b;
+
+
+    font-weight:600;
+
+
+    margin-bottom:35px;
+
+
+}
+
+
+
+/* INPUT BOX */
+
+
+.loginCard input {
+
+
+    width:100%;
+
+
+    height:58px;
+
+
+    margin-bottom:18px;
+
+
+    padding:0 20px;
+
+
+    border-radius:18px;
+
+
+    border:
+
+    1px solid #cbd5e1;
+
+
+    background:
+
+    rgba(255,255,255,.9);
+
+
+    font-size:16px;
+
+
+    transition:.35s;
+
+
+}
+
+
+
+.loginCard input:focus {
+
+
+    outline:none;
+
+
+    border-color:#2563eb;
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+
+    0 0 25px
+
+    rgba(37,99,235,.3);
+
+
+}
+
+
+
+/* LOGIN BUTTON */
+
+
+#loginBtn {
+
+
+    width:100%;
+
+
+    height:60px;
+
+
+    border:none;
+
+
+    border-radius:20px;
+
+
+    margin-top:15px;
+
+
+    color:white;
+
+
+    font-size:18px;
+
+
+    font-weight:800;
+
+
+    cursor:pointer;
+
+
+    background:
+
+
+    linear-gradient(
+
+    135deg,
+
+    #2563eb,
+
+    #06b6d4
+
+    );
+
+
+    box-shadow:
+
+
+    0 20px 40px
+
+    rgba(37,99,235,.35);
+
+
+    transition:.4s;
+
+
+}
+
+
+
+#loginBtn:hover {
+
+
+    transform:
+
+    translateY(-6px)
+    scale(1.02);
+
+
+    box-shadow:
+
+
+    0 30px 60px
+
+    rgba(6,182,212,.45);
+
+
+}
+
+
+
+#loginBtn:active {
+
+    transform:scale(.97);
+
+}
+
+
+
+/* SECURITY TEXT */
+
+.loginCard::after {
+
+
+    content:
+
+    "🔐 Secure AI Proctored Examination";
+
+
+    display:block;
+
+
+    text-align:center;
+
+
+    margin-top:25px;
+
+
+    font-size:13px;
+
+
+    color:#64748b;
+
+
+}
+
+
+
+/* =====================================================
+ MOBILE RESPONSIVE
+===================================================== */
+
+
+@media(max-width:600px){
+
+
+#loginPage .loginCard {
+
+
+    width:
+
+    calc(100% - 35px);
+
+
+    padding:
+
+    35px 25px;
+
+
+    border-radius:25px;
+
+
+}
+
+
+
+.loginCard h1 {
+
+
+    font-size:25px;
+
+
+}
+
+
+
+.loginCard input {
+
+
+    height:52px;
+
+
+}
+
+
+
+#loginBtn {
+
+
+    height:55px;
+
+
+}
+
+
+}
