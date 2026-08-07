@@ -229,12 +229,11 @@ document
 
 
         const extraAttemptStudents = [
-
-            "Alok",
-            "Arijit"
-
-        ];
-
+    "Alok",
+    "Arijit",
+    "alok",
+    "arijit"
+];
 
 
 
