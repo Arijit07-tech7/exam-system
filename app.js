@@ -32,7 +32,7 @@ GLOBAL VARIABLES
 let currentStudent = null;
 
 let currentSet = null;
-
+e
 let currentQuestion = 0;
 
 let score = 0;
@@ -2783,12 +2783,12 @@ async function saveExamResult() {
         const snap = await getDoc(studentRef);
 
         if (snap.exists()) {
-await updateDoc(studentRef, {
-    attempt: true,
-    lastScore: score,
-    lastPercentage: (score / questions.length) * 100,
-    lastExamDate: serverTimestamp()
-});
+            await updateDoc(studentRef, {
+                attempt: true,
+                lastScore: score,
+                lastPercentage: (score / questions.length) * 100,
+                lastExamDate: serverTimestamp()
+            });
         }
 
 
