@@ -25,7 +25,7 @@ const users = [
     password:"arijit123",
     name:"Arijit Gupta",
     set:"A",
-    unlimited:false,
+    unlimited:true,
     active:true
 },
 
@@ -367,6 +367,22 @@ function increaseAttempt(username){
 
 }
 
+function getLoginCount(username){
+    return Number(
+        localStorage.getItem(
+            STORAGE.LOGIN + username
+        ) || 0
+    );
+}
+
+function increaseLoginCount(username){
+    const count = getLoginCount(username) + 1;
+
+    localStorage.setItem(
+        STORAGE.LOGIN + username,
+        count
+    );
+}
 
 
 
@@ -652,6 +668,17 @@ function loginStudent(){
 
     }
 
+const loginCount = getLoginCount(student.username);
+
+if(
+    !student.unlimited &&
+    loginCount >= student.loginLimit
+){
+    alert("Login limit exceeded!");
+    return;
+}
+
+increaseLoginCount(student.username);
 
 
 
@@ -1136,238 +1163,479 @@ answer:0
 B:[
 
 {
-question:"Consider a scenario where a web page needs a header with a logo, a navigation menu, a main article, and a footer. Which combination of semantic HTML5 tags should be used?",
+questionNumber:1,
+
+question:"What happens when a user types a URL using HTTPS into a web browser?",
 
 options:[
-"<div>, <select>, <main>, <footer>",
-"<header>, <nav>, <article>, <footer>",
-"<head>, <menu>, <content>, <bottom>",
-"<section>, <links>, <body>, <footer>"
+"TCP Handshake → DNS Lookup → TLS Handshake → HTTP Request",
+"DNS Lookup → TCP Handshake → TLS Handshake → HTTP Request",
+"TLS Handshake → DNS Lookup → TCP Handshake → HTTP Request",
+"DNS Lookup → TLS Handshake → TCP Handshake → HTTP Request"
 ],
 
 answer:1
 
 },
 
-
 {
-question:"Why is the <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> tag essential in modern web pages?",
+questionNumber:2,
+
+question:"Which HTTP version introduced multiplexing over a single TCP connection?",
 
 options:[
-"It connects the HTML file to an external CSS stylesheet.",
-"It enables server-side rendering for faster page loads.",
-"It instructs the browser to scale the webpage width to match the screen size of the device.",
-"It prevents search engine crawlers from indexing responsive layout elements."
+"HTTP/1.0",
+"HTTP/1.1",
+"HTTP/2",
+"HTTP/3"
 ],
 
 answer:2
 
 },
 
-
 {
-question:"A developer wants to create an accessible image component. Which implementation correctly handles screen readers and image failure?",
+questionNumber:3,
+
+question:"Who enforces Cross-Origin Resource Sharing (CORS) rules?",
 
 options:[
-"<img src=\"profile.jpg\" name=\"User Profile Picture\">",
-"<img src=\"profile.jpg\" alt=\"Profile picture of John Doe\">",
-"<img src=\"profile.jpg\" title=\"John Doe Profile\">",
-"<img src=\"profile.jpg\" tooltip=\"User Image\">"
+"The DNS server",
+"The User's Web Browser",
+"The Origin Server",
+"The Database Engine"
 ],
 
 answer:1
 
 },
 
-
 {
-question:"What is the primary difference between a block-level element like <div> and an inline element like <span>?",
+questionNumber:4,
+
+question:"Which storage mechanism automatically sends its content with every HTTP request to its matching domain?",
 
 options:[
-"Block elements start on a new line and take full available width, whereas inline elements take only required width.",
-"Inline elements can contain block elements, but block elements cannot contain inline elements.",
-"Block elements are only allowed inside head while inline elements are placed in body.",
-"Inline elements automatically add padding and margin."
+"LocalStorage",
+"SessionStorage",
+"Cookies",
+"IndexedDB"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:5,
+
+question:"In JavaScript's Event Loop, which queue takes precedence for execution when the Call Stack empties?",
+
+options:[
+"Macrotask Queue",
+"Microtask Queue",
+"Rendering Queue",
+"Callback Queue"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:6,
+
+question:"Which sequence accurately reflects the Critical Rendering Path order?",
+
+options:[
+"Render Tree → DOM → CSSOM → Paint → Layout",
+"DOM → CSSOM → Render Tree → Layout → Paint",
+"CSSOM → DOM → Layout → Render Tree → Paint",
+"DOM → Layout → CSSOM → Render Tree → Paint"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:7,
+
+question:"What is the primary operational difference between Debouncing and Throttling?",
+
+options:[
+"Debounce delays execution until a quiet pause; Throttle enforces a fixed maximum execution frequency.",
+"Throttle delays execution until a quiet pause; Debounce enforces a fixed maximum execution frequency.",
+"Debounce runs asynchronously; Throttle runs synchronously.",
+"Debounce only works with mouse events; Throttle only works with keyboard events."
 ],
 
 answer:0
 
 },
 
-
 {
-question:"Which attribute combination should be added to an <a> tag so that an external link opens securely in a new browser tab?",
+questionNumber:8,
+
+question:"Which HTTP Response Header directly prevents Cross-Site Scripting (XSS) by restricting where scripts can be loaded from?",
 
 options:[
-"target=\"_blank\" rel=\"noopener noreferrer\"",
-"target=\"_self\" rel=\"external\"",
-"target=\"_new\" open=\"tab\"",
-"href=\"_blank\" security=\"high\""
+"Access-Control-Allow-Origin",
+"Strict-Transport-Security",
+"Content-Security-Policy",
+"X-Frame-Options"
 ],
 
-answer:0
+answer:2
 
 },
 
-
 {
-question:"What happens if a web developer omits the <!DOCTYPE html> declaration at the top of an HTML file?",
+questionNumber:9,
+
+question:"What makes an HTTP method idempotent?",
 
 options:[
-"Browser refuses to display the page.",
-"Page renders in Quirks Mode causing inconsistent layouts.",
-"JavaScript execution is disabled.",
-"Page speed drops automatically."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which form element and attribute combination allows users to select multiple choices from a dropdown list?",
-
-options:[
-"<input type=\"dropdown\" allow-multiple>",
-"<select multiple>",
-"<option selection=\"multiple\">",
-"<checkbox group=\"dropdown\">"
+"Calling it multiple times produces different results every time.",
+"Calling it once or multiple times leaves the server in the exact same state.",
+"It executes faster than non-idempotent methods.",
+"It does not require headers or request payloads."
 ],
 
 answer:1
 
 },
 
-
 {
-question:"What is the composition of the standard CSS Box Model from innermost to outermost?",
+questionNumber:10,
+
+question:"What key architectural advantage does GraphQL have over standard REST endpoints?",
 
 options:[
-"Margin → Border → Padding → Content",
-"Content → Padding → Border → Margin",
-"Padding → Content → Margin → Border",
-"Content → Border → Padding → Margin"
+"Automatic database indexing",
+"Elimination of client-side JavaScript",
+"Precise client-driven data fetching (prevents over/under-fetching)",
+"Built-in transport-layer encryption"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:11,
+
+question:"According to the CAP Theorem, what happens when a network partition (P) occurs in a distributed database?",
+
+options:[
+"You achieve both full Consistency (C) and Availability (A).",
+"The system must choose between Consistency (C) OR Availability (A).",
+"Network partitions only affect vertical scaling.",
+"Partition tolerance can be disabled to keep C and A."
 ],
 
 answer:1
 
 },
 
-
 {
-question:"Why do developers commonly use box-sizing:border-box in CSS resets?",
+questionNumber:12,
+
+question:"What distinguishes a Reverse Proxy from a Forward Proxy?",
 
 options:[
-"It converts block elements into inline elements.",
-"It includes width and height with content, padding and border.",
-"It adds default borders.",
-"It prevents margin collapsing."
+"Forward proxies protect servers; Reverse proxies protect clients.",
+"Forward proxies sit in front of clients; Reverse proxies sit in front of servers.",
+"Forward proxies handle SSL termination; Reverse proxies handle DNS resolving.",
+"Reverse proxies cannot perform load balancing."
 ],
 
 answer:1
 
 },
 
-
 {
-question:"Relative to which parent does position:absolute work?",
+questionNumber:13,
+
+question:"Which index data structure is most commonly used by Relational Databases (RDBMS) for O(logN) lookups?",
 
 options:[
-"Always body element",
-"Nearest ancestor with position other than static",
-"Browser viewport",
-"Immediate parent always"
+"Hash Map",
+"B Tree / B+ Tree",
+"Linked List",
+"Binary Search Tree"
 ],
 
 answer:1
 
 },
 
-
 {
-question:"Which CSS properties center a flex child horizontally and vertically?",
+questionNumber:14,
+
+question:"What is the main operational risk of using a Write-Back (Write-Behind) caching strategy?",
 
 options:[
-"display:flex; justify-content:center; align-items:center;",
-"display:block; margin:auto;",
-"display:grid; flex-direction:center;",
-"display:flex; float:center;"
+"Extremely high write latency.",
+"High database load during reads.",
+"Potential data loss if the cache crashes before flushing to disk.",
+"Automatic deletion of database indexes."
 ],
 
-answer:0
+answer:2
 
 },
 
-
 {
-question:"What is the difference between display:none and visibility:hidden?",
+questionNumber:15,
+
+question:"In microservices, what is the main function of the Circuit Breaker pattern?",
 
 options:[
-"display:none keeps space but visibility:hidden removes it.",
-"display:none removes element space while visibility:hidden keeps space.",
-"Both work identically.",
-"visibility:hidden works only on images."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the CSS specificity order from highest to lowest?",
-
-options:[
-"Inline style > ID > Class > Element",
-"ID > Inline style > Class > Element",
-"Element > Class > ID > Inline",
-"Class > ID > Element > Inline"
-],
-
-answer:0
-
-},
-
-
-{
-question:"What is the difference between rem and em units?",
-
-options:[
-"rem depends on root font-size, em depends on parent font-size.",
-"em depends on root, rem depends on screen pixels.",
-"rem works only padding.",
-"rem is physical measurement."
-],
-
-answer:0
-
-},
-
-
-{
-question:"What does flex-grow:1 do?",
-
-options:[
-"Scales font size",
-"Allows item to take remaining available space",
-"Prevents shrinking",
-"Moves item right"
+"To encrypt communication between services using TLS.",
+"To temporarily stop sending traffic to a failing service to prevent cascading failures.",
+"To compress network payloads automatically.",
+"To balance CPU load evenly among healthy instances."
 ],
 
 answer:1
 
 },
 
-
 {
-question:"Which media query targets screens with maximum width 768px?",
+questionNumber:16,
+
+question:"Database Denormalization is primarily used to:",
 
 options:[
-"@media screen and (min-width:768px)",
-"@media (max-width:768px)",
-"@media-device(width <=768px)",
-"@import mobile"
+"Eliminate all redundant data from tables.",
+"Reduce JOIN operations and improve read performance.",
+"Ensure 3rd Normal Form (3NF) compliance.",
+"Prevent SQL injection attacks."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:17,
+
+question:"How does Horizontal Scaling differ from Vertical Scaling?",
+
+options:[
+"Horizontal scaling adds more hardware (CPU/RAM) to a single machine.",
+"Horizontal scaling adds more machine nodes to a system pool.",
+"Vertical scaling eliminates single points of failure automatically.",
+"Vertical scaling is infinitely scalable without physical limits."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:18,
+
+question:"What is the fundamental security challenge with using stateless JWTs for session management?",
+
+options:[
+"They cannot be signed digitally.",
+"They require a database lookup on every request.",
+"They are difficult to instantly revoke before their expiration time without maintaining state.",
+"They only work over HTTP/1.0 protocols."
+],
+
+answer:2
+
+},
+
+{
+questionNumber:19,
+
+question:"What is a primary benefit of using a Database Connection Pool?",
+
+options:[
+"It automatically converts NoSQL data into SQL format.",
+"It reuses established connections, saving time and overhead on TCP/TLS handshakes.",
+"It encrypts stored disk data automatically.",
+"It removes the need for database indexing."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:20,
+
+question:"What is an advantage of Server-Side Rendering (SSR) over Client-Side Rendering (CSR)?",
+
+options:[
+"Zero load on the application server.",
+"Faster Initial Page Load / First Contentful Paint and better default SEO indexing.",
+"Complete decoupling of client and server codebases.",
+"Immunity to XSS vulnerabilities."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:21,
+
+question:"In SOLID design principles, what does the Liskov Substitution Principle (LSP) dictate?",
+
+options:[
+"Modules should be open for modification, closed for extension.",
+"Subclasses should be replaceable for their base classes without altering program correctness.",
+"Interfaces must contain as many methods as possible.",
+"High-level modules must depend directly on concrete low-level implementations."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:22,
+
+question:"Which memory area is shared among all threads running within the same parent OS process?",
+
+options:[
+"Call Stack",
+"Register Set",
+"Program Counter",
+"Process Heap"
+],
+
+answer:3
+
+},
+
+{
+questionNumber:23,
+
+question:"Which of the following is NOT one of the four necessary Coffman conditions for a system Deadlock?",
+
+options:[
+"Mutual Exclusion",
+"Hold and Wait",
+"Preemption Allowed",
+"Circular Wait"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:24,
+
+question:"How does git rebase differ from git merge?",
+
+options:[
+"git rebase creates a new merge commit preserving exact history branch lines.",
+"git rebase rewrites commit history by moving branch commits onto a new base commit.",
+"git merge deletes the feature branch automatically.",
+"git rebase cannot resolve merge conflicts."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:25,
+
+question:"What distinguishes Integration Testing from Unit Testing?",
+
+options:[
+"Integration tests mock all database and network interactions.",
+"Unit tests verify system user workflows end-to-end in a real browser environment.",
+"Integration tests verify interactions between combined modules or external dependencies.",
+"Unit tests run slower than integration tests."
+],
+
+answer:2
+
+},
+
+{
+questionNumber:26,
+
+question:"In Object-Oriented Design, Dependency Inversion Principle (DIP) encourages:",
+
+options:[
+"Direct instantiations of concrete classes inside high-level business code.",
+"High-level and low-level modules depending on shared abstractions (interfaces).",
+"Avoiding interfaces altogether to keep code simple.",
+"Coupling code tightly to specific hardware implementations."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:27,
+
+question:"What happens during a Process Context Switch in an Operating System?",
+
+options:[
+"The OS compiles source code into machine binary.",
+"The CPU state (registers, program counter, stack pointer) of a running process is saved and another process state is restored.",
+"The process memory is cleared completely from disk.",
+"All running threads are terminated permanently."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:28,
+
+question:"What is a Closure in JavaScript?",
+
+options:[
+"A method that closes a database connection automatically.",
+"A function bundled with references to its surrounding lexical scope.",
+"A syntax feature used to block global variable creation.",
+"An asynchronous event loop handler."
+],
+
+answer:1
+
+},
+
+{
+questionNumber:29,
+
+question:"Which testing strategy verifies user journeys end-to-end across the full deployed software stack?",
+
+options:[
+"Unit Testing",
+"Static Code Analysis",
+"End-to-End (E2E) Testing",
+"Mutation Testing"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:30,
+
+question:"What is the fundamental difference between Authentication and Authorization?",
+
+options:[
+"Authentication checks permissions; Authorization verifies identity.",
+"Authentication verifies user identity; Authorization verifies user access permissions.",
+"Authentication applies only to databases; Authorization applies only to frontend UI.",
+"They are identical terms for user login processes."
 ],
 
 answer:1
@@ -1375,7 +1643,6 @@ answer:1
 }
 
 ],
-
 
 
 
@@ -1385,841 +1652,14 @@ answer:1
 C:[
 
 {
-question:"What is the main structural difference between <section> and <article> tags in HTML5?",
+questionNumber:1,
 
-options:[
-"<section> can be rendered independently, whereas <article> groups content.",
-"<article> represents self-contained distributable content, while <section> represents thematic grouping of content.",
-"<section> is inline-level while <article> is block-level.",
-"<article> requires src attribute while <section> requires href."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the role of ARIA attributes like aria-label and role=\"button\" in web accessibility?",
-
-options:[
-"They speed up web rendering.",
-"They provide additional accessibility semantics for screen readers.",
-"They style custom UI components.",
-"They validate form data."
-],
-
-answer:1
-
-},
-
-
-{
-question:"How does <script defer> differ from <script async>?",
-
-options:[
-"defer downloads parallel and executes after HTML parsing; async downloads parallel and executes immediately when ready.",
-"async preserves order while defer executes randomly.",
-"defer blocks DOM generation completely.",
-"Both work identically."
-],
-
-answer:0
-
-},
-
-
-{
-question:"Which HTML attribute provides image options for different screen resolutions?",
-
-options:[
-"media",
-"srcset",
-"src-adaptive",
-"resolution-map"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the purpose of HTML5 <picture> element?",
-
-options:[
-"Play SVG animations.",
-"Provide multiple image sources for responsive loading.",
-"Generate thumbnails.",
-"Force WebP images."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does autocomplete=\"one-time-code\" do?",
-
-options:[
-"Prevents typing numbers.",
-"Allows browsers to suggest OTP autofill from SMS.",
-"Hashes input data.",
-"Clears field automatically."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which tag pair is used for figure and caption?",
-
-options:[
-"<image> and <title>",
-"<figure> and <figcaption>",
-"<media> and <description>",
-"<box> and <captiontext>"
-],
-
-answer:1
-
-},
-
-
-{
-question:"CSS has no property called margin:collapse. How does margin collapsing work?",
-
-options:[
-"It removes padding.",
-"It happens automatically between vertical block margins.",
-"It merges horizontal margins in flex.",
-"It aligns grid tracks."
-],
-
-answer:1
-
-},
-
-
-{
-question:"How does CSS Grid differ from Flexbox?",
-
-options:[
-"Flexbox is 2D and Grid is 1D.",
-"Flexbox is 1D layout while Grid is 2D layout.",
-"Flexbox cannot align vertically.",
-"Grid replaced Flexbox."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does grid-template-columns: repeat(auto-fit,minmax(200px,1fr)) achieve?",
-
-options:[
-"Fixed 200px columns.",
-"Responsive grid columns without media queries.",
-"Maximum viewport height.",
-"Only 2 columns."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which position value anchors an element relative to browser viewport during scrolling?",
-
-options:[
-"relative",
-"sticky",
-"fixed",
-"static"
-],
-
-answer:2
-
-},
-
-
-{
-question:"What happens with opacity:0 compared to display:none?",
-
-options:[
-"opacity:0 keeps space and can still interact.",
-"opacity:0 removes element completely.",
-"opacity blocks screen readers.",
-"Both disable keyboard navigation."
-],
-
-answer:0
-
-},
-
-
-{
-question:"What is the default flex-direction value in CSS Flexbox?",
-
-options:[
-"column",
-"row",
-"row-reverse",
-"column-reverse"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does z-index control?",
-
-options:[
-"Transparency.",
-"Stacking order on Z-axis for positioned/flex/grid items.",
-"Element width.",
-"Inline to block conversion."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does :nth-child(even) select?",
-
-options:[
-"Every even numbered child element.",
-"Elements with even IDs.",
-"Even nested nodes.",
-"Every second character."
-],
-
-answer:0
-
-},
-
-
-{
-question:"Which CSS function mixes px and relative units like % or vw?",
-
-options:[
-"calc()",
-"mix()",
-"fit()",
-"math()"
-],
-
-answer:0
-
-},
-
-
-{
-question:"What is typeof NaN in JavaScript?",
-
-options:[
-"undefined",
-"NaN",
-"number",
-"object"
-],
-
-answer:2
-
-},
-
-
-{
-question:"What is Event Bubbling in JavaScript?",
-
-options:[
-"Event goes document to target.",
-"Event moves from target element upward through ancestors.",
-"Events execute on siblings.",
-"Too many listeners error."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the output of console.log(a); var a=10;", 
-
-options:[
-"ReferenceError",
-"10",
-"undefined",
-"null"
-],
-
-answer:2
-
-},
-
-
-{
-question:"What is the result of 0.1 + 0.2 === 0.3 in JavaScript?",
-
-options:[
-"true",
-"false",
-"TypeError",
-"undefined"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which array method checks if at least one element passes a condition?",
-
-options:[
-"every()",
-"some()",
-"filter()",
-"find()"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What happens when JSON.stringify() receives an object containing a function?",
-
-options:[
-"Function becomes string.",
-"Function property is omitted.",
-"SyntaxError occurs.",
-"Function becomes null."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Difference between localStorage and sessionStorage?",
-
-options:[
-"localStorage persists until cleared; sessionStorage ends when tab closes.",
-"sessionStorage has more storage.",
-"localStorage sends data automatically.",
-"sessionStorage works server-side."
-],
-
-answer:0
-
-},
-
-
-{
-question:"What does spread operator (...) do with arrays?",
-
-options:[
-"Creates matrix.",
-"Expands array elements into individual elements.",
-"Deletes original array.",
-"Calculates sum."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Purpose of async/await in JavaScript?",
-
-options:[
-"Makes JavaScript multi-threaded.",
-"Writes asynchronous Promise code in cleaner syntax.",
-"Removes network limits.",
-"Returns only primitive values."
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does CORS prevent by default?",
-
-options:[
-"Local image loading.",
-"Unauthorized cross-origin requests without permission headers.",
-"Inspect element usage.",
-"Long database queries."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Security advantage of HttpOnly cookie flag?",
-
-options:[
-"Encrypts cookie.",
-"Blocks JavaScript access to cookies reducing XSS risk.",
-"Expires quickly.",
-"Allows cross-domain access."
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which HTTP status code range represents successful requests?",
-
-options:[
-"100-199",
-"200-299",
-"300-399",
-"400-499"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is Cross-Site Scripting (XSS)?",
-
-options:[
-"Injection of malicious JavaScript into trusted websites.",
-"Server overload attack.",
-"SQL password bypass.",
-"CSS framework error."
-],
-
-answer:0
-
-},
-
-
-{
-question:"What role does DNS play on the Web?",
-
-options:[
-"Encrypt passwords.",
-"Translate domain names into IP addresses.",
-"Compile HTML.",
-"Compress images."
-],
-
-answer:1
-
-}
-
-],
-
-
-D:[
-
-{
-question:"Which tag is used to create the largest heading in an HTML document?",
-
-options:[
-"<heading>",
-"<h6>",
-"<h1>",
-"<head>"
-],
-
-answer:2
-
-},
-
-
-{
-question:"Which tag is used to insert a line break in HTML?",
-
-options:[
-"<lb>",
-"<break>",
-"<br>",
-"<p>"
-],
-
-answer:2
-
-},
-
-
-{
-question:"Which attribute is used in <a> tag to specify hyperlink URL?",
-
-options:[
-"src",
-"href",
-"link",
-"target"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which HTML tag creates an ordered numbered list?",
-
-options:[
-"<ul>",
-"<ol>",
-"<list>",
-"<dl>"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which HTML tag is used to insert an image?",
-
-options:[
-"<picture>",
-"<img>",
-"<src>",
-"<image>"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the correct syntax for HTML comments?",
-
-options:[
-"// Comment",
-"/* Comment */",
-"<!-- Comment -->",
-"' Comment"
-],
-
-answer:2
-
-},
-
-
-{
-question:"Which HTML tag collects user input in a form?",
-
-options:[
-"<input>",
-"<enter>",
-"<field>",
-"<user>"
-],
-
-answer:0
-
-},
-
-
-{
-question:"What is the main purpose of HTML head section?",
-
-options:[
-"Display visible content",
-"Contain metadata, title and external resources",
-"Create footer links",
-"Show copyright"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What does CSS stand for?",
-
-options:[
-"Creative Style Sheets",
-"Cascading Style Sheets",
-"Computer Style Syntax",
-"Colorful Style System"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which CSS property changes background color?",
-
-options:[
-"color",
-"background-color",
-"bgcolor",
-"surface-color"
-],
-
-answer:1
-
-},
-
-
-{
-question:"How do you select id=\"header\" in CSS?",
-
-options:[
-".header",
-"#header",
-"*header",
-"header"
-],
-
-answer:1
-
-},
-
-
-{
-question:"How do you select class=\"card\" in CSS?",
-
-options:[
-"#card",
-".card",
-"card",
-"@card"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which CSS property changes text color?",
-
-options:[
-"font-color",
-"color",
-"text-style",
-"content-color"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which CSS property controls text size?",
-
-options:[
-"text-size",
-"font-style",
-"font-size",
-"text-height"
-],
-
-answer:2
-
-},
-
-
-{
-question:"Which CSS property adds space inside the border?",
-
-options:[
-"margin",
-"padding",
-"border-spacing",
-"gap"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which CSS property creates space outside the border?",
-
-options:[
-"padding",
-"margin",
-"outline-offset",
-"spacing"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Inside which HTML element do we put JavaScript code?",
-
-options:[
-"<js>",
-"<javascript>",
-"<script>",
-"<code>"
-],
-
-answer:2
-
-},
-
-
-{
-question:"How do you display Hello World in JavaScript alert?",
-
-options:[
-"msgBox(\"Hello World\");",
-"alert(\"Hello World\");",
-"msg(\"Hello World\");",
-"console.print(\"Hello World\");"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which keyword creates a constant variable in JavaScript?",
-
-options:[
-"var",
-"let",
-"const",
-"fixed"
-],
-
-answer:2
-
-},
-
-
-{
-question:"How do you create a function in JavaScript?",
-
-options:[
-"function myFunction()",
-"def myFunction()",
-"create myFunction()",
-"func myFunction()"
-],
-
-answer:0
-
-},
-
-
-{
-question:"How do you execute a function named myFunction?",
-
-options:[
-"call myFunction()",
-"myFunction()",
-"call function myFunction()",
-"execute myFunction()"
-],
-
-answer:1
-
-},
-
-
-{
-question:"Which operator assigns a value to a variable in JavaScript?",
-
-options:[
-"=",
-"==",
-"===",
-":="
-],
-
-answer:0
-
-},
-
-
-{
-question:"How do you print data in browser console?",
-
-options:[
-"print.log()",
-"console.log()",
-"browser.log()",
-"write.console()"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the first index position in a JavaScript array?",
-
-options:[
-"1",
-"0",
-"-1",
-"index"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the correct JavaScript IF statement syntax?",
-
-options:[
-"if i == 5 then",
-"if (i == 5)",
-"if i = 5",
-"if i = 5 then"
-],
-
-answer:1
-
-},
-
-
-{
 question:"What does HTML stand for?",
 
 options:[
 "Hyper Text Markup Language",
-"High Tech Machine Language",
-"Hyper Transfer Markup Line",
+"High Text Markup Language",
+"Hyperlinks and Text Markup Language",
 "Home Tool Markup Language"
 ],
 
@@ -2227,71 +1667,836 @@ answer:0
 
 },
 
-
 {
-question:"Which software is used to view webpages?",
+questionNumber:2,
+
+question:"Which CSS property is used to change the text color of an element?",
 
 options:[
-"Code Editor",
-"Web Browser",
-"Database Server",
-"Terminal"
-],
-
-answer:1
-
-},
-
-
-{
-question:"What is the file extension for JavaScript files?",
-
-options:[
-".html",
-".css",
-".js",
-".script"
+"text-color",
+"fgcolor",
+"color",
+"font-color"
 ],
 
 answer:2
 
 },
 
-
 {
-question:"Which text editor is commonly used for web development?",
+questionNumber:3,
+
+question:"Which HTTP status code indicates a 'Not Found' error?",
 
 options:[
-"MS Word",
-"VS Code",
-"Photoshop",
-"Excel"
+"200",
+"301",
+"404",
+"500"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:4,
+
+question:"Which JavaScript method is used to select an HTML element by its ID?",
+
+options:[
+"document.querySelectorID()",
+"document.getElementById()",
+"document.getElementByName()",
+"document.findId()"
 ],
 
 answer:1
 
 },
 
-
 {
-question:"What is the default HTTP port for standard web browsing?",
+questionNumber:5,
+
+question:"How do you apply flexbox to a container element in CSS?",
 
 options:[
-"80",
-"21",
-"443",
-"3000"
+"display: grid;",
+"display: flexbox;",
+"display: flex;",
+"flex-direction: row;"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:6,
+
+question:"Which HTML tag is used to embed a JavaScript file in an HTML document?",
+
+options:[
+"<script>",
+"<javascript>",
+"<js>",
+"<link>"
 ],
 
 answer:0
 
+},
+
+{
+questionNumber:7,
+
+question:"What is the output of typeof [] in JavaScript?",
+
+options:[
+"array",
+"object",
+"null",
+"undefined"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:8,
+
+question:"Which CSS unit is relative to the root (<html>) font size?",
+
+options:[
+"em",
+"vh",
+"rem",
+"px"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:9,
+
+question:"What is the main function of the HTML <meta name=\"viewport\"> tag?",
+
+options:[
+"To set the web page title",
+"To ensure proper responsive scaling on mobile devices",
+"To load external CSS styles",
+"To optimize web pages for search engines"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:10,
+
+question:"Which array method creates a new array populated with the results of calling a provided function on every element?",
+
+options:[
+"forEach()",
+"filter()",
+"map()",
+"reduce()"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:11,
+
+question:"What is the purpose of the z-index property in CSS?",
+
+options:[
+"To specify zoom level",
+"To set horizontal position",
+"To control stacking order of overlapping elements",
+"To adjust element transparency"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:12,
+
+question:"Which keyword is used to declare block-scoped, re-assignable variables in modern JavaScript?",
+
+options:[
+"var",
+"let",
+"const",
+"static"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:13,
+
+question:"In RESTful API design, which HTTP method is typically used to create a new resource?",
+
+options:[
+"GET",
+"PUT",
+"POST",
+"DELETE"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:14,
+
+question:"What does CORS stand for in web development?",
+
+options:[
+"Cross-Origin Resource Sharing",
+"Client-Origin Routing System",
+"Centralized Object Request Service",
+"Cross-Object Security System"
+],
+
+answer:0
+
+},
+
+{
+questionNumber:15,
+
+question:"Which CSS layout model is specifically designed for two-dimensional (rows and columns) layouts?",
+
+options:[
+"Flexbox",
+"CSS Grid",
+"Float",
+"Positioning"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:16,
+
+question:"Which header file is required for using printf() and scanf() in C?",
+
+options:[
+"<stdlib.h>",
+"<string.h>",
+"<stdio.h>",
+"<conio.h>"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:17,
+
+question:"What is the correct size of an int data type in standard modern C compilers?",
+
+options:[
+"1 byte",
+"2 bytes",
+"4 bytes",
+"8 bytes"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:18,
+
+question:"Which operator is used to get the address of a variable in C?",
+
+options:[
+"*",
+"&",
+"->",
+"%"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:19,
+
+question:"What will be the output of 5 / 2 using integer division in C?",
+
+options:[
+"2.5",
+"2",
+"2.0",
+"3"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:20,
+
+question:"Which loop is guaranteed to execute at least once?",
+
+options:[
+"for loop",
+"while loop",
+"do-while loop",
+"None of the above"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:21,
+
+question:"What does a pointer variable store?",
+
+options:[
+"Value of another variable",
+"Address of another variable",
+"Data type of a variable",
+"Function body"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:22,
+
+question:"Which function is used to dynamically allocate memory in C?",
+
+options:[
+"alloc()",
+"malloc()",
+"new",
+"create()"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:23,
+
+question:"What character marks the end of a string in C?",
+
+options:[
+"\\n",
+"\\0",
+"\\t",
+"EOF"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:24,
+
+question:"What keyword is used to prevent a variable's value from being modified after initialization?",
+
+options:[
+"static",
+"volatile",
+"const",
+"extern"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:25,
+
+question:"Which specifier is used with printf() to print a string?",
+
+options:[
+"%c",
+"%d",
+"%s",
+"%f"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:26,
+
+question:"What happens if you try to access an array element out of its bounds in C?",
+
+options:[
+"Dynamic array expansion occurs",
+"Undefined behavior occurs",
+"Compiler throws a syntax error",
+"Program terminates with a default error message"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:27,
+
+question:"What is the default return type of a C function if not explicitly specified (in traditional C compilers)?",
+
+options:[
+"void",
+"int",
+"float",
+"char"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:28,
+
+question:"Which function is used to release dynamically allocated memory?",
+
+options:[
+"delete()",
+"remove()",
+"free()",
+"dealloc()"
+],
+
+answer:2
+
+},
+
+{
+questionNumber:29,
+
+question:"What is the result of the expression 10 % 3 in C?",
+
+options:[
+"3",
+"1",
+"0.33",
+"3.33"
+],
+
+answer:1
+
+},
+
+{
+questionNumber:30,
+
+question:"Which keyword is used to access members of a structure through a structure pointer?",
+
+options:[
+".",
+"->",
+"::",
+"*"
+],
+
+answer:1
+
+}
+
+],
+
+D:[
+
+{
+questionNumber:1,
+question:"What does CSS stand for?",
+options:[
+"Creative Style Sheets",
+"Cascading Style Sheets",
+"Computer Style Sheets",
+"Custom Style Sheets"
+],
+answer:1
+},
+
+{
+questionNumber:2,
+question:"Which HTML5 tag is used for self-contained, independent content like blog posts or news articles?",
+options:[
+"<section>",
+"<article>",
+"<div>",
+"<main>"
+],
+answer:1
+},
+
+{
+questionNumber:3,
+question:"What is the default value of the position property in CSS?",
+options:[
+"relative",
+"absolute",
+"static",
+"fixed"
+],
+answer:2
+},
+
+{
+questionNumber:4,
+question:"Which JavaScript method converts a JSON string into a JavaScript object?",
+options:[
+"JSON.stringify()",
+"JSON.parse()",
+"JSON.toObject()",
+"JSON.convert()"
+],
+answer:1
+},
+
+{
+questionNumber:5,
+question:"What does the box-sizing: border-box; CSS rule do?",
+options:[
+"Adds a border around every element automatically",
+"Includes padding and border in the element's total width and height",
+"Excludes margin and padding from height calculation",
+"Forces elements into a flex container"
+],
+answer:1
+},
+
+{
+questionNumber:6,
+question:"Which HTTP status code indicates a successful request?",
+options:[
+"200 OK",
+"201 Created",
+"302 Found",
+"400 Bad Request"
+],
+answer:0
+},
+
+{
+questionNumber:7,
+question:"In JavaScript, which operator checks for both value and type equality?",
+options:[
+"==",
+"=",
+"===",
+"!=="
+],
+answer:2
+},
+
+{
+questionNumber:8,
+question:"What is the purpose of the alt attribute on an <img> tag?",
+options:[
+"Specifies an alternate image URL",
+"Provides text for screen readers or when the image fails to load",
+"Sets the image title tooltip",
+"Defines the alignment of the image"
+],
+answer:1
+},
+
+{
+questionNumber:9,
+question:"Which mechanism in Web APIs handles asynchronous requests using .then() or async/await?",
+options:[
+"Callbacks",
+"Promises",
+"Events",
+"Closures"
+],
+answer:1
+},
+
+{
+questionNumber:10,
+question:"Which CSS display value makes an element invisible while keeping its space reserved on the layout?",
+options:[
+"display: none;",
+"visibility: hidden;",
+"opacity: 1;",
+"position: absolute;"
+],
+answer:1
+},
+
+{
+questionNumber:11,
+question:"What is Event Bubbling in JavaScript?",
+options:[
+"Events propagating from the target element upward through parent elements",
+"Events travelling from the top window down to the target",
+"Multiple events firing simultaneously",
+"An error handling mechanism"
+],
+answer:0
+},
+
+{
+questionNumber:12,
+question:"Which HTML tag is used to create a dropdown selection list?",
+options:[
+"<input type=\"dropdown\">",
+"<list>",
+"<select>",
+"<option>"
+],
+answer:2
+},
+
+{
+questionNumber:13,
+question:"What is the main benefit of using a Content Delivery Network (CDN)?",
+options:[
+"It protects against database corruption",
+"It reduces latency by serving static assets from servers closer to the user",
+"It replaces backend server code",
+"It converts CSS code into JavaScript"
+],
+answer:1
+},
+
+{
+questionNumber:14,
+question:"Which JavaScript array method returns true if at least one element passes a test function?",
+options:[
+"every()",
+"some()",
+"includes()",
+"find()"
+],
+answer:1
+},
+
+{
+questionNumber:15,
+question:"What does the defer attribute do when loading a JavaScript script in HTML?",
+options:[
+"Blocks HTML parsing until the script is fully downloaded and run",
+"Executes the script immediately, pausing HTML execution",
+"Downloads the script in parallel and executes it only after HTML parsing completes",
+"Prevents the script from executing on mobile devices"
+],
+answer:2
+},
+
+{
+questionNumber:16,
+question:"What is the output of sizeof(char) in C?",
+options:[
+"1 byte",
+"2 bytes",
+"4 bytes",
+"Compiler dependent"
+],
+answer:0
+},
+
+{
+questionNumber:17,
+question:"Which keyword is used to create user-defined type aliases in C?",
+options:[
+"alias",
+"typedef",
+"struct",
+"define"
+],
+answer:1
+},
+
+{
+questionNumber:18,
+question:"What is the correct format specifier for a double in printf()?",
+options:[
+"%d",
+"%f",
+"%lf",
+"%ld"
+],
+answer:1
+},
+
+{
+questionNumber:19,
+question:"What will happen if you forget a break statement inside a switch case in C?",
+options:[
+"Compiler error",
+"Execution falls through to the subsequent cases",
+"The switch statement exits immediately",
+"Infinite loop"
+],
+answer:1
+},
+
+{
+questionNumber:20,
+question:"Which standard function in C is used to open a file?",
+options:[
+"open()",
+"fopen()",
+"file_open()",
+"readfile()"
+],
+answer:1
+},
+
+{
+questionNumber:21,
+question:"What is a wild pointer in C?",
+options:[
+"A pointer initialized to NULL",
+"A pointer pointing to freed memory",
+"An uninitialized pointer pointing to an arbitrary memory address",
+"A pointer to a pointer"
+],
+answer:2
+},
+
+{
+questionNumber:22,
+question:"What does the static keyword inside a function local variable declaration do?",
+options:[
+"Makes the variable global across all files",
+"Preserves the variable's value across multiple function calls",
+"Prevents the variable from being reassigned",
+"Allocates memory on the heap"
+],
+answer:1
+},
+
+{
+questionNumber:23,
+question:"Which standard header file contains functions like abs(), exit(), and calloc()?",
+options:[
+"<stdio.h>",
+"<stdlib.h>",
+"<math.h>",
+"<string.h>"
+],
+answer:1
+},
+
+{
+questionNumber:24,
+question:"What is the key difference between malloc() and calloc()?",
+options:[
+"calloc() initializes allocated memory to zero; malloc() leaves garbage values",
+"malloc() allocates heap memory; calloc() allocates stack memory",
+"calloc() can reallocate memory; malloc() cannot",
+"malloc() takes two arguments; calloc() takes one argument"
+],
+answer:0
+},
+
+{
+questionNumber:25,
+question:"Which string function is used to concatenate two strings in C?",
+options:[
+"strcpy()",
+"strcmp()",
+"strcat()",
+"strlen()"
+],
+answer:2
+},
+
+{
+questionNumber:26,
+question:"What is the value of x after: int x = 10; int y = x++; ?",
+options:[
+"x = 10, y = 10",
+"x = 11, y = 10",
+"x = 11, y = 11",
+"x = 10, y = 11"
+],
+answer:1
+},
+
+{
+questionNumber:27,
+question:"What happens when a macro defined as #define MAX 100 is processed?",
+options:[
+"It is compiled as a constant variable during runtime",
+"The preprocessor replaces all occurrences of MAX with 100 before compilation",
+"It generates a global scope integer variable",
+"Memory is allocated on the stack"
+],
+answer:1
+},
+
+{
+questionNumber:28,
+question:"Which operator is used to access structure members directly from a structure variable (not a pointer)?",
+options:[
+".",
+"->",
+"*",
+"&"
+],
+answer:0
+},
+
+{
+questionNumber:29,
+question:"In a C union, how much memory is allocated?",
+options:[
+"Sum of sizes of all members",
+"Memory equal to the size of the largest member",
+"Always 8 bytes",
+"Depends on compiler alignment"
+],
+answer:1
+},
+
+{
+questionNumber:30,
+question:"What is the scope of a global variable declared outside all functions without static?",
+options:[
+"Restricted to the block where it's used",
+"File scope only",
+"Entire program across all source files",
+"Function scope"
+],
+answer:2
 }
 
 ]
-
 };
-
-
 
 
 
