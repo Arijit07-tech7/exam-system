@@ -4,28 +4,67 @@ PREMIUM ONLINE EXAMINATION SYSTEM
 APP.JS
 PART 1 / 6
 
-FIREBASE INITIALIZATION + LOGIN SYSTEM
+FIREBASE FREE LOGIN SYSTEM
 ===================================================== */
 
 
 /* ===============================
-FIREBASE SETUP
+USER DATABASE
 ================================ */
 
-const db = window.db;
 
-const {
-    doc,
-    getDoc,
-    updateDoc,
-    serverTimestamp
-} = window.firebaseFunctions;
+const users = [
+
+{
+    id:"AR001",
+    username:"arijit",
+    password:"arijit123",
+    name:"Arijit",
+    set:"A",
+    unlimited:true
+},
+
+
+{
+    id:"AL001",
+    username:"alok",
+    password:"alok123",
+    name:"Alok",
+    set:"B",
+    unlimited:false
+},
+
+
+{
+    id:"AN001",
+    username:"ananya",
+    password:"ananya123",
+    name:"Ananya",
+    set:"C",
+    unlimited:false
+},
+
+
+{
+    id:"SU001",
+    username:"souhadri",
+    password:"souhadri123",
+    name:"Souhadri",
+    set:"D",
+    unlimited:false
+}
+
+
+];
+
+
 
 
 
 /* ===============================
 GLOBAL VARIABLES
 ================================ */
+
 
 let currentStudent = null;
 
@@ -38,8 +77,6 @@ let score = 0;
 let questions = [];
 
 let selectedAnswer = null;
-
-let studentRef = null;
 
 let userAnswers = [];
 
@@ -55,47 +92,67 @@ let warningCount = 0;
 
 
 
+
+
+
+
 /* ===============================
-INITIAL PAGE LOAD
+PAGE LOAD
 ================================ */
 
-window.addEventListener("load",()=>{
+
+window.addEventListener(
+"load",
+()=>{
 
 
-    setTimeout(()=>{
+setTimeout(()=>{
 
 
-        const loader =
-        document.getElementById(
-            "loadingScreen"
-        );
-
-
-        if(loader){
-            loader.style.display="none";
-        }
+const loader =
+document.getElementById(
+"loadingScreen"
+);
 
 
 
-        const loginPage =
-        document.getElementById(
-            "loginPage"
-        );
+if(loader){
+
+loader.style.display="none";
+
+}
 
 
-        if(loginPage){
-
-            loginPage.classList.add(
-                "active"
-            );
-
-        }
 
 
-    },1200);
+const loginPage =
+document.getElementById(
+"loginPage"
+);
+
+
+
+if(loginPage){
+
+loginPage.classList.add(
+"active"
+);
+
+}
+
+
+
+},1200);
+
 
 
 });
+
+
+
+
+
+
 
 
 
@@ -107,29 +164,39 @@ PAGE SWITCH
 function showPage(pageId){
 
 
-    document
-    .querySelectorAll(".page")
-    .forEach(page=>{
-
-        page.style.display="none";
-
-    });
+document
+.querySelectorAll(".page")
+.forEach(page=>{
 
 
+page.style.display="none";
 
-    const page =
-    document.getElementById(pageId);
+
+});
 
 
 
-    if(page){
 
-        page.style.display="block";
+const page =
+document.getElementById(pageId);
 
-    }
+
+
+if(page){
+
+page.style.display="block";
 
 
 }
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -139,9 +206,10 @@ LOGIN SYSTEM
 ================================ */
 
 
+
 const loginBtn =
 document.getElementById(
-    "loginBtn"
+"loginBtn"
 );
 
 
@@ -151,311 +219,1011 @@ if(loginBtn){
 
 loginBtn.addEventListener(
 "click",
+()=>{
 
+
+
+const usernameInput =
+document
+.getElementById("username")
+.value
+.trim()
+.toLowerCase();
+
+
+
+const password =
+document
+.getElementById("password")
+.value
+.trim();
+
+
+
+
+
+if(
+usernameInput==="" ||
+password===""
+){
+
+
+alert(
+"Enter Username and Password"
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+/* ===============================
+FIND USER
+================================ */
+
+
+
+const student =
+users.find(
+user=>
+
+user.username===usernameInput
+&&
+user.password===password
+
+);
+
+
+
+
+
+
+if(!student){
+
+
+alert(
+"Invalid Username or Password"
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+/* ===============================
+ATTEMPT CHECK
+================================ */
+
+
+
+let attempts =
+
+JSON.parse(
+localStorage.getItem(
+"examAttempts"
+)
+)
+
+|| {};
+
+
+
+
+
+
+
+if(
+
+attempts[student.username]
+
+&&
+
+student.unlimited !== true
+
+){
+
+
+alert(
+"You have already completed your exam!"
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+
+/* ===============================
+SAVE LOGIN
+================================ */
+
+
+currentStudent = student;
+
+
+currentSet =
+student.set;
+
+
+
+localStorage.setItem(
+"currentUser",
+JSON.stringify(student)
+);
+
+
+
+
+
+
+
+/* ===============================
+DISPLAY STUDENT DATA
+================================ */
+
+
+
+const studentName =
+document.getElementById(
+"studentName"
+);
+
+
+
+if(studentName){
+
+studentName.innerText =
+student.name;
+
+
+}
+
+
+
+
+
+
+
+const studentSet =
+document.getElementById(
+"studentSet"
+);
+
+
+
+if(studentSet){
+
+
+studentSet.innerText =
+
+"Question Set : "
++
+student.set;
+
+
+}
+
+
+
+
+
+
+
+
+const examStudent =
+document.getElementById(
+"examStudent"
+);
+
+
+
+if(examStudent){
+
+
+examStudent.innerText =
+student.name;
+
+
+}
+
+
+
+
+
+
+
+console.log(
+"LOGIN SUCCESS",
+currentStudent
+);
+
+
+
+
+
+
+
+showPage(
+"instructionPage"
+);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+/* ===============================
+AUTO RESTORE SESSION
+================================ */
+
+
+window.addEventListener(
+"load",
+()=>{
+
+
+const savedUser =
+
+JSON.parse(
+localStorage.getItem(
+"currentUser"
+)
+);
+
+
+
+if(savedUser){
+
+
+currentStudent =
+savedUser;
+
+
+currentSet =
+savedUser.set;
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 1 LOGIN SYSTEM READY"
+);
+
+
+console.log(
+"FIREBASE REMOVED SUCCESSFULLY"
+);
+
+
+console.log(
+"================================="
+);
+
+/* =====================================================
+PREMIUM ONLINE EXAMINATION SYSTEM
+
+APP.JS
+PART 2 / 6
+
+QUESTION DATABASE
+FIREBASE FREE VERSION
+
+SET A - ARIJIT
+SET B - ALOK
+SET C - ANANYA
+SET D - SOUHADRI
+
+===================================================== */
+
+
+/* ===============================
+QUESTION SET DATABASE
+================================ */
+
+
+const questionSets = {
+
+
+/* ===============================
+SET A
+ARIJIT
+================================ */
+
+
+A:[
+
+
+{
+question:
+"What does HTML stand for?",
+
+options:[
+
+"Hyper Text Markup Language",
+
+"High Text Machine Language",
+
+"Hyperlink Text Management Language",
+
+"Home Tool Markup Language"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"Which CSS property is used to change text color?",
+
+options:[
+
+"font-color",
+
+"color",
+
+"text-color",
+
+"background"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"Which keyword creates a constant variable in JavaScript?",
+
+options:[
+
+"var",
+
+"let",
+
+"const",
+
+"static"
+
+],
+
+answer:2
+
+},
+
+
+
+{
+question:
+"Which method adds an element at the end of an array?",
+
+options:[
+
+"pop()",
+
+"push()",
+
+"shift()",
+
+"add()"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"What does DOM stand for?",
+
+options:[
+
+"Document Object Model",
+
+"Data Object Management",
+
+"Digital Object Method",
+
+"Document Oriented Model"
+
+],
+
+answer:0
+
+}
+
+
+
+],
+
+
+
+
+
+
+
+/* ===============================
+SET B
+ALOK
+================================ */
+
+
+B:[
+
+
+{
+question:
+"Which framework follows Product Owner and Scrum Master roles?",
+
+options:[
+
+"Waterfall",
+
+"Scrum",
+
+"Kanban",
+
+"PRINCE2"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"What is MVP in software development?",
+
+options:[
+
+"Most Valuable Programmer",
+
+"Minimum Viable Product",
+
+"Maximum Visual Project",
+
+"Main Version Program"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"Which tool is used for version control?",
+
+options:[
+
+"Git",
+
+"Figma",
+
+"Photoshop",
+
+"Excel"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What is debugging?",
+
+options:[
+
+"Finding and fixing code errors",
+
+"Designing UI",
+
+"Creating database",
+
+"Hosting website"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What does API stand for?",
+
+options:[
+
+"Application Programming Interface",
+
+"Advanced Program Internet",
+
+"Application Private Input",
+
+"Applied Program Instruction"
+
+],
+
+answer:0
+
+}
+
+
+
+],
+
+
+
+
+
+
+
+
+/* ===============================
+SET C
+ANANYA
+================================ */
+
+
+C:[
+
+
+{
+question:
+"Which tag creates a hyperlink in HTML?",
+
+options:[
+
+"<link>",
+
+"<a>",
+
+"<href>",
+
+"<url>"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"Which CSS system is used for two dimensional layout?",
+
+options:[
+
+"Flexbox",
+
+"Grid",
+
+"Float",
+
+"Position"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"What does JSON stand for?",
+
+options:[
+
+"JavaScript Object Notation",
+
+"Java Source Object Network",
+
+"Java Online System",
+
+"Joint Object Syntax"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"Which HTTP method retrieves data?",
+
+options:[
+
+"POST",
+
+"GET",
+
+"DELETE",
+
+"PATCH"
+
+],
+
+answer:1
+
+},
+
+
+
+{
+question:
+"Which operator checks value and type both?",
+
+options:[
+
+"=",
+
+"==",
+
+"===",
+
+"+="
+
+],
+
+answer:2
+
+}
+
+
+
+],
+
+
+
+
+
+
+
+
+/* ===============================
+SET D
+SOUHADRI
+================================ */
+
+
+D:[
+
+
+{
+question:
+"What is a software bug?",
+
+options:[
+
+"A code error",
+
+"A feature",
+
+"A design",
+
+"A database"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What is UI?",
+
+options:[
+
+"User Interface",
+
+"User Internet",
+
+"Universal Input",
+
+"User Information"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What is UX?",
+
+options:[
+
+"User Experience",
+
+"User Extension",
+
+"Universal XML",
+
+"User Example"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What is frontend?",
+
+options:[
+
+"User visible part of website",
+
+"Database",
+
+"Server",
+
+"API"
+
+],
+
+answer:0
+
+},
+
+
+
+{
+question:
+"What is backend?",
+
+options:[
+
+"Server and database logic",
+
+"Website color",
+
+"Logo",
+
+"Image"
+
+],
+
+answer:0
+
+}
+
+
+
+]
+
+
+
+};
+
+
+
+
+
+
+
+/* ===============================
+QUESTION LOADER
+================================ */
+
+
+function loadStudentQuestionSet(){
+
+
+
+if(!currentStudent){
+
+
+alert(
+"Student data missing"
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+questions =
+
+questionSets[
+currentStudent.set
+]
+
+|| [];
+
+
+
+
+
+
+console.log(
+"Loaded Set:",
+currentStudent.set
+);
+
+
+
+console.log(
+"Total Questions:",
+questions.length
+);
+
+
+
+}
+
+
+
+
+
+
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 2 QUESTION SYSTEM READY"
+);
+
+
+console.log(
+"FIREBASE QUESTION DATABASE REMOVED"
+);
+
+
+console.log(
+"================================="
+);
+
+/* =====================================================
+PREMIUM ONLINE EXAMINATION SYSTEM
+
+APP.JS
+PART 3 / 6
+
+EXAM ENGINE
+FIREBASE FREE VERSION
+
+===================================================== */
+
+
+
+/* ===============================
+START EXAM BUTTON
+================================ */
+
+
+const startExamBtn =
+document.getElementById(
+"startExam"
+);
+
+
+
+if(startExamBtn){
+
+
+startExamBtn.addEventListener(
+"click",
 async()=>{
 
 
-    const usernameInput =
-    document
-    .getElementById("username")
-    .value
-    .trim();
 
+const agree =
+document.getElementById(
+"agreeRules"
+);
 
 
-    const password =
-    document
-    .getElementById("password")
-    .value
-    .trim();
 
 
+if(
+!agree ||
+!agree.checked
+){
 
-    const username =
-    usernameInput.toLowerCase();
 
+alert(
+"Please accept instructions first"
+);
 
 
+return;
 
-    if(
-        username === "" ||
-        password === ""
-    ){
 
-        alert(
-        "Enter Username and Password"
-        );
+}
 
-        return;
 
-    }
 
 
 
-
-    try{
-
-
-        if(!db){
-
-            alert(
-            "Firebase Not Connected"
-            );
-
-            return;
-
-        }
-
-
-
-
-
-        console.log(
-            "Searching Student:",
-            username
-        );
-
-
-
-
-
-        studentRef =
-        doc(
-            db,
-            "students",
-            username
-        );
-
-
-
-
-
-        const studentSnap =
-        await getDoc(
-            studentRef
-        );
-
-
-
-
-
-        console.log(
-            "Firebase Found:",
-            studentSnap.exists()
-        );
-
-
-
-
-
-        if(!studentSnap.exists()){
-
-
-            alert(
-            "Student not found"
-            );
-
-
-            return;
-
-
-        }
-
-
-
-
-
-
-        const student =
-        studentSnap.data();
-
-
-
-
-
-
-        console.log(
-            "Student Data:",
-            student
-        );
-
-
-
-
-
-
-        if(
-            student.password !== password
-        ){
-
-
-            alert(
-            "Wrong Password"
-            );
-
-
-            return;
-
-
-        }
-
-
-
-
-
-
-        /*
-        ===============================
-        EXTRA ATTEMPT CONTROL
-        ONLY FIREBASE FIELD
-        ===============================
-        */
-
-
-        const allowExtraAttempt =
-        student.allowExtraAttempt === true;
-
-
-
-
-
-
-        /*
-        Already attempted students blocked
-        Except allowed extra attempt users
-        */
-
-
-        if(
-            student.attempt === true &&
-            !allowExtraAttempt
-        ){
-
-            alert(
-            "You have already completed your exam!"
-            );
-
-            return;
-
-        }
-
-
-
-
-
-        currentStudent = {
-
-
-            ...student,
-
-            username: username
-
-
-        };
-
-
-
-
-
-
-        currentSet =
-        student.set;
-
-
-
-
-
-
-        const studentName =
-        document.getElementById(
-            "studentName"
-        );
-
-
-        if(studentName){
-
-            studentName.innerText =
-            student.name || username;
-
-        }
-
-
-
-
-
-
-        const studentSet =
-        document.getElementById(
-            "studentSet"
-        );
-
-
-        if(studentSet){
-
-            studentSet.innerText =
-            "Question Set : "
-            +
-            student.set;
-
-        }
-
-
-
-
-
-
-        const examStudent =
-        document.getElementById(
-            "examStudent"
-        );
-
-
-        if(examStudent){
-
-            examStudent.innerText =
-            student.name || username;
-
-        }
-
-
-
-
-
-
-
-        console.log(
-            "LOGIN SUCCESS",
-            currentStudent
-        );
-
-
-
-
-
-
-        showPage(
-            "instructionPage"
-        );
-
-
-
-    }
-
-    catch(error){
-
-
-        console.error(
-            "LOGIN ERROR:",
-            error
-        );
-
-
-        alert(
-            "Firebase Login Error"
-        );
-
-
-    }
+startExam();
 
 
 
@@ -467,1219 +1235,6 @@ async()=>{
 
 
 
-console.log(
-"PART 1 LOGIN SYSTEM LOADED SUCCESSFULLY"
-);
-
-/* =====================================================
-   PREMIUM ONLINE EXAMINATION SYSTEM
-   APP.JS
-   PART 2 / 6
- 
-   QUESTION DATABASE
-   SET A - ARIJIT
-   SET B - ANANAYA
-   SET C - ALOKI
-   SET D - SOUHADRI 
-===================================================== */
-
-
-
-const questionSets = {
-
-
-
-    /* ===============================
-            SET A
-            ARIJIT
-    ================================ */
-
-
-    A: [
-
-        {
-            question: "In modern web development, why is it strongly recommended to use HTML5 semantic elements such as <header>, <nav>, <article>, <section>, and <footer> instead of generic <div> containers?",
-            options: [
-                "Semantic elements automatically apply responsive CSS grid styling without needing external style sheets.",
-                "Semantic elements improve Accessibility (a11y) for screen readers, enhance SEO indexing by search engine crawlers, and make code maintainable and readable.",
-                "Generic <div> tags are deprecated in HTML5 and will cause rendering warnings in modern browsers like Chrome and Firefox.",
-                "Semantic tags execute client-side JavaScript faster because they are parsed at a higher browser execution priority."
-            ],
-            answer: 1
-        },
-
-
-        {
-            question: "Consider a <div> element styled with width:300px, padding:20px, border:5px solid black, margin:15px and box-sizing:content-box. What is the total rendered width and how does border-box change it?",
-            options: [
-                "Under content-box total width is 350px; under border-box content width shrinks so total outer width equals 300px.",
-                "Under content-box total width is 380px; under border-box total width includes margins and equals 330px.",
-                "Under content-box total width is 350px (Width + Padding + Border); under border-box total rendered width equals 300px as padding and border are included inside width.",
-                "Under content-box total width is 325px; under border-box margin is added into content area."
-            ],
-            answer: 2
-        },
-
-
-        {
-            question: "Analyze the JavaScript execution order: console.log('Start'); setTimeout(()=>console.log('Timeout Callback'),0); Promise.resolve().then(()=>console.log('Promise Resolved')); console.log('End');",
-            options: [
-                "Start → Timeout Callback → Promise Resolved → End",
-                "Start → End → Timeout Callback → Promise Resolved",
-                "Start → End → Promise Resolved → Timeout Callback",
-                "Start → Promise Resolved → End → Timeout Callback"
-            ],
-            answer: 2
-        },
-
-
-        {
-            question: "When architecting complex web application layouts, what is the primary structural difference between CSS Flexbox and CSS Grid?",
-            options: [
-                "Flexbox is designed for 1-Dimensional layouts, whereas CSS Grid is designed for 2-Dimensional layouts.",
-                "Flexbox only works for mobile sizes while CSS Grid works only on desktop.",
-                "Flexbox requires absolute positioning while Grid does not.",
-                "Flexbox handles server-side rendering while Grid uses WebGL."
-            ],
-            answer: 0
-        },
-
-
-        {
-            question: "What happens when a user types https://www.example.com in a browser and presses Enter?",
-            options: [
-                "HTTP GET Request → HTML rendered → DNS Resolution → TCP Handshake → SSL/TLS Negotiation.",
-                "DNS Resolution → TCP 3-Way Handshake → TLS Handshake → HTTP GET Request → Server Response → DOM/CSSOM Rendering.",
-                "Browser renders cached layout → DNS downloads JavaScript → Database query executes locally.",
-                "TLS starts TCP lookup → HTTP POST fetches HTML → DNS compiles CSS."
-            ],
-            answer: 1
-        }
-
-
-    ],
-
-
-
-
-
-    B: [
-
-        {
-            question: "What does 'Scope Creep' refer to in a web development project?",
-            options: [
-                "Adding extra features without planning or adjusting time/budget",
-                "Decreasing the budget mid-project",
-                "Bugs introduced during the final testing phase",
-                "Reducing the number of web pages before release"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Which Agile framework uses roles like 'Product Owner' and 'Scrum Master'?",
-            options: [
-                "Waterfall",
-                "Scrum",
-                "Kanban",
-                "PRINCE2"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the primary purpose of a 'Sprint' in Scrum?",
-            options: [
-                "To deploy the entire website at once",
-                "To train new developers on coding languages",
-                "A fixed timebox (usually 1–4 weeks) to complete a specific set of tasks",
-                "A continuous loop without any deadlines"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "In web development, what does 'MVP' stand for?",
-            options: [
-                "Most Valuable Programmer",
-                "Minimum Viable Product",
-                "Maximum Value Process",
-                "Main Visual Prototype"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which tool is most commonly used for version control and collaborating on code?",
-            options: [
-                "Trello",
-                "Figma",
-                "Git",
-                "Slack"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "In a traditional Waterfall project model, when does testing usually happen?",
-            options: [
-                "Daily throughout the project",
-                "At the very start before design",
-                "After the development phase is completed",
-                "Concurrently with writing code"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "What is a 'User Story' in Agile project management?",
-            options: [
-                "A review written by a client after release",
-                "A short description of a feature from the perspective of the end-user",
-                "The biography of the lead developer",
-                "A bug report sent by a user"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the main goal of a Daily Standup meeting?",
-            options: [
-                "To write code together for 15 minutes",
-                "To present full project demos to clients",
-                "To share quick updates, plans for the day, and any blockers",
-                "To negotiate developer salaries"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which visual board uses columns like 'To Do', 'In Progress', and 'Done' to manage task flow?",
-            options: [
-                "Gantt Chart",
-                "Kanban Board",
-                "Flowchart",
-                "Entity Relationship Diagram"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a 'Milestone' in project management?",
-            options: [
-                "A minor bug fixed in code",
-                "A major event or phase completion marker in a project timeline",
-                "A tool for hosting files",
-                "A type of database index"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the main purpose of Wireframing during web design?",
-            options: [
-                "Writing backend API routes",
-                "Laying out the basic structural design of a website before coding",
-                "Running automated speed tests",
-                "Setting up server security rules"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does a Gantt Chart primarily display?",
-            options: [
-                "Code commits over time",
-                "Server CPU usage",
-                "Project schedule, tasks, and dependencies over time",
-                "Client payment histories"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which role in Scrum is responsible for prioritizing the Product Backlog?",
-            options: [
-                "Scrum Master",
-                "Lead Developer",
-                "QA Engineer",
-                "Product Owner"
-            ],
-            answer: 3
-        },
-
-        {
-            question: "What does 'Refinement' or 'Grooming' mean for a Product Backlog?",
-            options: [
-                "Deleting all old tasks",
-                "Reviewing, detailing, and estimating backlog items for upcoming sprints",
-                "Refactoring the codebase",
-                "Formatting CSS code style"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a 'Blocker' (or Impediment)?",
-            options: [
-                "An obstacle that prevents a team member from progressing on a task",
-                "A feature that blocks unauthorized users from logging in",
-                "A CSS rule that disables clicks",
-                "A server error caused by high traffic"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Why is 'Time Tracking' important in web development projects?",
-            options: [
-                "To prevent developers from taking breaks",
-                "To calculate project costs, measure productivity, and improve future estimates",
-                "To automatically write documentation",
-                "To speed up website loading times"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "In project management, what are 'Deliverables'?",
-            options: [
-                "Quantifiable outputs or results produced during or at the end of a project",
-                "Notifications sent by email",
-                "Third-party npm packages",
-                "Server hardware components"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is the focus of a Sprint Retrospective meeting?",
-            options: [
-                "Showing the completed website to external stakeholders",
-                "Discussing what went well, what didn't, and how to improve in the next sprint",
-                "Writing developer documentation",
-                "Assigning tasks to new recruits"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does QA stand for in web project teams?",
-            options: [
-                "Quick Access",
-                "Query Analysis",
-                "Quality Assurance",
-                "Quantum Algorithm"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which document outlines the project goals, scope, deadlines, and responsibilities for a client?",
-            options: [
-                "API Documentation",
-                "Statement of Work (SOW)",
-                "README.md file",
-                "Git Commit Log"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is 'Refactoring' in software engineering?",
-            options: [
-                "Changing the outward behavior of a feature",
-                "Restructuring existing computer code without changing its external behavior",
-                "Changing the project manager mid-way",
-                "Redesigning the logo"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does 'Deployment' mean in web development?",
-            options: [
-                "Moving code from a local environment to a live server where users can access it",
-                "Writing initial project specifications",
-                "Designing low-fidelity prototypes in Figma",
-                "Fixing CSS styling bugs"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Task Dependency'?",
-            options: [
-                "When a task is completed ahead of time",
-                "A relationship where one task relies on the completion or start of another",
-                "A library imported in JavaScript",
-                "A developer relying on another developer's machine"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which tool is widely used for tracking issues, tasks, and project workflows?",
-            options: [
-                "Jira",
-                "VS Code",
-                "Postman",
-                "FileZilla"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is the main benefit of adopting an Agile approach over a strict Waterfall approach?",
-            options: [
-                "No documentation is ever needed",
-                "Flexibility to adapt to changing requirements and feedback quickly",
-                "Guarantees that code will be 100% bug-free",
-                "Eliminates the need for client communication"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does 'Definition of Done' (DoD) mean in a Scrum team?",
-            options: [
-                "The time when the developer stops working for the day",
-                "A shared checklist of criteria that a task must meet to be considered complete",
-                "The date when the company contract ends",
-                "When the code is written, even if untested"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a Sprint Backlog?",
-            options: [
-                "A list of bugs found on the live website",
-                "The list of tasks selected from the Product Backlog to be completed during a specific sprint",
-                "A history of past projects",
-                "An archived list of canceled features"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is Risk Management in web projects?",
-            options: [
-                "Deleting risky code from the server",
-                "Identifying, analyzing, and taking steps to reduce potential project problems before they occur",
-                "Buying insurance for developer laptops",
-                "Avoiding all new technology stacks"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a Staging Environment?",
-            options: [
-                "The developer's personal machine",
-                "A near-exact replica of the live production environment used for final testing before launch",
-                "A public code repository",
-                "The design folder on Google Drive"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Who is primarily responsible for removing blockers for a developer team in Scrum?",
-            options: [
-                "Database Administrator",
-                "Client Representative",
-                "Scrum Master",
-                "UI/UX Designer"
-            ],
-            answer: 2
-        }
-
-    ],
-
-
-
-    C: [
-
-        {
-            question: "What does HTML stand for?",
-            options: [
-                "High Text Marking Language",
-                "Hyper Text Markup Language",
-                "Hyperlink and Text Markup Language",
-                "Home Tool Markup Language"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML element is used to define the main title of a document displayed on the browser tab?",
-            options: [
-                "<head>",
-                "<h1>",
-                "<title>",
-                "<header>"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which CSS property is used to change the text color of an element?",
-            options: [
-                "font-color",
-                "color",
-                "text-style",
-                "background-color"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "How do you create an unordered list in HTML?",
-            options: [
-                "<ol>",
-                "<li>",
-                "<ul>",
-                "<dl>"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which keyword is used to declare a variable in JavaScript that cannot be reassigned?",
-            options: [
-                "var",
-                "let",
-                "const",
-                "static"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "What does CSS stand for?",
-            options: [
-                "Creative Style Sheets",
-                "Cascading Style Sheets",
-                "Computer Style System",
-                "Colorful Style Sheets"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML attribute specifies an alternate text for an image if the image cannot be displayed?",
-            options: [
-                "src",
-                "title",
-                "alt",
-                "href"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "In the CSS Box Model, what space sits directly between the element's content and its border?",
-            options: [
-                "Margin",
-                "Padding",
-                "Outline",
-                "Gap"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML tag is used to create a hyperlink?",
-            options: [
-                "<link>",
-                "<a>",
-                "<href>",
-                "<url>"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the correct JavaScript syntax to output 'Hello World' in the browser console?",
-            options: [
-                "print('Hello World')",
-                "console.log('Hello World')",
-                "document.writeConsole('Hello World')",
-                "response.write('Hello World')"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTTP status code represents 'Not Found'?",
-            options: [
-                "200",
-                "500",
-                "404",
-                "301"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which CSS unit is relative to the root element's (<html>) font size?",
-            options: [
-                "em",
-                "px",
-                "rem",
-                "%"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "What is the purpose of the <meta name='viewport'> tag in HTML?",
-            options: [
-                "To connect external JavaScript files",
-                "To ensure proper rendering and zooming on mobile devices",
-                "To define page keywords for search engines",
-                "To set up page character encoding"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML5 tag is used to embed audio files?",
-            options: [
-                "<sound>",
-                "<audio>",
-                "<mp3>",
-                "<media>"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What will typeof [] return in JavaScript?",
-            options: [
-                "array",
-                "object",
-                "list",
-                "undefined"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which CSS display value converts an element into a flex container?",
-            options: [
-                "display: inline-block",
-                "display: flex",
-                "display: grid",
-                "display: block"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML element is best suited for wrapping main navigation links?",
-            options: [
-                "<menu>",
-                "<section>",
-                "<nav>",
-                "<aside>"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "How do you select an element with id='main' in CSS?",
-            options: [
-                ".main",
-                "#main",
-                "*main",
-                "main"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which JavaScript method adds a new element to the end of an array?",
-            options: [
-                "push()",
-                "pop()",
-                "unshift()",
-                "concat()"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is the default position value of an HTML element in CSS?",
-            options: [
-                "relative",
-                "absolute",
-                "static",
-                "fixed"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which symbol is used for single-line comments in JavaScript?",
-            options: [
-                "<!-- comment -->",
-                "/* comment */",
-                "// comment",
-                "# comment"
-            ],
-            answer: 2
-        },
-
-        {
-            question: "What does DOM stand for in web development?",
-            options: [
-                "Document Object Model",
-                "Data Object Management",
-                "Digital Display Module",
-                "Desktop Output Mode"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Which attribute is used in an HTML <form> to specify where to send the form data?",
-            options: [
-                "method",
-                "action",
-                "target",
-                "path"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "How do you link an external CSS file named style.css to an HTML document?",
-            options: [
-                "<script src='style.css'></script>",
-                "<link rel='stylesheet' href='style.css'>",
-                "<style src='style.css'>",
-                "<css path='style.css'>"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "In JavaScript, which operator checks for both equal value and equal type?",
-            options: [
-                "=",
-                "==",
-                "===",
-                "?="
-            ],
-            answer: 2
-        },
-
-        {
-            question: "Which CSS property controls the stack order of overlapping elements?",
-            options: [
-                "order",
-                "z-index",
-                "flex-grow",
-                "position"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "Which HTML tag is used to define an inline container for styling text?",
-            options: [
-                "<div>",
-                "<span>",
-                "<p>",
-                "<section>"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does JSON stand for?",
-            options: [
-                "JavaScript Object Notation",
-                "Java Source Open Network",
-                "JavaScript Online Node",
-                "Joint System Output Network"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Which JavaScript function converts a JSON string into a JavaScript object?",
-            options: [
-                "JSON.stringify()",
-                "JSON.parse()",
-                "JSON.toObject()",
-                "JSON.convert()"
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the HTTP method used to retrieve data from a server without modifying it?",
-            options: [
-                "POST",
-                "PUT",
-                "GET",
-                "DELETE"
-            ],
-            answer: 2
-        }
-
-    ],
-
-
-
-    D: [
-
-        {
-            question: "What is a 'Deadline' in a project?",
-            options: [
-                "The date or time by which a task or project must be completed.",
-                "The day a project is officially started.",
-                "A bug that crashes the website completely.",
-                "The daily lunch break time for developers."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is the main purpose of 'Client Feedback'?",
-            options: [
-                "To find out what the client likes or wants changed in the website.",
-                "To force the client to pay extra money.",
-                "To test the server speed.",
-                "To ask the client to write HTML code."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Which of the following is a popular communication tool used by development teams?",
-            options: [
-                "Slack",
-                "Photoshop",
-                "Notepad",
-                "CSS"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'To-Do' mean on a task management board?",
-            options: [
-                "Tasks that are already finished.",
-                "Tasks that haven't been started yet.",
-                "Tasks currently being worked on.",
-                "Canceled tasks."
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a Project Manager (PM) primarily responsible for?",
-            options: [
-                "Writing all backend code for the project.",
-                "Designing the logo and color schemes.",
-                "Planning, organizing, and guiding the team to complete the project.",
-                "Buying domain names and servers."
-            ],
-            answer: 2
-        },
-
-        {
-            question: "What is 'Testing' in web development?",
-            options: [
-                "Checking the website to find and fix bugs or errors.",
-                "Writing the project agreement contract.",
-                "Hosting the website on the internet.",
-                "Drawing wireframes on paper."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'In Progress' mean on a task board?",
-            options: [
-                "The task is completely done.",
-                "The task is currently being worked on.",
-                "The task is deleted.",
-                "The task hasn't been assigned to anyone."
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a 'Bug' in software development?",
-            options: [
-                "A feature that the client loves.",
-                "An error or mistake in the code that causes the website to work incorrectly.",
-                "A new design layout.",
-                "A type of web server."
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is a 'Daily Standup' meeting?",
-            options: [
-                "A short, daily meeting where the team shares progress and plans.",
-                "A two-hour coding test.",
-                "A meeting held only when a project fails.",
-                "A monthly party for the company."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Task'?",
-            options: [
-                "A single, specific piece of work that needs to be done.",
-                "The total budget of the company.",
-                "The entire website release.",
-                "A client meeting."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'UI' stand for in web project discussions?",
-            options: [
-                "User Interface",
-                "Unified Integration",
-                "User Interaction",
-                "Universal Internet"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'UX' stand for?",
-            options: [
-                "User Experience",
-                "Universal Extension",
-                "User Example",
-                "Unit Execution"
-            ],
-            answer: 0
-        },
-
-        {
-            question: "Why do teams break a large project into smaller tasks?",
-            options: [
-                "To make the project easier to manage, estimate, and complete.",
-                "To make the project take more time.",
-                "Because small tasks don't require testing.",
-                "To confuse the client."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Feature' in a web application?",
-            options: [
-                "A specific functionality or capability of the app (e.g., Login, Search Bar).",
-                "A syntax error in JavaScript.",
-                "The monthly hosting bill.",
-                "The folder where images are stored."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is the 'Front-End' of a website?",
-            options: [
-                "The database server where data is stored.",
-                "The part of the website that users see and interact with.",
-                "The backend security code.",
-                "The payment gateway integration."
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What is the 'Back-End' of a website?",
-            options: [
-                "The visible layout made with HTML and CSS.",
-                "The server, database, and background logic that users don't see directly.",
-                "The domain name purchased by the client.",
-                "The website's favicon logo."
-            ],
-            answer: 1
-        },
-
-        {
-            question: "What does 'Done' mean on a project task board?",
-            options: [
-                "The task is fully finished, tested, and accepted.",
-                "The developer has started typing code.",
-                "The task is waiting for a client reply.",
-                "The task was postponed to next year."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Project Schedule'?",
-            options: [
-                "A timeline showing when tasks and project phases start and end.",
-                "A list of developer salaries.",
-                "A document with all code comments.",
-                "A database of client phone numbers."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is 'Documentation' in a project?",
-            options: [
-                "Written explanations and guides about how the project or code works.",
-                "Sending text messages to clients on WhatsApp.",
-                "Designing icons in Illustrator.",
-                "Deleting unused files."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Kickoff Meeting'?",
-            options: [
-                "The first meeting held with the team and client to start a project.",
-                "A party hosted after finishing a project.",
-                "A meeting to fire a team member.",
-                "The final security audit meeting."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Repository' (Repo) in developer teams?",
-            options: [
-                "A place where project code and files are stored and managed.",
-                "A folder for storing office receipts.",
-                "A type of monitor used by designers.",
-                "An online payment method."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Design Mockup'?",
-            options: [
-                "A visual representation or preview of how the final website will look.",
-                "The written JavaScript code.",
-                "A test report showing server errors.",
-                "An invoice sent to the client."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Brainstorming' session?",
-            options: [
-                "A group discussion to generate creative ideas and solutions for a project.",
-                "Fixing server hardware issues.",
-                "Writing database queries under time pressure.",
-                "Testing a website for security vulnerabilities."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'Assignee' mean for a task?",
-            options: [
-                "The person responsible for working on and completing that task.",
-                "The client who paid for the project.",
-                "The software used to write code.",
-                "The date the task was created."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Client'?",
-            options: [
-                "The person or company paying for the website/project to be built.",
-                "The main server hosting the database.",
-                "The lead programmer on the team.",
-                "A software framework like React."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What does 'Priority' mean when managing tasks?",
-            options: [
-                "Deciding which tasks are most important and should be done first.",
-                "Doing tasks in alphabetical order.",
-                "Giving all tasks to the newest team member.",
-                "Deleting tasks that take more than one hour."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Feedback Loop'?",
-            options: [
-                "A continuous cycle of getting input, making improvements, and reviewing again.",
-                "An infinite loop error in code that freezes the browser.",
-                "A speaker noise during online calls.",
-                "Paying the monthly subscription for Trello."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Launch' or 'Go-Live'?",
-            options: [
-                "Making the completed website official and accessible to the public on the internet.",
-                "Starting the initial design phase.",
-                "Deleting old project files from the computer.",
-                "Writing the first line of code."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is 'Team Collaboration'?",
-            options: [
-                "People working together effectively to achieve a common project goal.",
-                "One developer working completely alone without telling anyone.",
-                "Competing against team members to see who codes fastest.",
-                "Outsourcing the entire project to another company."
-            ],
-            answer: 0
-        },
-
-        {
-            question: "What is a 'Project Goal'?",
-            options: [
-                "The main objective or outcome that the project aims to achieve.",
-                "The maximum number of lines of code allowed.",
-                "The total number of meetings held in a week.",
-                "The domain extension used (like .com or .org)."
-            ],
-            answer: 0
-        }
-
-    ],
-
-}
-
-
-
-/* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
-
-APP.JS
-PART 3 / 6
-
-EXAM ENGINE
-===================================================== */
-
-
-/* ===============================
-START EXAM BUTTON
-================================ */
-
-const startExamBtn =
-document.getElementById(
-    "startExam"
-);
-
-
-if(startExamBtn){
-
-
-    startExamBtn.addEventListener(
-    "click",
-
-    async()=>{
-
-
-        const agree =
-        document.getElementById(
-            "agreeRules"
-        );
-
-
-
-        if(
-            !agree ||
-            !agree.checked
-        ){
-
-            alert(
-            "Please accept instructions first"
-            );
-
-            return;
-
-        }
-
-
-
-        await startExam();
-
-
-    });
-
-
-}
-
-
-
-/* ===============================
-LOAD QUESTION SET
-================================ */
-
-
-function loadStudentQuestionSet(){
-
-
-
-    if(!currentStudent){
-
-
-        alert(
-        "Student data missing"
-        );
-
-
-        return;
-
-
-    }
-
-
-
-
-    questions =
-    questionSets[currentStudent.set] || [];
-
-
-
-
-
-    console.log(
-        "Question Set:",
-        currentStudent.set
-    );
-
-
-
-    console.log(
-        "Total Questions:",
-        questions.length
-    );
-
-
-}
 
 
 
@@ -1689,68 +1244,34 @@ START EXAM
 ================================ */
 
 
-async function startExam(){
+function startExam(){
 
 
 
-    showPage(
-        "examPage"
-    );
-
-
-
-
-    loadStudentQuestionSet();
+showPage(
+"examPage"
+);
 
 
 
 
-    if(
-        questions.length === 0
-    ){
-
-        alert(
-        "No questions found"
-        );
-
-
-        return;
-
-    }
+loadStudentQuestionSet();
 
 
 
 
 
-    currentQuestion = 0;
-
-    score = 0;
-
-    userAnswers = [];
-
-    selectedAnswer = null;
-
-    examFinished = false;
+if(
+questions.length===0
+){
 
 
-
-    totalSeconds = 600;
-
-
-
-
-    startMasterTimer();
+alert(
+"No Question Found"
+);
 
 
-
-
-    await openFullscreen();
-
-
-
-
-    loadQuestion();
-
+return;
 
 
 }
@@ -1759,46 +1280,36 @@ async function startExam(){
 
 
 
+currentQuestion = 0;
 
-/* ===============================
-FULLSCREEN
-================================ */
+score = 0;
 
+userAnswers = [];
 
-async function openFullscreen(){
+selectedAnswer = null;
 
-
-    try{
-
-
-        if(
-            !document.fullscreenElement
-        ){
+examFinished = false;
 
 
-            await document
-            .documentElement
-            .requestFullscreen();
+
+totalSeconds = 600;
 
 
-        }
+
+startMasterTimer();
 
 
-    }
 
-    catch(error){
-
-
-        console.log(
-        "Fullscreen error",
-        error
-        );
+loadQuestion();
 
 
-    }
+
 
 
 }
+
+
+
 
 
 
@@ -1814,171 +1325,174 @@ function loadQuestion(){
 
 
 
-    clearInterval(
-        questionTimer
-    );
+if(
+examFinished
+)
+return;
 
 
 
-    selectedAnswer = null;
 
 
+const q =
+questions[currentQuestion];
 
 
 
-    const q =
-    questions[currentQuestion];
 
+if(!q){
 
 
+finishExam();
 
+return;
 
-    if(!q){
 
+}
 
-        finishExam();
 
 
-        return;
 
 
-    }
 
+const questionNo =
+document.getElementById(
+"questionNo"
+);
 
 
 
+if(questionNo){
 
 
+questionNo.innerText =
+currentQuestion + 1;
 
-    const questionNo =
-    document.getElementById(
-        "questionNo"
-    );
 
+}
 
 
-    if(questionNo){
 
-        questionNo.innerText =
-        currentQuestion + 1;
 
-    }
 
 
 
 
+const questionText =
+document.getElementById(
+"questionText"
+);
 
 
-    const questionText =
-    document.getElementById(
-        "questionText"
-    );
 
+if(questionText){
 
 
-    if(questionText){
+questionText.innerText =
+q.question;
 
-        questionText.innerText =
-        q.question;
 
-    }
+}
 
 
 
 
 
 
-    const optionBox =
-    document.getElementById(
-        "options"
-    );
 
 
+const optionBox =
+document.getElementById(
+"options"
+);
 
-    if(!optionBox)
-        return;
 
 
+if(!optionBox)
+return;
 
 
 
-    optionBox.innerHTML = "";
 
 
 
+optionBox.innerHTML="";
 
 
 
-    q.options.forEach(
-    (option,index)=>{
 
 
 
-        const div =
-        document.createElement(
-            "div"
-        );
 
+q.options.forEach(
+(option,index)=>{
 
 
-        div.className =
-        "option";
+const div =
+document.createElement(
+"div"
+);
 
 
 
+div.className =
+"option";
 
 
-        div.innerHTML = `
 
-        <span>
-        ${String.fromCharCode(65+index)}
-        </span>
+div.innerHTML = `
 
-        ${option}
+<span>
+${String.fromCharCode(65+index)}
+</span>
 
-        `;
+${option}
 
+`;
 
 
 
 
+div.onclick = ()=>{
 
-        div.onclick = ()=>{
 
+selectAnswer(
+index,
+div
+);
 
-            selectAnswer(
-                index,
-                div
-            );
 
+};
 
-        };
 
 
 
+optionBox.appendChild(
+div
+);
 
-        optionBox.appendChild(
-            div
-        );
 
 
+});
 
-    });
 
 
 
 
 
 
-    startQuestionTimer();
+restoreAnswer();
 
 
 
-    updateProgress();
+updateProgress();
 
 
 
 }
+
+
+
 
 
 
@@ -1991,45 +1505,46 @@ SELECT ANSWER
 
 
 function selectAnswer(
-    index,
-    element
+index,
+element
 ){
 
 
 
-    selectedAnswer =
-    index;
+selectedAnswer=index;
 
 
 
 
 
-    document
-    .querySelectorAll(
-        ".option"
-    )
-    .forEach(
-    opt=>{
+document
+.querySelectorAll(
+".option"
+)
+.forEach(
+option=>{
 
 
-        opt.classList.remove(
-            "selected"
-        );
+option.classList.remove(
+"selected"
+);
 
 
-    });
+});
 
 
 
 
 
-    element.classList.add(
-        "selected"
-    );
+element.classList.add(
+"selected"
+);
 
 
 
 }
+
+
 
 
 
@@ -2038,91 +1553,197 @@ function selectAnswer(
 
 
 /* ===============================
-QUESTION TIMER
+SAVE ANSWER
 ================================ */
 
 
-function startQuestionTimer(){
+function saveCurrentAnswer(){
 
 
 
-    clearInterval(
-        questionTimer
-    );
-
-
-
-    questionTime = 20;
-
-
-
-
-
-    const timer =
-    document.getElementById(
-        "questionTimer"
-    );
-
-
-
-
-    if(timer){
-
-        timer.innerText =
-        questionTime;
-
-    }
-
-
-
-
-
-
-    questionTimer =
-    setInterval(()=>{
-
-
-        questionTime--;
-
-
-
-
-
-        if(timer){
-
-            timer.innerText =
-            questionTime;
-
-        }
-
-
-
-
-
-        if(
-            questionTime <= 0
-        ){
-
-
-            clearInterval(
-                questionTimer
-            );
-
-
-            nextQuestion();
-
-
-        }
-
-
-
-
-
-    },1000);
+userAnswers[
+currentQuestion
+]=selectedAnswer;
 
 
 
 }
+
+
+
+
+
+
+
+
+
+/* ===============================
+RESTORE ANSWER
+================================ */
+
+
+function restoreAnswer(){
+
+
+
+selectedAnswer =
+userAnswers[
+currentQuestion
+];
+
+
+
+
+
+if(
+selectedAnswer===null ||
+selectedAnswer===undefined
+)
+return;
+
+
+
+
+
+const options =
+document.querySelectorAll(
+".option"
+);
+
+
+
+if(options[selectedAnswer]){
+
+
+options[selectedAnswer]
+.classList.add(
+"selected"
+);
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+NEXT BUTTON
+================================ */
+
+
+const nextBtn =
+document.getElementById(
+"nextBtn"
+);
+
+
+
+if(nextBtn){
+
+
+nextBtn.addEventListener(
+"click",
+()=>{
+
+
+saveCurrentAnswer();
+
+
+
+
+
+if(
+currentQuestion <
+questions.length-1
+){
+
+
+currentQuestion++;
+
+loadQuestion();
+
+
+}
+else{
+
+
+finishExam();
+
+
+}
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+PREVIOUS BUTTON
+================================ */
+
+
+const previousBtn =
+document.getElementById(
+"previousBtn"
+);
+
+
+
+if(previousBtn){
+
+
+previousBtn.addEventListener(
+"click",
+()=>{
+
+
+
+saveCurrentAnswer();
+
+
+
+
+
+if(
+currentQuestion>0
+){
+
+
+currentQuestion--;
+
+loadQuestion();
+
+
+}
+
+
+
+});
+
+
+}
+
+
+
 
 
 
@@ -2138,86 +1759,100 @@ function startMasterTimer(){
 
 
 
-    clearInterval(
-        masterTimer
-    );
+clearInterval(
+masterTimer
+);
 
 
 
 
 
-    masterTimer =
-    setInterval(()=>{
+masterTimer =
+setInterval(
+()=>{
 
 
 
-        let min =
-        Math.floor(
-            totalSeconds / 60
-        );
+let min =
+Math.floor(
+totalSeconds/60
+);
 
 
 
-        let sec =
-        totalSeconds % 60;
-
-
-
-
-
-
-        const box =
-        document.getElementById(
-            "masterTime"
-        );
-
-
-
-
-        if(box){
-
-
-            box.innerText =
-            `${min}:${sec < 10 ? "0" : ""}${sec}`;
-
-
-        }
+let sec =
+totalSeconds%60;
 
 
 
 
 
 
-        totalSeconds--;
+const timer =
+document.getElementById(
+"masterTime"
+);
 
 
 
 
 
-        if(
-            totalSeconds <= 0
-        ){
+if(timer){
 
 
-            clearInterval(
-                masterTimer
-            );
+timer.innerText =
+`${min}:${sec<10?"0":""}${sec}`;
 
 
-            autoSubmit();
-
-
-        }
+}
 
 
 
 
 
-    },1000);
+
+totalSeconds--;
+
+
+
+
+
+if(
+totalSeconds<=0
+){
+
+
+
+clearInterval(
+masterTimer
+);
+
+
+
+alert(
+"Time Finished"
+);
+
+
+
+finishExam();
 
 
 
 }
+
+
+
+
+},
+1000
+);
+
+
+
+}
+
+
 
 
 
@@ -2234,35 +1869,37 @@ function updateProgress(){
 
 
 
-    const progress =
-    (
-        (currentQuestion + 1)
-        /
-        questions.length
-    )
-    *
-    100;
+const progress =
+
+(
+(currentQuestion+1)
+/
+questions.length
+)
+*
+100;
 
 
 
 
 
-    const bar =
-    document.getElementById(
-        "progressFill"
-    );
+const bar =
+document.getElementById(
+"progressFill"
+);
 
 
 
 
-    if(bar){
+
+if(bar){
 
 
-        bar.style.width =
-        progress + "%";
+bar.style.width =
+progress+"%";
 
 
-    }
+}
 
 
 
@@ -2272,8 +1909,45 @@ function updateProgress(){
 
 
 
+
+
+/* ===============================
+AUTO SUBMIT
+================================ */
+
+
+function autoSubmit(){
+
+
+
+finishExam();
+
+
+
+}
+
+
+
+
+
+
 console.log(
-"PART 3 EXAM ENGINE LOADED SUCCESSFULLY"
+"================================="
+);
+
+
+console.log(
+"PART 3 EXAM ENGINE READY"
+);
+
+
+console.log(
+"FIREBASE FREE MODE"
+);
+
+
+console.log(
+"================================="
 );
 
 /* =====================================================
@@ -2282,266 +1956,125 @@ PREMIUM ONLINE EXAMINATION SYSTEM
 APP.JS
 PART 4 / 6
 
-ANSWER SYSTEM + SECURITY
+EXAM SECURITY SYSTEM
+FIREBASE FREE VERSION
+
 ===================================================== */
 
 
 
-/* =====================================================
-NEXT BUTTON
-===================================================== */
+/* ===============================
+SECURITY WARNING
+================================ */
 
 
-const nextBtn =
+function showSecurityWarning(message){
+
+
+
+if(examFinished)
+return;
+
+
+
+
+
+warningCount++;
+
+
+
+
+
+
+const warningText =
 document.getElementById(
-    "nextBtn"
+"warningText"
 );
 
 
 
-if(nextBtn){
+if(warningText){
 
 
-    nextBtn.addEventListener(
-    "click",
+warningText.innerText =
 
-    ()=>{
-
-
-        nextQuestion();
-
-
-    });
-
-
-}
-
-
-
-
-
-
-/* =====================================================
-NEXT QUESTION
-===================================================== */
-
-
-function nextQuestion(){
-
-
-
-    if(examFinished)
-        return;
-
-
-
-
-    clearInterval(
-        questionTimer
-    );
-
-
-
-
-
-
-    if(
-        !questions[currentQuestion]
-    ){
-
-        finishExam();
-
-        return;
-
-    }
-
-
-
-
-
-
-    // SAVE ANSWER
-
-    userAnswers[currentQuestion] =
-    selectedAnswer;
-
-
-
-
-
-
-    // CHECK ANSWER
-
-
-    if(
-
-        selectedAnswer !== null &&
-
-        selectedAnswer ===
-        questions[currentQuestion].answer
-
-    ){
-
-        score++;
-
-    }
-
-
-
-
-
-
-    selectedAnswer = null;
-
-
-
-
-
-
-    currentQuestion++;
-
-
-
-
-
-
-
-    if(
-
-        currentQuestion >=
-        questions.length
-
-    ){
-
-
-        finishExam();
-
-
-    }
-
-    else{
-
-
-        loadQuestion();
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-/* =====================================================
-SECURITY WARNING
-===================================================== */
-
-
-function showSecurityWarning(
 message
+
++
+
+"\nWarning : "
+
++
+
+warningCount
+
++
+
+"/3";
+
+
+}
+
+
+
+
+
+
+
+const popup =
+document.getElementById(
+"warningPopup"
+);
+
+
+
+
+
+if(popup){
+
+
+popup.classList.remove(
+"hidden"
+);
+
+
+
+
+setTimeout(()=>{
+
+
+popup.classList.add(
+"hidden"
+);
+
+
+},2500);
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+warningCount>=3
 ){
 
 
-
-    if(examFinished)
-        return;
-
-
+alert(
+"Too many violations. Exam submitted."
+);
 
 
-
-    warningCount++;
-
+finishExam();
 
 
-
-
-
-    const warningText =
-    document.getElementById(
-        "warningText"
-    );
-
-
-
-
-
-    if(warningText){
-
-
-        warningText.innerText =
-        message
-        +
-        "\nWarning : "
-        +
-        warningCount
-        +
-        "/3";
-
-
-    }
-
-
-
-
-
-
-    const popup =
-    document.getElementById(
-        "warningPopup"
-    );
-
-
-
-
-
-    if(popup){
-
-
-
-        popup.classList.remove(
-            "hidden"
-        );
-
-
-
-
-        setTimeout(()=>{
-
-
-            popup.classList.add(
-                "hidden"
-            );
-
-
-        },2500);
-
-
-
-    }
-
-
-
-
-
-
-
-
-    if(
-        warningCount >= 3
-    ){
-
-
-        finishExam();
-
-
-    }
+}
 
 
 
@@ -2554,36 +2087,41 @@ message
 
 
 
-/* =====================================================
+
+/* ===============================
 TAB SWITCH DETECTION
-===================================================== */
+================================ */
 
 
 document.addEventListener(
 "visibilitychange",
-
 ()=>{
 
 
 
-    if(
+if(
 
-        document.hidden &&
+document.hidden
 
-        !examFinished &&
+&&
 
-        questions.length > 0
+!examFinished
 
-    ){
+&&
 
+questions.length>0
 
-
-        showSecurityWarning(
-        "Tab switching detected!"
-        );
+){
 
 
-    }
+
+showSecurityWarning(
+"Tab switching detected!"
+);
+
+
+
+}
 
 
 
@@ -2596,36 +2134,41 @@ document.addEventListener(
 
 
 
-/* =====================================================
-FULLSCREEN EXIT DETECTION
-===================================================== */
+
+/* ===============================
+FULLSCREEN EXIT
+================================ */
 
 
 document.addEventListener(
 "fullscreenchange",
-
 ()=>{
 
 
 
-    if(
+if(
 
-        !document.fullscreenElement &&
+!document.fullscreenElement
 
-        !examFinished &&
+&&
 
-        questions.length > 0
+!examFinished
 
-    ){
+&&
 
+questions.length>0
 
-
-        showSecurityWarning(
-        "Fullscreen exited!"
-        );
+){
 
 
-    }
+
+showSecurityWarning(
+"Fullscreen exited!"
+);
+
+
+
+}
 
 
 
@@ -2638,38 +2181,41 @@ document.addEventListener(
 
 
 
-/* =====================================================
+
+/* ===============================
 COPY BLOCK
-===================================================== */
+================================ */
 
 
 document.addEventListener(
 "copy",
-
 (e)=>{
 
 
 
-    if(
+if(
 
-        !examFinished &&
+!examFinished
 
-        questions.length > 0
+&&
 
-    ){
+questions.length>0
 
-
-
-        e.preventDefault();
+){
 
 
 
-        showSecurityWarning(
-        "Copy is disabled!"
-        );
+e.preventDefault();
 
 
-    }
+
+showSecurityWarning(
+"Copy disabled!"
+);
+
+
+
+}
 
 
 
@@ -2682,38 +2228,41 @@ document.addEventListener(
 
 
 
-/* =====================================================
+
+/* ===============================
 PASTE BLOCK
-===================================================== */
+================================ */
 
 
 document.addEventListener(
 "paste",
-
 (e)=>{
 
 
 
-    if(
+if(
 
-        !examFinished &&
+!examFinished
 
-        questions.length > 0
+&&
 
-    ){
+questions.length>0
 
-
-
-        e.preventDefault();
+){
 
 
 
-        showSecurityWarning(
-        "Paste is disabled!"
-        );
+e.preventDefault();
 
 
-    }
+
+showSecurityWarning(
+"Paste disabled!"
+);
+
+
+
+}
 
 
 
@@ -2726,31 +2275,34 @@ document.addEventListener(
 
 
 
-/* =====================================================
+
+/* ===============================
 RIGHT CLICK BLOCK
-===================================================== */
+================================ */
 
 
 document.addEventListener(
 "contextmenu",
-
 (e)=>{
 
 
 
-    if(
+if(
 
-        !examFinished &&
+!examFinished
 
-        questions.length > 0
+&&
 
-    ){
+questions.length>0
+
+){
 
 
-        e.preventDefault();
+
+e.preventDefault();
 
 
-    }
+}
 
 
 
@@ -2763,73 +2315,82 @@ document.addEventListener(
 
 
 
-/* =====================================================
+
+/* ===============================
 KEYBOARD SECURITY
-===================================================== */
+================================ */
 
 
 document.addEventListener(
 "keydown",
-
 (e)=>{
 
 
 
-    if(examFinished)
-        return;
+if(examFinished)
+return;
 
 
 
 
 
 
-    if(
-
-
-        e.key === "F12"
-
-        ||
-
-        (
-
-            e.ctrlKey &&
-
-            (
-
-                e.key.toLowerCase()==="c"
-
-                ||
-
-                e.key.toLowerCase()==="v"
-
-                ||
-
-                e.key.toLowerCase()==="u"
-
-                ||
-
-                e.key.toLowerCase()==="s"
-
-            )
-
-        )
-
-
-    ){
+if(
 
 
 
-        e.preventDefault();
+e.key==="F12"
+
+
+
+||
+
+
+
+(
+
+e.ctrlKey
+
+&&
+
+(
+
+e.key.toLowerCase()==="c"
+
+||
+
+e.key.toLowerCase()==="v"
+
+||
+
+e.key.toLowerCase()==="u"
+
+||
+
+e.key.toLowerCase()==="s"
+
+)
+
+)
+
+
+
+){
+
+
+
+e.preventDefault();
 
 
 
 
-        showSecurityWarning(
-        "Shortcut disabled!"
-        );
+showSecurityWarning(
+"Keyboard shortcut blocked!"
+);
 
 
-    }
+
+}
 
 
 
@@ -2840,524 +2401,12 @@ document.addEventListener(
 
 
 
-console.log(
-"PART 4 SECURITY SYSTEM LOADED SUCCESSFULLY"
-);
 
-/* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
 
-APP.JS
-PART 5 / 6
 
-RESULT SYSTEM + FIREBASE SAVE
-===================================================== */
-
-
-
-/* =====================================================
-FINISH EXAM
-===================================================== */
-
-
-async function finishExam(){
-
-
-
-    if(examFinished)
-        return;
-
-
-
-
-    examFinished = true;
-
-
-
-
-    clearInterval(
-        questionTimer
-    );
-
-
-    clearInterval(
-        masterTimer
-    );
-
-
-
-
-
-
-
-    if(
-
-        currentQuestion < questions.length &&
-
-        selectedAnswer !== null
-
-    ){
-
-
-        userAnswers[currentQuestion] =
-        selectedAnswer;
-
-
-    }
-
-
-
-
-
-
-    await saveExamResult();
-
-
-
-
-
-
-    showPage(
-        "resultPage"
-    );
-
-
-
-
-    calculateResult();
-
-
-
-}
-
-
-
-
-
-
-
-
-/* =====================================================
-CALCULATE RESULT
-===================================================== */
-
-
-function calculateResult(){
-
-
-
-    const total =
-    questions.length;
-
-
-
-
-
-    if(total === 0)
-        return;
-
-
-
-
-
-
-    const percentage =
-
-    (
-
-        score /
-
-        total
-
-    )
-
-    *
-
-    100;
-
-
-
-
-
-
-
-
-    const studentName =
-    document.getElementById(
-        "resultStudent"
-    );
-
-
-
-
-    if(
-        studentName &&
-        currentStudent
-    ){
-
-
-        studentName.innerText =
-        currentStudent.name;
-
-
-    }
-
-
-
-
-
-
-
-
-    const scoreBox =
-    document.getElementById(
-        "scoreText"
-    );
-
-
-
-
-
-    if(scoreBox){
-
-
-        scoreBox.innerText =
-
-        score
-        +
-        " / "
-        +
-        total;
-
-
-    }
-
-
-
-
-
-
-
-
-
-    const percentageBox =
-    document.getElementById(
-        "percentage"
-    );
-
-
-
-
-
-    if(percentageBox){
-
-
-        percentageBox.innerText =
-
-        percentage.toFixed(2)
-        +
-        "%";
-
-
-    }
-
-
-
-
-
-
-
-
-    const status =
-    document.getElementById(
-        "status"
-    );
-
-
-
-
-
-    if(status){
-
-
-
-        if(
-            percentage >= 40
-        ){
-
-
-            status.innerText =
-            "PASS";
-
-
-            status.className =
-            "pass";
-
-
-        }
-
-        else{
-
-
-            status.innerText =
-            "FAIL";
-
-
-            status.className =
-            "fail";
-
-
-        }
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-SAVE RESULT TO FIREBASE
-===================================================== */
-
-
-async function saveExamResult(){
-
-
-
-    try{
-
-
-
-        if(
-            !currentStudent ||
-            !db
-        ){
-
-            return;
-
-        }
-
-
-
-
-
-
-
-        const percentage =
-
-        questions.length > 0
-
-        ?
-
-        (
-
-            score /
-
-            questions.length
-
-        )
-
-        *
-
-        100
-
-        :
-
-        0;
-
-
-
-
-
-
-
-
-
-        const resultData = {
-
-
-            username:
-            currentStudent.username,
-
-
-
-            name:
-            currentStudent.name,
-
-
-
-            set:
-            currentStudent.set,
-
-
-
-            score:
-            score,
-
-
-
-            total:
-            questions.length,
-
-
-
-            percentage:
-            percentage,
-
-
-
-            answers:
-            userAnswers,
-
-
-
-            submittedAt:
-            new Date()
-
-
-        };
-
-
-
-
-
-
-
-
-
-        const snap =
-        await getDoc(
-            studentRef
-        );
-
-
-
-
-
-
-
-
-        if(
-            snap.exists()
-        ){
-
-
-
-            await updateDoc(
-                studentRef,
-
-                {
-
-
-                    attempt:true,
-
-
-
-                    lastScore:
-                    score,
-
-
-
-                    lastPercentage:
-                    percentage,
-
-
-
-                    lastExamDate:
-                    serverTimestamp()
-
-
-                }
-
-            );
-
-
-        }
-
-
-
-
-
-
-
-
-        console.log(
-            "RESULT SAVED",
-            resultData
-        );
-
-
-
-
-
-    }
-
-    catch(error){
-
-
-
-        console.error(
-            "RESULT SAVE ERROR:",
-            error
-        );
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-AUTO SUBMIT
-===================================================== */
-
-
-function autoSubmit(){
-
-
-
-    alert(
-    "Time Finished! Exam Submitted"
-    );
-
-
-
-    finishExam();
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-BACK BUTTON PROTECTION
-===================================================== */
+/* ===============================
+BACK BUTTON BLOCK
+================================ */
 
 
 history.pushState(
@@ -3370,32 +2419,40 @@ location.href
 
 
 
-window.onpopstate = function(){
+window.onpopstate =
+()=>{
 
 
 
-    if(
-        !examFinished
-    ){
+if(
+
+!examFinished
+
+&&
+
+questions.length>0
+
+){
 
 
 
-        showSecurityWarning(
-        "Back button disabled!"
-        );
+showSecurityWarning(
+"Back button disabled!"
+);
 
 
 
 
-        history.pushState(
-        null,
-        null,
-        location.href
-        );
+history.pushState(
+null,
+null,
+location.href
+);
 
 
 
-    }
+}
+
 
 
 };
@@ -3407,499 +2464,38 @@ window.onpopstate = function(){
 
 
 
-console.log(
-"PART 5 RESULT SYSTEM LOADED SUCCESSFULLY"
-);
 
-/* =====================================================
-PREMIUM ONLINE EXAMINATION SYSTEM
-
-APP.JS
-PART 6 / 6
-
-REVIEW + RESET + CLEANUP
-===================================================== */
-
-
-
-/* =====================================================
-REVIEW BUTTON
-===================================================== */
-
-
-const reviewBtn =
-document.getElementById(
-    "reviewBtn"
-);
-
-
-
-if(reviewBtn){
-
-
-    reviewBtn.addEventListener(
-    "click",
-
-    ()=>{
-
-
-        showPage(
-            "reviewPage"
-        );
-
-
-        loadReview();
-
-
-    });
-
-
-}
-
-
-
-
-
-
-
-/* =====================================================
-LOAD REVIEW
-===================================================== */
-
-
-function loadReview(){
-
-
-
-    const container =
-    document.getElementById(
-        "reviewContainer"
-    );
-
-
-
-
-    if(!container)
-        return;
-
-
-
-
-
-    container.innerHTML = "";
-
-
-
-
-
-
-
-    questions.forEach(
-    (q,index)=>{
-
-
-
-        const userAnswer =
-        userAnswers[index];
-
-
-
-        const correctAnswer =
-        q.answer;
-
-
-
-
-
-
-        const div =
-        document.createElement(
-            "div"
-        );
-
-
-
-
-
-        div.className =
-        "reviewItem";
-
-
-
-
-
-
-
-
-        let answerText =
-        "Not Answered";
-
-
-
-
-
-        if(
-
-            userAnswer !== null &&
-
-            userAnswer !== undefined
-
-        ){
-
-
-            answerText =
-            q.options[userAnswer];
-
-
-        }
-
-
-
-
-
-
-
-        let answerClass =
-        "";
-
-
-
-
-
-
-        if(
-
-            userAnswer !== null &&
-
-            userAnswer !== undefined
-
-        ){
-
-
-            answerClass =
-
-            userAnswer === correctAnswer
-
-            ?
-
-            "correctAnswer"
-
-            :
-
-            "wrongAnswer";
-
-
-        }
-
-
-
-
-
-
-
-
-
-        div.innerHTML = `
-
-
-<h3>
-Q${index + 1}. ${q.question}
-</h3>
-
-
-<p>
-Your Answer:
-
-<span class="${answerClass}">
-${answerText}
-</span>
-
-</p>
-
-
-
-<p>
-Correct Answer:
-
-<span class="correctAnswer">
-
-${q.options[correctAnswer]}
-
-</span>
-
-</p>
-
-
-`;
-
-
-
-
-
-
-
-
-        container.appendChild(
-            div
-        );
-
-
-
-
-    });
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-CLOSE REVIEW
-===================================================== */
-
-
-const closeReview =
-document.getElementById(
-    "closeReview"
-);
-
-
-
-
-
-if(closeReview){
-
-
-    closeReview.addEventListener(
-    "click",
-
-    ()=>{
-
-
-        showPage(
-            "resultPage"
-        );
-
-
-    });
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-FINISH BUTTON
-===================================================== */
-
-
-const finishBtn =
-document.getElementById(
-    "finishBtn"
-);
-
-
-
-
-
-if(finishBtn){
-
-
-
-    finishBtn.addEventListener(
-    "click",
-
-    ()=>{
-
-
-        resetExam();
-
-
-    });
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
-RESET EXAM SYSTEM
-===================================================== */
-
-
-function resetExam(){
-
-
-
-    clearInterval(
-        questionTimer
-    );
-
-
-    clearInterval(
-        masterTimer
-    );
-
-
-
-
-
-
-    currentStudent = null;
-
-
-    currentSet = null;
-
-
-    questions = [];
-
-
-    currentQuestion = 0;
-
-
-    selectedAnswer = null;
-
-
-    userAnswers = [];
-
-
-    score = 0;
-
-
-    warningCount = 0;
-
-
-    examFinished = false;
-
-
-
-
-
-
-
-
-    const username =
-    document.getElementById(
-        "username"
-    );
-
-
-
-
-    const password =
-    document.getElementById(
-        "password"
-    );
-
-
-
-
-
-    if(username){
-
-        username.value = "";
-
-    }
-
-
-
-
-
-
-    if(password){
-
-        password.value = "";
-
-    }
-
-
-
-
-
-
-
-
-    if(
-        document.fullscreenElement
-    ){
-
-
-        document
-        .exitFullscreen()
-        .catch(()=>{});
-
-
-    }
-
-
-
-
-
-
-
-    showPage(
-        "loginPage"
-    );
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* =====================================================
+/* ===============================
 PAGE CLOSE WARNING
-===================================================== */
+================================ */
 
 
 window.addEventListener(
 "beforeunload",
-
 (e)=>{
 
 
 
-    if(
+if(
 
-        !examFinished &&
+!examFinished
 
-        questions.length > 0
+&&
 
-    ){
+questions.length>0
 
-
-        e.preventDefault();
-
-
-        e.returnValue = "";
+){
 
 
-    }
+
+e.preventDefault();
+
+
+
+e.returnValue="";
+
+
+}
 
 
 
@@ -3912,10 +2508,1322 @@ window.addEventListener(
 
 
 
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 4 SECURITY SYSTEM READY"
+);
+
+
+console.log(
+"FIREBASE FREE MODE"
+);
+
+
+console.log(
+"================================="
+);
 
 /* =====================================================
-SYSTEM READY
+PREMIUM ONLINE EXAMINATION SYSTEM
+
+APP.JS
+PART 5 / 6
+
+RESULT SYSTEM + LOCAL STORAGE SAVE
+
+FIREBASE FREE VERSION
+
 ===================================================== */
+
+
+
+
+
+/* ===============================
+FINISH EXAM
+================================ */
+
+
+function finishExam(){
+
+
+
+if(examFinished)
+return;
+
+
+
+
+
+examFinished=true;
+
+
+
+
+
+clearInterval(
+questionTimer
+);
+
+
+clearInterval(
+masterTimer
+);
+
+
+
+
+
+
+saveCurrentAnswer();
+
+
+
+
+
+calculateScore();
+
+
+
+
+
+saveExamResult();
+
+
+
+
+
+showPage(
+"resultPage"
+);
+
+
+
+
+
+displayResult();
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+CALCULATE SCORE
+================================ */
+
+
+function calculateScore(){
+
+
+
+score=0;
+
+
+
+
+
+questions.forEach(
+(q,index)=>{
+
+
+
+if(
+
+userAnswers[index] !== undefined
+
+&&
+
+userAnswers[index] !== null
+
+&&
+
+userAnswers[index] === q.answer
+
+){
+
+
+score++;
+
+
+}
+
+
+
+});
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+SAVE RESULT
+================================ */
+
+
+function saveExamResult(){
+
+
+
+if(!currentStudent)
+return;
+
+
+
+
+
+
+
+const percentage =
+
+
+questions.length > 0
+
+?
+
+(
+
+score
+
+/
+
+questions.length
+
+)
+
+*
+
+100
+
+:
+
+0;
+
+
+
+
+
+
+
+
+let results =
+
+JSON.parse(
+
+localStorage.getItem(
+"examResults"
+)
+
+)
+
+|| [];
+
+
+
+
+
+
+
+
+
+const resultData={
+
+
+
+id:
+
+currentStudent.id,
+
+
+
+name:
+
+currentStudent.name,
+
+
+
+username:
+
+currentStudent.username,
+
+
+
+set:
+
+currentStudent.set,
+
+
+
+score:
+
+score,
+
+
+
+total:
+
+questions.length,
+
+
+
+percentage:
+
+percentage.toFixed(2),
+
+
+
+date:
+
+new Date().toLocaleString()
+
+
+
+};
+
+
+
+
+
+
+
+
+results.push(
+resultData
+);
+
+
+
+
+
+
+
+localStorage.setItem(
+
+"examResults",
+
+JSON.stringify(results)
+
+);
+
+
+
+
+
+
+
+
+
+/*
+================================
+ATTEMPT SAVE
+
+ONLY NORMAL USERS
+================================
+*/
+
+
+
+
+
+if(
+
+currentStudent.unlimited !== true
+
+){
+
+
+
+let attempts =
+
+
+JSON.parse(
+
+localStorage.getItem(
+"examAttempts"
+)
+
+)
+
+|| {};
+
+
+
+
+
+attempts[
+currentStudent.username
+]
+=true;
+
+
+
+
+
+localStorage.setItem(
+
+"examAttempts",
+
+JSON.stringify(attempts)
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+console.log(
+"RESULT SAVED",
+resultData
+);
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+DISPLAY RESULT
+================================ */
+
+
+function displayResult(){
+
+
+
+const percentage =
+
+
+questions.length > 0
+
+?
+
+(
+
+score
+
+/
+
+questions.length
+
+)
+
+*
+
+100
+
+:
+
+0;
+
+
+
+
+
+
+
+
+const resultStudent =
+
+document.getElementById(
+"resultStudent"
+);
+
+
+
+if(resultStudent){
+
+
+resultStudent.innerText =
+
+currentStudent.name;
+
+
+}
+
+
+
+
+
+
+
+
+
+const scoreText =
+
+document.getElementById(
+"scoreText"
+);
+
+
+
+if(scoreText){
+
+
+scoreText.innerText =
+
+score
+
++
+
+" / "
+
++
+
+questions.length;
+
+
+}
+
+
+
+
+
+
+
+
+
+const percentageBox =
+
+document.getElementById(
+"percentage"
+);
+
+
+
+if(percentageBox){
+
+
+percentageBox.innerText =
+
+percentage.toFixed(2)
+
++
+
+"%";
+
+
+}
+
+
+
+
+
+
+
+
+
+const status =
+
+document.getElementById(
+"status"
+);
+
+
+
+
+
+
+if(status){
+
+
+
+if(
+percentage>=40
+){
+
+
+
+status.innerText="PASS";
+
+status.className="pass";
+
+
+
+}
+
+else{
+
+
+status.innerText="FAIL";
+
+status.className="fail";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+const grade =
+
+document.getElementById(
+"grade"
+);
+
+
+
+
+
+if(grade){
+
+
+let g="F";
+
+
+
+if(percentage>=90)
+g="A+";
+
+else if(percentage>=80)
+g="A";
+
+else if(percentage>=70)
+g="B";
+
+else if(percentage>=60)
+g="C";
+
+else if(percentage>=40)
+g="D";
+
+
+
+
+
+grade.innerText=g;
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+AUTO SUBMIT
+================================ */
+
+
+function autoSubmit(){
+
+
+
+alert(
+"Time Finished! Exam Submitted"
+);
+
+
+
+finishExam();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+console.log(
+"================================="
+);
+
+
+console.log(
+"PART 5 RESULT SYSTEM READY"
+);
+
+
+console.log(
+"LOCAL STORAGE MODE ENABLED"
+);
+
+
+console.log(
+"================================="
+);
+
+/* =====================================================
+PREMIUM ONLINE EXAMINATION SYSTEM
+
+APP.JS
+PART 6 / 6
+
+REVIEW + LOGOUT + CLEANUP
+
+FIREBASE FREE VERSION
+
+===================================================== */
+
+
+
+
+
+
+
+/* ===============================
+REVIEW BUTTON
+================================ */
+
+
+const reviewBtn =
+document.getElementById(
+"reviewBtn"
+);
+
+
+
+if(reviewBtn){
+
+
+reviewBtn.addEventListener(
+"click",
+()=>{
+
+
+showPage(
+"reviewPage"
+);
+
+
+
+loadReview();
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+LOAD REVIEW
+================================ */
+
+
+function loadReview(){
+
+
+
+const container =
+
+document.getElementById(
+"reviewContainer"
+);
+
+
+
+
+
+if(!container)
+return;
+
+
+
+
+
+container.innerHTML="";
+
+
+
+
+
+
+
+
+questions.forEach(
+(q,index)=>{
+
+
+
+
+
+const userAnswer =
+
+userAnswers[index];
+
+
+
+
+
+
+const div =
+
+document.createElement(
+"div"
+);
+
+
+
+
+
+
+div.className =
+"reviewItem";
+
+
+
+
+
+
+
+
+
+let userText =
+"Not Answered";
+
+
+
+
+
+if(
+userAnswer!==undefined
+&&
+userAnswer!==null
+){
+
+
+userText =
+q.options[userAnswer];
+
+
+}
+
+
+
+
+
+
+
+let correctText =
+
+q.options[q.answer];
+
+
+
+
+
+
+
+
+
+let resultClass="";
+
+
+
+
+if(
+userAnswer===q.answer
+){
+
+
+resultClass =
+"correctAnswer";
+
+
+}
+
+else{
+
+
+resultClass =
+"wrongAnswer";
+
+
+}
+
+
+
+
+
+
+
+
+
+div.innerHTML = `
+
+
+<h3>
+Question ${index+1}
+</h3>
+
+
+<p>
+${q.question}
+</p>
+
+
+<p class="${resultClass}">
+
+Your Answer:
+${userText}
+
+</p>
+
+
+<p>
+
+Correct Answer:
+${correctText}
+
+</p>
+
+
+
+`;
+
+
+
+
+
+
+
+container.appendChild(
+div
+);
+
+
+
+
+
+
+});
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+CLOSE REVIEW
+================================ */
+
+
+const closeReview =
+
+document.getElementById(
+"closeReview"
+);
+
+
+
+
+
+if(closeReview){
+
+
+
+closeReview.addEventListener(
+"click",
+()=>{
+
+
+showPage(
+"resultPage"
+);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+LOGOUT BUTTON
+================================ */
+
+
+const logoutBtn =
+
+document.getElementById(
+"logoutBtn"
+);
+
+
+
+
+
+if(logoutBtn){
+
+
+logoutBtn.addEventListener(
+"click",
+()=>{
+
+
+logoutUser();
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+LOGOUT FUNCTION
+================================ */
+
+
+function logoutUser(){
+
+
+
+
+
+clearInterval(
+questionTimer
+);
+
+
+clearInterval(
+masterTimer
+);
+
+
+
+
+
+
+
+currentStudent=null;
+
+
+currentSet=null;
+
+
+questions=[];
+
+
+userAnswers=[];
+
+
+score=0;
+
+
+currentQuestion=0;
+
+
+examFinished=false;
+
+
+warningCount=0;
+
+
+
+
+
+
+
+
+
+localStorage.removeItem(
+"currentUser"
+);
+
+
+
+
+
+
+showPage(
+"loginPage"
+);
+
+
+
+
+
+
+
+console.log(
+"USER LOGGED OUT"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+FULL RESET SYSTEM
+================================ */
+
+
+function resetExam(){
+
+
+
+
+
+clearInterval(
+questionTimer
+);
+
+
+clearInterval(
+masterTimer
+);
+
+
+
+
+
+
+
+currentStudent=null;
+
+
+currentSet=null;
+
+
+questions=[];
+
+
+userAnswers=[];
+
+
+score=0;
+
+
+currentQuestion=0;
+
+
+selectedAnswer=null;
+
+
+examFinished=false;
+
+
+warningCount=0;
+
+
+
+
+
+
+
+
+const username =
+
+document.getElementById(
+"username"
+);
+
+
+
+
+
+const password =
+
+document.getElementById(
+"password"
+);
+
+
+
+
+
+
+
+if(username)
+username.value="";
+
+
+
+
+
+if(password)
+password.value="";
+
+
+
+
+
+
+
+if(
+document.fullscreenElement
+){
+
+
+document
+.exitFullscreen()
+.catch(()=>{});
+
+
+}
+
+
+
+
+
+
+
+showPage(
+"loginPage"
+);
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+FINISH BUTTON
+================================ */
+
+
+const finishBtn =
+
+document.getElementById(
+"finishBtn"
+);
+
+
+
+
+
+
+if(finishBtn){
+
+
+
+finishBtn.addEventListener(
+"click",
+()=>{
+
+
+resetExam();
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+SYSTEM READY
+================================ */
 
 
 console.log(
@@ -3929,7 +3837,12 @@ console.log(
 
 
 console.log(
-"ALL 6 PARTS LOADED SUCCESSFULLY"
+"PART 1-6 COMPLETED"
+);
+
+
+console.log(
+"FIREBASE COMPLETELY REMOVED"
 );
 
 
