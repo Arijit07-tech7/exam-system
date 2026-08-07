@@ -221,42 +221,35 @@ document
 
 
 
-
             /*
             SPECIAL STUDENTS
             CAN ATTEMPT AGAIN
             */
 
-
             const extraAttemptStudents = [
-                "Alok",
-                "Arijit",
                 "alok",
                 "arijit"
             ];
 
 
+            const isExtraAttempt =
+                extraAttemptStudents.includes(
+                    username.toLowerCase()
+                );
 
 
             if (
-
                 student.attempt === true &&
-
-                !extraAttemptStudents.includes(username)
-
+                !isExtraAttempt
             ) {
-
 
                 alert(
                     "You have already completed your exam!"
                 );
 
-
                 return;
 
-
             }
-
 
 
 
@@ -271,8 +264,7 @@ document
 
 
             currentStudent.username =
-                username;
-
+    username.trim();
 
             currentSet =
                 student.set;
