@@ -120,270 +120,270 @@ LOGIN SYSTEM
 
 
 document
-.getElementById("loginBtn")
-.addEventListener("click", async () => {
+    .getElementById("loginBtn")
+    .addEventListener("click", async () => {
 
 
 
-    const username =
-        document
-        .getElementById("username")
-        .value
-        .trim();
+        const username =
+            document
+                .getElementById("username")
+                .value
+                .trim();
 
 
 
-    const password =
-        document
-        .getElementById("password")
-        .value
-        .trim();
-
-
-
-
-    if (
-        username === "" ||
-        password === ""
-    ) {
-
-
-        alert(
-            "Enter Username and Password"
-        );
-
-
-        return;
-
-    }
-
-
-
-
-    try {
-
-
-
-        studentRef = doc(
-            db,
-            "students",
-            username
-        );
-
-
-
-
-        const studentSnap =
-            await getDoc(studentRef);
-
-
-
-
-
-        if (!studentSnap.exists()) {
-
-
-            alert(
-                "Student not found"
-            );
-
-
-            return;
-
-
-        }
-
-
-
-
-        const student =
-            studentSnap.data();
-
+        const password =
+            document
+                .getElementById("password")
+                .value
+                .trim();
 
 
 
 
         if (
-            student.password !== password
+            username === "" ||
+            password === ""
         ) {
 
 
             alert(
-                "Wrong Password"
+                "Enter Username and Password"
             );
 
 
             return;
 
-
         }
 
 
 
 
-
-        /*
-        SPECIAL STUDENTS
-        CAN ATTEMPT AGAIN
-        */
+        try {
 
 
-        const extraAttemptStudents = [
-    "Alok",
-    "Arijit",
-    "alok",
-    "arijit"
-];
+
+            studentRef = doc(
+                db,
+                "students",
+                username
+            );
 
 
 
 
-        if (
+            const studentSnap =
+                await getDoc(studentRef);
 
-            student.attempt === true &&
 
-            !extraAttemptStudents.includes(username)
 
-        ) {
+
+
+            if (!studentSnap.exists()) {
+
+
+                alert(
+                    "Student not found"
+                );
+
+
+                return;
+
+
+            }
+
+
+
+
+            const student =
+                studentSnap.data();
+
+
+
+
+
+            if (
+                student.password !== password
+            ) {
+
+
+                alert(
+                    "Wrong Password"
+                );
+
+
+                return;
+
+
+            }
+
+
+
+
+
+            /*
+            SPECIAL STUDENTS
+            CAN ATTEMPT AGAIN
+            */
+
+
+            const extraAttemptStudents = [
+                "Alok",
+                "Arijit",
+                "alok",
+                "arijit"
+            ];
+
+
+
+
+            if (
+
+                student.attempt === true &&
+
+                !extraAttemptStudents.includes(username)
+
+            ) {
+
+
+                alert(
+                    "You have already completed your exam!"
+                );
+
+
+                return;
+
+
+            }
+
+
+
+
+
+
+            /* ===============================
+               SAVE STUDENT DATA
+            =============================== */
+
+
+            currentStudent = student;
+
+
+            currentStudent.username =
+                username;
+
+
+            currentSet =
+                student.set;
+
+
+
+
+
+
+            /* ===============================
+               DISPLAY STUDENT INFO
+            =============================== */
+
+
+            const nameBox =
+                document.getElementById(
+                    "studentName"
+                );
+
+
+            if (nameBox) {
+
+
+                nameBox.innerText =
+                    student.name;
+
+
+            }
+
+
+
+
+
+
+            const setBox =
+                document.getElementById(
+                    "studentSet"
+                );
+
+
+            if (setBox) {
+
+
+                setBox.innerText =
+                    "Question Set : "
+                    + student.set;
+
+
+            }
+
+
+
+
+
+
+            const examName =
+                document.getElementById(
+                    "examStudent"
+                );
+
+
+            if (examName) {
+
+
+                examName.innerText =
+                    student.name;
+
+
+            }
+
+
+
+
+
+
+            /* ===============================
+               OPEN INSTRUCTION PAGE
+            =============================== */
+
+
+            showPage(
+                "instructionPage"
+            );
+
+
+
+
+
+        }
+        catch (error) {
+
+
+
+            console.error(
+                "Login Error : ",
+                error
+            );
+
 
 
             alert(
-                "You have already completed your exam!"
+                "Firebase Error"
             );
 
-
-            return;
 
 
         }
 
 
 
-
-
-
-        /* ===============================
-           SAVE STUDENT DATA
-        =============================== */
-
-
-        currentStudent = student;
-
-
-        currentStudent.username =
-            username;
-
-
-        currentSet =
-            student.set;
-
-
-
-
-
-
-        /* ===============================
-           DISPLAY STUDENT INFO
-        =============================== */
-
-
-        const nameBox =
-            document.getElementById(
-                "studentName"
-            );
-
-
-        if (nameBox) {
-
-
-            nameBox.innerText =
-                student.name;
-
-
-        }
-
-
-
-
-
-
-        const setBox =
-            document.getElementById(
-                "studentSet"
-            );
-
-
-        if (setBox) {
-
-
-            setBox.innerText =
-                "Question Set : "
-                + student.set;
-
-
-        }
-
-
-
-
-
-
-        const examName =
-            document.getElementById(
-                "examStudent"
-            );
-
-
-        if (examName) {
-
-
-            examName.innerText =
-                student.name;
-
-
-        }
-
-
-
-
-
-
-        /* ===============================
-           OPEN INSTRUCTION PAGE
-        =============================== */
-
-
-        showPage(
-            "instructionPage"
-        );
-
-
-
-
-
-    }
-    catch(error) {
-
-
-
-        console.error(
-            "Login Error : ",
-            error
-        );
-
-
-
-        alert(
-            "Firebase Error"
-        );
-
-
-
-    }
-
-
-
-});
+    });
 
 
 /* =====================================================
